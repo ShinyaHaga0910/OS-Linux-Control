@@ -1,0 +1,41 @@
+import contextlib
+import importlib.machinery
+import io
+import json
+import os
+from pathlib import Path
+import sys
+import tempfile
+import types
+
+app = types.ModuleType("personal_command")
+exec(compile(Path(sys.argv[1]).read_text(), sys.argv[1], "exec"), app.__dict__)
+with tempfile.TemporaryDirectory() as temporary:
+    state = Path(temporary)
+    os.environ["JDU_STUDENT_STATE_DIR"] = temporary
+    secret = "private-server-token-" + "x" * 48
+    (state / "progress.env").write_text("JDU_PROGRESS_ENDPOINT=https://example.test\nJDU_PROGRESS_SERVER_ID=srv-12345678\nJDU_PROGRESS_SERVER_TOKEN=" + secret)
+    sys.argv = ["jdu-my-progress"]
+    payload = {"url": "https://example.test/student/progress?session=short-lived-token", "expires_in_seconds": 900}
+    calls = []
+    def fake_open(request, timeout):
+        calls.append(request)
+        return io.StringIO(json.dumps(payload))
+    app.urlopen = fake_open
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        app.main()
+    assert payload["url"] in output.getvalue() and secret not in output.getvalue()
+    assert calls[0].full_url == "https://example.test/student/session"
+    assert calls[0].get_header("Authorization") == "Bearer " + secret
+    assert json.loads(calls[0].data) == {"server_id": "srv-12345678"}
+    for bad_url in ["https://evil.test/student/progress?session=x", "https://example.test/dashboard?session=x", "http://example.test/student/progress?session=x"]:
+        payload["url"] = bad_url
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                app.main()
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Unexpected personal URL accepted")
+print("PASS personal helper authorization, private output, and URL destination validation")

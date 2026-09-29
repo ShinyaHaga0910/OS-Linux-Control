@@ -121,6 +121,8 @@ for logical_id, method, path in [
     ("SubmitRoute", "POST", "/submit"),
     ("SessionRoute", "POST", "/admin/session"),
     ("DashboardRoute", "GET", "/dashboard"),
+    ("StudentSessionRoute", "POST", "/student/session"),
+    ("StudentProgressRoute", "GET", "/student/progress"),
     ("HealthRoute", "GET", "/health"),
 ]:
     template["Resources"][logical_id] = {

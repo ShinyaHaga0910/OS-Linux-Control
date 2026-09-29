@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Issue a personal read-only URL using private CloudShell lab credentials."""
+import json
+import os
+from pathlib import Path
+import sys
+from urllib.parse import urlsplit, parse_qs
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
+
+
+def main():
+    if len(sys.argv) != 1:
+        raise ValueError("Run jdu-my-progress without arguments.")
+    state = Path(os.environ.get("JDU_STUDENT_STATE_DIR", str(Path.home() / ".jdu-student")))
+    config = dict(line.split("=", 1) for line in (state / "progress.env").read_text().splitlines() if "=" in line)
+    endpoint = config["JDU_PROGRESS_ENDPOINT"].rstrip("/")
+    server_id = config["JDU_PROGRESS_SERVER_ID"]
+    token = config["JDU_PROGRESS_SERVER_TOKEN"]
+    origin = urlsplit(endpoint)
+    if origin.scheme != "https" or not origin.netloc or origin.username or origin.password or origin.query or origin.fragment or len(token) < 32:
+        raise ValueError("Invalid progress configuration.")
+    request = Request(endpoint + "/student/session", data=json.dumps({"server_id": server_id}).encode(),
+                      headers={"Content-Type": "application/json", "Authorization": "Bearer " + token}, method="POST")
+    with urlopen(request, timeout=20) as result:
+        payload = json.load(result)
+    url = payload["url"]
+    parsed = urlsplit(url)
+    lifetime = payload["expires_in_seconds"]
+    if (parsed.scheme != "https" or parsed.netloc != origin.netloc or parsed.username or parsed.password or
+            parsed.path != origin.path + "/student/progress" or parsed.fragment or
+            set(parse_qs(parsed.query)) != {"session"} or len(parse_qs(parsed.query)["session"]) != 1 or
+            isinstance(lifetime, bool) or not isinstance(lifetime, int) or not 0 < lifetime <= 900):
+        raise ValueError("Invalid personal progress response.")
+    print("Open this personal read-only URL in your browser:")
+    print(url)
+    print(f"Expires in {lifetime // 60} minutes. Run jdu-my-progress again to renew.")
+    print("Do not share this URL. Close the page after using a shared computer.")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except HTTPError as exc:
+        print(f"ERROR Progress service returned HTTP {exc.code}. Ask your teacher to check the progress stack.", file=sys.stderr)
+        sys.exit(1)
+    except (URLError, OSError, ValueError, KeyError, TypeError) as exc:
+        print(f"ERROR Could not open personal progress ({type(exc).__name__}). Check your lab registration or ask your teacher.", file=sys.stderr)
+        sys.exit(1)

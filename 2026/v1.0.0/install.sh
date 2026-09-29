@@ -179,6 +179,7 @@ checker_path="$work_dir/check-aws-environment.sh"
 cloudcheck_path="$work_dir/jdu-cloudcheck"
 cloudreset_path="$work_dir/jdu-cloud-reset"
 registration_path="$work_dir/register-student.py"
+personal_progress_path="$work_dir/jdu-my-progress"
 checksums_path="$work_dir/SHA256SUMS"
 
 printf '%s\n' 'Downloading the fixed-version lab files...'
@@ -187,6 +188,7 @@ curl -fsSL --retry 3 "$BASE_URL/scripts/check-aws-environment.sh" -o "$checker_p
 curl -fsSL --retry 3 "$BASE_URL/scripts/jdu-cloudcheck" -o "$cloudcheck_path"
 curl -fsSL --retry 3 "$BASE_URL/scripts/jdu-cloud-reset" -o "$cloudreset_path"
 curl -fsSL --retry 3 "$BASE_URL/scripts/register-student.py" -o "$registration_path"
+curl -fsSL --retry 3 "$BASE_URL/scripts/jdu-my-progress" -o "$personal_progress_path"
 curl -fsSL --retry 3 "$BASE_URL/SHA256SUMS" -o "$checksums_path"
 chmod 0755 "$checker_path"
 chmod 0755 "$cloudcheck_path"
@@ -207,6 +209,7 @@ verify_download scripts/check-aws-environment.sh "$checker_path"
 verify_download scripts/jdu-cloudcheck "$cloudcheck_path"
 verify_download scripts/jdu-cloud-reset "$cloudreset_path"
 verify_download scripts/register-student.py "$registration_path"
+verify_download scripts/jdu-my-progress "$personal_progress_path"
 printf '%s\n' 'PASS Download checksums match.'
 
 install -d -m 0755 "$HOME/.local/bin"
@@ -274,6 +277,7 @@ fi
 printf '%s\n' 'PASS Ubuntu initialization is complete.'
 if [[ -n "$progress_server_id" ]]; then
   install -m 0755 "$registration_path" "$HOME/.local/bin/jdu-register"
+  install -m 0755 "$personal_progress_path" "$HOME/.local/bin/jdu-my-progress"
   JDU_STUDENT_STATE_DIR="$student_state_dir" JDU_INSTANCE_ID="$instance_id" python3 "$registration_path"
 fi
 

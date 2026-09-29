@@ -92,6 +92,20 @@ bash /tmp/jdu-install-teacher.sh --region us-east-1
 
 教員のCloudShellで`jdu-dashboard`を実行すると、30分有効の閲覧URLが表示されます。
 
+## 学生が自分の進捗を確認する
+
+学生のCloudShellで `jdu-my-progress` を実行し、表示されたHTTPS URLをブラウザで開きます。自分のサーバーのM・Tの最新結果だけを表示する読み取り専用ページです。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
+
+最新のinstallerで構築した学生CloudShellにはコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/jdu-my-progress -o /tmp/jdu-my-progress
+install -D -m 0755 /tmp/jdu-my-progress "$HOME/.local/bin/jdu-my-progress"
+jdu-my-progress
+```
+
+認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。表示上のT1～T6は既存の練習P1～P6に対応し、送信には `jdu-check P1` などを使います。
+
 ## 検証範囲と版管理
 
 ローカル自動試験は実施しています。AWS Academy Learner Lab実機での新規構築と全演習の通し受入試験は未完了です。

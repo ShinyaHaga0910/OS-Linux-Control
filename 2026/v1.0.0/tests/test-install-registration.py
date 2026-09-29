@@ -22,6 +22,7 @@ progress_server_id=srv-test1234
 instance_id=i-test
 student_state_dir="$HOME/.jdu-student"
 registration_path="$HOME/register-student.py"
+personal_progress_path="$HOME/register-student.py"
 SSH_KEY_PATH="$HOME/key"
 '''
     for setup, link, expected in [("success", "success", 0), ("failure", "success", 1), ("success", "failure", 1)]:

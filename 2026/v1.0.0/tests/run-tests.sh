@@ -353,17 +353,18 @@ assert resources["ProgressFunction"]["Properties"]["Code"]["ZipFile"] == lambda_
 assert template["Parameters"]["AdminKeyHash"]["NoEcho"] is True
 assert template["Parameters"]["RegistrationKeyHash"]["NoEcho"] is True
 route_keys = {value["Properties"]["RouteKey"] for value in resources.values() if value["Type"] == "AWS::ApiGatewayV2::Route"}
-assert route_keys == {"POST /register", "POST /status", "POST /link-email", "POST /submit", "POST /admin/session", "GET /dashboard", "GET /health"}
+assert route_keys == {"POST /register", "POST /status", "POST /link-email", "POST /submit", "POST /admin/session", "GET /dashboard", "GET /health", "POST /student/session", "GET /student/progress"}
 assert template["Outputs"]["BaseUrl"]["Value"]["Fn::Sub"].startswith("https://")
 assert 'M6U|M6C' in lambda_source
 assert 'P[1-6]|P6U|P6C' in lambda_source
 assert 'Ubuntu {ubuntu_text}' in lambda_source
 assert 'CloudShell {cloud_text}' in lambda_source
-assert 'Guided P1–P6' in lambda_source
+assert 'DISPLAY_MISSIONS' in lambda_source
 print("PASS teacher CloudFormation uses managed HTTPS without a public EC2 server")
 PY
 
 python3 "$root_dir/tests/test-progress-backend.py" "$root_dir/teacher/lambda/progress_app.py"
+python3 "$root_dir/tests/test-personal-progress-command.py" "$root_dir/scripts/jdu-my-progress"
 python3 "$root_dir/tests/test-student-registration.py" "$root_dir/scripts/register-student.py"
 python3 "$root_dir/tests/test-install-registration.py" "$root_dir"
 

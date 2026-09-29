@@ -171,3 +171,42 @@ assert '<td class="missing">T2<br>—</td>' in dashboard["body"]
 assert "入力したメールの本人確認は行っていません" in dashboard["body"]
 assert app.handler(event("GET /health"), None)["statusCode"] == 200
 print("PASS progress backend registration, authentication, submission, session, and dashboard")
+
+# Student links are server-bound and must never become teacher credentials.
+assert app.handler(event("POST /student/session", {"server_id": server_id}), None)["statusCode"] == 401
+assert app.handler(event("POST /student/session", {"server_id": "srv-other1234"}, auth), None)["statusCode"] == 401
+personal_session = app.handler(event("POST /student/session", {"server_id": server_id}, auth), None)
+assert personal_session["statusCode"] == 200
+personal_payload = json.loads(personal_session["body"])
+assert personal_payload["expires_in_seconds"] == 900
+assert server_token not in personal_payload["url"]
+personal_token = parse_qs(urlparse(personal_payload["url"]).query)["session"][0]
+other_record = {"pk": {"S": "SERVER#srv-other1234"}, "kind": {"S": "server"},
+                "serverId": {"S": "srv-other1234"}, "studentEmail": {"S": "other@example.test"}, "missions": {"M": {}}}
+fake_ddb.put_item(TableName="test-table", Item=other_record)
+def forbidden_scan(**kwargs):
+    raise AssertionError("Personal progress must not scan other students")
+original_scan = fake_ddb.scan
+fake_ddb.scan = forbidden_scan
+personal_view = app.handler(event("GET /student/progress", query={"session": personal_token}), None)
+assert personal_view["statusCode"] == 200
+assert "T1" in personal_view["body"] and "M6 6/6" in personal_view["body"]
+assert "other@example.test" not in personal_view["body"] and "srv-other1234" not in personal_view["body"]
+assert "student@example.test" not in personal_view["body"]
+assert "tokenHash" not in personal_view["body"] and server_token not in personal_view["body"]
+assert app.handler(event("GET /student/progress", query={"session": personal_token, "server_id": "srv-other1234"}), None)["statusCode"] == 403
+assert app.handler(event("GET /dashboard", query={"session": personal_token}), None)["statusCode"] == 401
+assert app.handler(event("GET /student/progress", query={"session": session_token}), None)["statusCode"] == 401
+assert app.handler(event("GET /student/progress"), None)["statusCode"] == 401
+assert app.handler(event("POST /submit", submit_body, {"Authorization": "Bearer " + personal_token}), None)["statusCode"] == 401
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "evil@example.test"}, {"Authorization": "Bearer " + personal_token}), None)["statusCode"] == 401
+assert app.handler(event("POST /admin/session", {}, {"X-JDU-Admin-Key": personal_token}), None)["statusCode"] == 401
+session_record = fake_ddb.items["STUDENT_SESSION#" + app.digest(personal_token)]
+session_record["expiresAt"] = {"N": str(int(app.time.time()) - 1)}
+assert app.handler(event("GET /student/progress", query={"session": personal_token}), None)["statusCode"] == 401
+session_record["expiresAt"] = {"N": str(int(app.time.time()) + 900)}
+session_record["serverTokenHash"] = {"S": "changed-token-hash"}
+assert app.handler(event("GET /student/progress", query={"session": personal_token}), None)["statusCode"] == 401
+fake_ddb.scan = original_scan
+assert app.handler(event("GET /dashboard", query={"session": session_token}), None)["statusCode"] == 200
+print("PASS personal progress isolation, read-only scope, expiry, and credential revocation")

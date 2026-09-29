@@ -236,6 +236,7 @@ def create_session(event):
         Item={
             "pk": {"S": f"SESSION#{digest(token)}"},
             "kind": {"S": "session"},
+            "role": {"S": "teacher"},
             "createdAt": {"S": now_iso()},
             "expiresAt": {"N": str(expires_at)},
         },
@@ -246,6 +247,36 @@ def create_session(event):
     prefix = "" if stage == "$default" else f"/{stage}"
     url = f"https://{domain}{prefix}/dashboard?session={quote(token)}"
     return response(200, {"url": url, "expires_in_seconds": SESSION_TTL_SECONDS})
+
+
+def create_student_session(event):
+    try:
+        server_id = text_field(parse_body(event), "server_id", 64)
+        if not SERVER_ID_RE.fullmatch(server_id):
+            raise ValueError("invalid server id")
+    except (ValueError, json.JSONDecodeError, UnicodeDecodeError):
+        return response(400, {"error": "invalid request"})
+    authorization = header(event, "Authorization")
+    server_token = authorization[7:] if authorization.startswith("Bearer ") else ""
+    server = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"SERVER#{server_id}"}}, ConsistentRead=True).get("Item")
+    if not server or not valid_secret(server_token, attr_s(server, "tokenHash")):
+        return response(401, {"error": "unauthorized"})
+    token = secrets.token_urlsafe(32)
+    lifetime = min(900, SESSION_TTL_SECONDS)
+    DDB.put_item(TableName=TABLE_NAME, Item={
+        "pk": {"S": f"STUDENT_SESSION#{digest(token)}"},
+        "kind": {"S": "student_session"},
+        "role": {"S": "student"},
+        "serverId": {"S": server_id},
+        "serverTokenHash": {"S": attr_s(server, "tokenHash")},
+        "createdAt": {"S": now_iso()},
+        "expiresAt": {"N": str(int(time.time()) + lifetime)},
+    })
+    context = event.get("requestContext") or {}
+    stage = context.get("stage", "$default")
+    prefix = "" if stage == "$default" else f"/{stage}"
+    url = f"https://{context.get('domainName', '')}{prefix}/student/progress?session={quote(token)}"
+    return response(200, {"url": url, "expires_in_seconds": lifetime})
 
 
 def scan_servers():
@@ -311,17 +342,35 @@ def paired_mission_cell(missions, stored_name, display_name):
     )
 
 
-def dashboard(event):
+def dashboard(event, personal=False):
     token = (event.get("queryStringParameters") or {}).get("session", "")
     if not token:
         return response(401, "Session URL is required.", "text/plain; charset=utf-8")
-    item = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"SESSION#{digest(token)}"}}, ConsistentRead=True).get("Item")
+    namespace = "STUDENT_SESSION" if personal else "SESSION"
+    item = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"{namespace}#{digest(token)}"}}, ConsistentRead=True).get("Item")
     expires_at = int(item.get("expiresAt", {}).get("N", "0")) if item else 0
     if expires_at <= int(time.time()):
-        return response(401, "This dashboard URL has expired. Run jdu-dashboard again in CloudShell.", "text/plain; charset=utf-8")
+        command = "jdu-my-progress" if personal else "jdu-dashboard"
+        return response(401, f"This URL is invalid or expired. Run {command} again in CloudShell.", "text/plain; charset=utf-8")
+
+    if personal:
+        server_id = attr_s(item, "serverId")
+        requested_id = (event.get("queryStringParameters") or {}).get("server_id", server_id)
+        if attr_s(item, "role") != "student" or not SERVER_ID_RE.fullmatch(server_id) or requested_id != server_id:
+            return response(403, {"error": "forbidden"})
+        server = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"SERVER#{server_id}"}}, ConsistentRead=True).get("Item")
+        if not server or not hmac.compare_digest(attr_s(server, "tokenHash"), attr_s(item, "serverTokenHash")):
+            return response(401, {"error": "session no longer valid"})
+        servers = [server]
+    else:
+        # Existing teacher sessions predating the explicit role remain valid in
+        # the teacher-only namespace until their original expiry.
+        if attr_s(item, "kind") != "session" or attr_s(item, "role") not in {"", "teacher"}:
+            return response(403, {"error": "forbidden"})
+        servers = scan_servers()
 
     rows = []
-    for server in scan_servers():
+    for server in servers:
         missions = server.get("missions", {}).get("M", {})
         cells = [
             paired_mission_cell(missions, stored_name, display_name)
@@ -329,10 +378,13 @@ def dashboard(event):
             else standard_mission_cell(display_name, mission_score(missions, stored_name))
             for display_name, stored_name in DISPLAY_MISSIONS
         ]
-        rows.append((attr_s(server, "serverId"), f"<tr><th scope=row><strong>{html.escape(attr_s(server, 'studentEmail')) or 'メール未登録'}</strong><br><small>{html.escape(attr_s(server, 'serverId'))}</small><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></th>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
+        rows.append((attr_s(server, "serverId"), f"<tr><th scope=row><strong>{('自分のサーバー' if personal else html.escape(attr_s(server, 'studentEmail')) or 'メール未登録')}</strong><br><small>{html.escape(attr_s(server, 'serverId'))}</small><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></th>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
     rows.sort(key=lambda pair: pair[0])
     body_rows = "".join(row for _, row in rows) or '<tr><td colspan="16">まだ進捗報告はありません。</td></tr>'
     page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child{{text-align:left;position:sticky;left:0;min-width:220px}}tbody th{{background:white;z-index:1}}thead th:first-child{{z-index:3}}thead th{{background:#edf2f7;position:sticky;top:0;z-index:2}}td span,small{{color:#66788a}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>T1～T6（練習）とM0～M7（課題）の最新結果です。Tの送信コマンドはPを使います（例：T1 → jdu-check P1）。30秒ごとに更新します。</p><div class=wrap role=region aria-label="課題の進捗一覧" tabindex=0><table><thead><tr><th scope=col>学生メール / サーバー</th>{''.join(f'<th scope=col>{name}</th>' for name, _ in DISPLAY_MISSIONS)}<th scope=col>最終送信 (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
+    if personal:
+        page = page.replace("JDU Linux Lab 進捗", "JDU Linux Lab 自分の進捗").replace("学生メール / サーバー", "自分のサーバー")
+        page = page.replace("<footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer>", "<footer>読み取り専用のページです。閲覧URLは15分以内に失効します。URLを他の人へ共有せず、共有PCでは利用後にページを閉じてください。再発行：CloudShellで jdu-my-progress。</footer>")
     return response(200, page, "text/html; charset=utf-8")
 
 
@@ -349,6 +401,10 @@ def handler(event, context):
             return submit(event)
         if route == "POST /admin/session":
             return create_session(event)
+        if route == "POST /student/session":
+            return create_student_session(event)
+        if route == "GET /student/progress":
+            return dashboard(event, personal=True)
         if route == "GET /dashboard":
             return dashboard(event)
         if route == "GET /health":
