@@ -34,6 +34,7 @@ for path in sys.argv[1:]:
         ast.parse(source.read(), filename=path)
 PY
 printf '%s\n' 'PASS shell and Python syntax'
+python3 "$root_dir/tests/test-availability-zone.py"
 
 (
   cd "$root_dir"

@@ -13,6 +13,11 @@
       "AllowedValues": ["t2.micro", "t3.micro"],
       "Description": "Choose a type allowed by the Learner Lab policy"
     },
+    "LabAvailabilityZone": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Availability Zone supporting the selected instance type, selected by install.sh"
+    },
     "InstanceProfileName": {
       "Type": "String",
       "Default": "LabInstanceProfile",
@@ -58,6 +63,9 @@
       "MaxLength": 1024
     }
   },
+  "Conditions": {
+    "HasLabAvailabilityZone": {"Fn::Not": [{"Fn::Equals": [{"Ref": "LabAvailabilityZone"}, ""]}]}
+  },
   "Resources": {
     "LabVpc": {
       "Type": "AWS::EC2::VPC",
@@ -94,6 +102,7 @@
       "Properties": {
         "VpcId": {"Ref": "LabVpc"},
         "CidrBlock": "10.20.10.0/24",
+        "AvailabilityZone": {"Fn::If": ["HasLabAvailabilityZone", {"Ref": "LabAvailabilityZone"}, {"Ref": "AWS::NoValue"}]},
         "MapPublicIpOnLaunch": true,
         "Tags": [
           {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-public-subnet"}},

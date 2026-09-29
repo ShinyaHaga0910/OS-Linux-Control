@@ -221,6 +221,40 @@ printf '%s\n' 'Checking AWS login and CloudFormation template...'
 aws sts get-caller-identity --region "$REGION" --output json >/dev/null
 aws cloudformation validate-template --region "$REGION" --template-body "file://$template_path" >/dev/null
 
+select_lab_availability_zone() {
+  local subnet_id existing_zone offered_zone
+  aws ec2 describe-instance-type-offerings --region "$REGION" \
+    --location-type availability-zone --filters "Name=instance-type,Values=$INSTANCE_TYPE" \
+    --query 'InstanceTypeOfferings[].Location' --output text > "$work_dir/offered-zones.txt" || return 1
+  aws ec2 describe-availability-zones --region "$REGION" \
+    --filters Name=state,Values=available --query 'AvailabilityZones[].ZoneName' \
+    --output text > "$work_dir/available-zones.txt" || return 1
+  offered_zone="$(python3 - "$work_dir/offered-zones.txt" "$work_dir/available-zones.txt" <<'PY'
+import pathlib, sys
+offered, available = (set(pathlib.Path(p).read_text().split()) - {'None'} for p in sys.argv[1:])
+zones = sorted(offered & available)
+if not zones:
+    sys.exit('ERROR No available Availability Zone supports the selected instance type.')
+print(zones[0])
+PY
+)" || return 1
+  # Preserve an existing subnet's placement during ordinary installer updates.
+  subnet_id="$(aws cloudformation describe-stack-resource --region "$REGION" \
+    --stack-name "$STACK_NAME" --logical-resource-id PublicSubnet \
+    --query 'StackResourceDetail.PhysicalResourceId' --output text 2>/dev/null || true)"
+  if [[ "$subnet_id" == subnet-* ]]; then
+    existing_zone="$(aws ec2 describe-subnets --region "$REGION" --subnet-ids "$subnet_id" \
+      --query 'Subnets[0].AvailabilityZone' --output text)" || return 1
+    if ! tr '[:space:]' '\n' < "$work_dir/offered-zones.txt" | grep -Fxq "$existing_zone"; then
+      printf 'ERROR Existing subnet zone %s does not support %s. No resources were moved.\n' "$existing_zone" "$INSTANCE_TYPE" >&2
+      return 1
+    fi
+    offered_zone="$existing_zone"
+  fi
+  printf '%s\n' "$offered_zone"
+}
+lab_availability_zone="$(select_lab_availability_zone)"
+printf 'Selected Availability Zone: %s (%s)\n' "$lab_availability_zone" "$INSTANCE_TYPE"
 printf 'Deploying stack %s in %s...\n' "$STACK_NAME" "$REGION"
 aws cloudformation deploy \
   --region "$REGION" \
@@ -228,6 +262,7 @@ aws cloudformation deploy \
   --template-file "$template_path" \
   --parameter-overrides \
     "InstanceType=$INSTANCE_TYPE" \
+    "LabAvailabilityZone=$lab_availability_zone" \
     "InstanceProfileName=$INSTANCE_PROFILE_NAME" \
     "LabVersion=$VERSION" \
     "StudentSshPublicKeyBase64=$student_public_key_base64" \
