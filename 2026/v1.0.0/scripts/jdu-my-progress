@@ -14,7 +14,10 @@ def main():
         raise ValueError("Run jdu-my-progress without arguments.")
     state = Path(os.environ.get("JDU_STUDENT_STATE_DIR", str(Path.home() / ".jdu-student")))
     config = dict(line.split("=", 1) for line in (state / "progress.env").read_text().splitlines() if "=" in line)
-    endpoint = config["JDU_PROGRESS_ENDPOINT"].rstrip("/")
+    endpoint = config.get("JDU_PROGRESS_ENDPOINT", "").rstrip("/")
+    if not endpoint:
+        print("ERROR This older lab has no progress endpoint saved. Ask your teacher to add the actual teacher endpoint to ~/.jdu-student/progress.env without changing your server ID or token.", file=sys.stderr)
+        return 1
     server_id = config["JDU_PROGRESS_SERVER_ID"]
     token = config["JDU_PROGRESS_SERVER_TOKEN"]
     origin = urlsplit(endpoint)
@@ -36,11 +39,12 @@ def main():
     print(url)
     print(f"Expires in {lifetime // 60} minutes. Run jdu-my-progress again to renew.")
     print("Do not share this URL. Close the page after using a shared computer.")
+    return 0
 
 
 if __name__ == "__main__":
     try:
-        main()
+        sys.exit(main())
     except HTTPError as exc:
         print(f"ERROR Progress service returned HTTP {exc.code}. Ask your teacher to check the progress stack.", file=sys.stderr)
         sys.exit(1)

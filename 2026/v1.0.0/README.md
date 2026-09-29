@@ -106,6 +106,8 @@ jdu-my-progress
 
 認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。表示上のT1～T6は既存の練習P1～P6に対応し、送信には `jdu-check P1` などを使います。
 
+旧環境で「no progress endpoint saved」と表示された場合は、教員がこのクラスの実際の送信先URLを確認し、`~/.jdu-student/progress.env` に `JDU_PROGRESS_ENDPOINT=https://…` の1行を追加します。既存のサーバーIDとtokenは変更しません。送信先を別のクラスや古いスタックから転記しないでください。
+
 ## 検証範囲と版管理
 
 ローカル自動試験は実施しています。AWS Academy Learner Lab実機での新規構築と全演習の通し受入試験は未完了です。
