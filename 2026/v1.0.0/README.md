@@ -8,12 +8,7 @@ Status: First distribution candidate / local acceptance tests passed / Learner L
 
 Learner Labを開始し、CloudShellで実行します。
 
-教員が配布した最新の構築コマンドを使用してください。教員用installerが、実際の進捗送信先と登録キーを含むコマンドを生成します。以下は既定の送信先を使う場合の例です。
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/install.sh
-bash install.sh --region us-east-1
-```
+Google Classroomで教員が配布した、このセミスター用の構築コマンドをコピーして実行してください。教員用installerが、実際の進捗送信先と非公開の登録キーを含むコマンドを生成します。公開GitHubには実際のキーを載せません。配布コマンドを公開リポジトリ、公開チャット、スクリーンショットに転載しないでください。送信先・キーを指定せずにinstallerを実行すると、AWSの構築前に停止します。
 
 `install.sh`は、CloudFormationの構築、CloudShell専用SSH鍵、Session Manager tunnel、Ubuntu初期設定、P1～P6とM1～M7の初期化、教員進捗サーバーへの登録を実行します。進捗送信先と登録キーは教員の配布コマンドに含まれ、学生による手入力は不要です。Security Groupのinbound ruleは0件で、TCP 22をインターネットへ公開しません。
 

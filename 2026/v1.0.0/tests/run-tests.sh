@@ -58,7 +58,7 @@ grep -Fq 'jdu-check must be run as definitely-not-current' <<<"$wrong_user_outpu
 grep -Fq 'Run exit until id -un prints definitely-not-current' <<<"$wrong_user_output"
 printf '%s\n' 'PASS wrong-user execution stops with a clear recovery message'
 
-grep -Fq 'DEFAULT_REGISTRATION_KEY="c3bde59c59075843251914a28ce6006d7d912b39023c05ab7deb720259c30c0f"' "$root_dir/teacher/install-teacher.sh"
+grep -Fq -- '--rotate-registration-key' "$root_dir/teacher/install-teacher.sh"
 grep -Fq -- '--progress-endpoint %q --registration-key %q' "$root_dir/teacher/install-teacher.sh"
 printf '%s\n' 'PASS teacher command includes the deployed progress configuration'
 
@@ -264,8 +264,8 @@ for path in sys.argv[1:]:
         texts.append(source.read())
 installer, setup, fixture, checker, cloudchecker, guide, guided = texts
 assert 'VERSION="v1.0.0"' in installer
-assert 'PROGRESS_ENDPOINT="${JDU_PROGRESS_ENDPOINT:-https://bn9cqgezc8.execute-api.us-east-1.amazonaws.com}"' in installer
-assert 'REGISTRATION_KEY="${JDU_PROGRESS_REGISTRATION_KEY:-c3bde59c59075843251914a28ce6006d7d912b39023c05ab7deb720259c30c0f}"' in installer
+assert 'PROGRESS_ENDPOINT="${JDU_PROGRESS_ENDPOINT:-}"' in installer
+assert 'REGISTRATION_KEY="${JDU_PROGRESS_REGISTRATION_KEY:-}"' in installer
 assert 'install -m 0755 "$cloudcheck_path" "$HOME/.local/bin/jdu-check"' in installer
 assert 'install -m 0755 "$cloudreset_path" "$HOME/.local/bin/jdu-reset"' in installer
 assert '"$HOME/.local/bin/jdu-reset" P6' in installer
@@ -367,6 +367,7 @@ python3 "$root_dir/tests/test-progress-backend.py" "$root_dir/teacher/lambda/pro
 python3 "$root_dir/tests/test-personal-progress-command.py" "$root_dir/scripts/jdu-my-progress"
 python3 "$root_dir/tests/test-student-registration.py" "$root_dir/scripts/register-student.py"
 python3 "$root_dir/tests/test-install-registration.py" "$root_dir"
+python3 "$root_dir/tests/test-semester-registration-key.py" "$root_dir"
 
 progress_test_dir="$(mktemp -d)"
 progress_endpoint='https://example.execute-api.us-east-1.amazonaws.com'

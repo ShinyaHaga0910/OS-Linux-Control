@@ -13,6 +13,11 @@ __pycache__/
 *.key
 *.p12
 credentials
+.jdu-teacher/
+.jdu-student/
+student-setup-command.txt
+student-email.txt
+progress.env
 
 # Generated release files
 dist/

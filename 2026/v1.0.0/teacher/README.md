@@ -19,6 +19,18 @@ Use the AWS region allowed by the Academy Lab. If the Lambda execution role is n
 
 The installer prints the one-line student installation command with the actual deployed endpoint and registration key. Distribute that complete command, not a command copied from an older deployment. Students do not type either value manually. The admin key is never included.
 
+## Semester registration key
+
+The registration key is private to the enrolled course. It is generated randomly on first installation, saved with mode 0600 in `~/.jdu-teacher/registration.key`, and reused by ordinary updates. The retired public key is detected by fingerprint and replaced automatically. AWS stores only its hash for checking new registrations. Actual keys never belong in this public repository.
+
+At the start of each semester, use the same existing stack and add `--rotate-registration-key`:
+
+```bash
+bash /tmp/jdu-install-teacher.sh --region us-east-1 --rotate-registration-key
+```
+
+After successful deployment, copy the newly printed one-line setup command, also saved privately in `~/.jdu-teacher/student-setup-command.txt`, into the enrolled Google Classroom course only. Do not publish that file, logs containing the command, screenshots or setup commands on GitHub. A failed deployment retains the old key file and a private pending key for retry. Rotation preserves the admin key, DynamoDB records and existing server tokens. Previously registered students can still submit and view progress; only new registrations using the old semester key are rejected. Students using an old setup command must obtain the current course command. Anyone receiving the course key can register; this is course distribution control, not verification of student identity.
+
 When updating an existing installation, run the teacher installer again against the same stack in the same account and region. This updates Lambda and adds the authenticated `/status` and `/link-email` routes. Update the teacher stack **before** distributing the new student installer. Source publication alone does not update the running AWS stack.
 
 ## Open the dashboard
@@ -29,7 +41,7 @@ Run this only in the teacher CloudShell:
 jdu-dashboard
 ```
 
-The command authenticates with the admin key stored in `~/.jdu-teacher/admin.key`. It prints a dashboard URL that expires after 30 minutes. Open that URL in a browser. The admin key remains private. The fixed registration key is only a public course bootstrap value and does not open the dashboard.
+The command authenticates with the admin key stored in `~/.jdu-teacher/admin.key`. It prints a dashboard URL that expires after 30 minutes. Open that URL in a browser. The admin key remains private. The semester registration key only authorizes server registration and cannot open the dashboard.
 
 The HTTPS endpoint is internet reachable because the browser must reach it. The admin endpoint is protected by a random key kept in the teacher CloudShell. The browser receives only a short-lived session token.
 
@@ -45,7 +57,7 @@ Update the existing teacher stack to add the two student routes before distribut
 
 References (checked 2026-09-29): [HTTP API endpoints](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html), [mutual TLS client certificates](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-mutual-tls.html).
 
-The fixed registration key is public by design. It cannot open the teacher dashboard, but anyone who knows the endpoint and key can create a new anonymous server record. Therefore, use this dashboard for formative progress only, not identity verification or formal grading.
+Keep the semester registration key within the enrolled Google Classroom course. Public teaching materials do not include a working key. This dashboard remains for formative progress, not identity verification or formal grading.
 
 ## Data policy
 

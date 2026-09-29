@@ -8,8 +8,8 @@ INSTANCE_PROFILE_NAME="LabInstanceProfile"
 REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-}}"
 BASE_URL="https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/${VERSION}"
 SSH_KEY_PATH="${JDU_SSH_KEY_PATH:-$HOME/.ssh/jdu-intro-cybersecurity-2026}"
-PROGRESS_ENDPOINT="${JDU_PROGRESS_ENDPOINT:-https://bn9cqgezc8.execute-api.us-east-1.amazonaws.com}"
-REGISTRATION_KEY="${JDU_PROGRESS_REGISTRATION_KEY:-c3bde59c59075843251914a28ce6006d7d912b39023c05ab7deb720259c30c0f}"
+PROGRESS_ENDPOINT="${JDU_PROGRESS_ENDPOINT:-}"
+REGISTRATION_KEY="${JDU_PROGRESS_REGISTRATION_KEY:-}"
 student_state_dir="${JDU_STUDENT_STATE_DIR:-$HOME/.jdu-student}"
 
 usage() {
@@ -49,11 +49,9 @@ case "$INSTANCE_TYPE" in
   *) printf 'ERROR Unsupported instance type: %s\n' "$INSTANCE_TYPE" >&2; exit 2 ;;
 esac
 
-if [[ -n "$PROGRESS_ENDPOINT" || -n "$REGISTRATION_KEY" ]]; then
-  if [[ ! "$PROGRESS_ENDPOINT" =~ ^https://[^[:space:]]+$ || ${#REGISTRATION_KEY} -lt 32 ]]; then
-    printf '%s\n' 'ERROR Progress reporting requires both a valid HTTPS endpoint and registration key.' >&2
-    exit 2
-  fi
+if [[ ! "$PROGRESS_ENDPOINT" =~ ^https://[^[:space:]]+$ || ! "$REGISTRATION_KEY" =~ ^[0-9a-f]{64}$ ]]; then
+  printf '%s\n' 'ERROR Use the complete setup command provided privately by your teacher in Google Classroom. The course endpoint and semester registration key are required.' >&2
+  exit 2
 fi
 
 export AWS_PAGER=""

@@ -7,10 +7,12 @@ ROLE_NAME="LabRole"
 REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-}}"
 BASE_URL="https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/${VERSION}"
 state_dir="${JDU_TEACHER_STATE_DIR:-$HOME/.jdu-teacher}"
-DEFAULT_REGISTRATION_KEY="c3bde59c59075843251914a28ce6006d7d912b39023c05ab7deb720259c30c0f"
+ROTATE_REGISTRATION_KEY=false
+# Fingerprint of the retired publicly distributed key; never accept it again.
+RETIRED_REGISTRATION_HASH="a3e404ef200f59946a59d8f6f0295fef25c0e0fd46a6112848501b31b12d217d"
 
 usage() {
-  printf '%s\n' 'Usage: bash install-teacher.sh [--region REGION] [--stack-name NAME] [--role-name LabRole]'
+  printf '%s\n' 'Usage: bash install-teacher.sh [--region REGION] [--stack-name NAME] [--role-name LabRole] [--rotate-registration-key]'
 }
 
 while (($#)); do
@@ -18,6 +20,7 @@ while (($#)); do
     --region) REGION="${2:?Missing region}"; shift 2 ;;
     --stack-name) STACK_NAME="${2:?Missing stack name}"; shift 2 ;;
     --role-name) ROLE_NAME="${2:?Missing role name}"; shift 2 ;;
+    --rotate-registration-key) ROTATE_REGISTRATION_KEY=true; shift ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'ERROR Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
   esac
@@ -43,6 +46,7 @@ if [[ ! "$ROLE_NAME" =~ ^[A-Za-z0-9+=,.@_-]+$ ]]; then
 fi
 
 export AWS_PAGER=""
+umask 077
 install -d -m 0700 "$state_dir"
 admin_key_file="$state_dir/admin.key"
 registration_key_file="$state_dir/registration.key"
@@ -51,16 +55,34 @@ config_file="$state_dir/progress.env"
 if [[ ! -s "$admin_key_file" ]]; then
   openssl rand -hex 32 > "$admin_key_file"
 fi
-registration_key_value="${JDU_PROGRESS_REGISTRATION_KEY:-$DEFAULT_REGISTRATION_KEY}"
+pending_key_file="$state_dir/registration.pending.key"
+registration_key_value="${JDU_PROGRESS_REGISTRATION_KEY:-}"
+if [[ -z "$registration_key_value" && -s "$pending_key_file" && "$ROTATE_REGISTRATION_KEY" == false ]]; then
+  registration_key_value="$(tr -d '\r\n' < "$pending_key_file")"
+fi
+if [[ -z "$registration_key_value" && -s "$registration_key_file" && "$ROTATE_REGISTRATION_KEY" == false ]]; then
+  registration_key_value="$(tr -d '\r\n' < "$registration_key_file")"
+fi
+candidate_hash="$(printf '%s' "$registration_key_value" | sha256sum | awk '{print $1}')"
+if [[ "$candidate_hash" == "$RETIRED_REGISTRATION_HASH" ]]; then
+  if [[ -n "${JDU_PROGRESS_REGISTRATION_KEY:-}" ]]; then
+    printf '%s\n' 'ERROR The old publicly distributed registration key is retired.' >&2
+    exit 2
+  fi
+  registration_key_value=''
+fi
+if [[ -z "$registration_key_value" ]]; then
+  registration_key_value="$(openssl rand -hex 32)"
+fi
 if [[ ! "$registration_key_value" =~ ^[0-9a-f]{64}$ ]]; then
   printf '%s\n' 'ERROR The registration key must be 64 lowercase hexadecimal characters.' >&2
   exit 2
 fi
-printf '%s\n' "$registration_key_value" > "$registration_key_file"
-chmod 0600 "$admin_key_file" "$registration_key_file"
+printf '%s\n' "$registration_key_value" > "$pending_key_file"
+chmod 0600 "$admin_key_file" "$pending_key_file"
 
 admin_hash="$(tr -d '\r\n' < "$admin_key_file" | sha256sum | awk '{print $1}')"
-registration_hash="$(tr -d '\r\n' < "$registration_key_file" | sha256sum | awk '{print $1}')"
+registration_hash="$(printf '%s' "$registration_key_value" | sha256sum | awk '{print $1}')"
 
 work_dir="$(mktemp -d)"
 trap 'rm -rf -- "$work_dir"' EXIT
@@ -100,6 +122,10 @@ aws cloudformation deploy \
     "RegistrationKeyHash=$registration_hash" \
   --no-fail-on-empty-changeset
 
+# Commit the new private key only after AWS confirms a successful update.
+mv -- "$pending_key_file" "$registration_key_file"
+chmod 0600 "$registration_key_file"
+
 endpoint="$(aws cloudformation describe-stacks \
   --region "$REGION" \
   --stack-name "$STACK_NAME" \
@@ -132,7 +158,11 @@ fi
 printf '\n%s\n' 'PASS The teacher progress server is ready.'
 printf 'HTTPS endpoint: %s\n' "$endpoint"
 printf '%s\n' 'Dashboard: jdu-dashboard'
-printf '%s\n' 'Keep ~/.jdu-teacher/admin.key only in the teacher CloudShell. The registration key is a public course bootstrap value.'
-printf '\n%s\n' 'Run this in each student CloudShell:'
-printf 'curl -fsSL %q -o /tmp/jdu-install.sh && bash /tmp/jdu-install.sh --region %q --progress-endpoint %q --registration-key %q\n' \
-  "$BASE_URL/install.sh" "$REGION" "$endpoint" "$registration_key_value"
+printf '%s\n' 'Keep admin.key private to the teacher. Share the semester setup command only through the enrolled Google Classroom course.'
+printf '\n%s\n' 'Private student setup command (do not publish on GitHub):'
+student_setup_command="$(printf 'curl -fsSL %q -o /tmp/jdu-install.sh && bash /tmp/jdu-install.sh --region %q --progress-endpoint %q --registration-key %q\n' \
+  "$BASE_URL/install.sh" "$REGION" "$endpoint" "$registration_key_value")"
+printf '%s\n' "$student_setup_command" > "$state_dir/student-setup-command.txt"
+chmod 0600 "$state_dir/student-setup-command.txt"
+printf '%s\n' "$student_setup_command"
+printf '%s\n' 'Saved privately to ~/.jdu-teacher/student-setup-command.txt. Copy it only into Google Classroom.'

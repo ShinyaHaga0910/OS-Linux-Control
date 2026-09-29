@@ -210,3 +210,12 @@ assert app.handler(event("GET /student/progress", query={"session": personal_tok
 fake_ddb.scan = original_scan
 assert app.handler(event("GET /dashboard", query={"session": session_token}), None)["statusCode"] == 200
 print("PASS personal progress isolation, read-only scope, expiry, and credential revocation")
+
+app.REGISTRATION_KEY_HASH = hashlib.sha256(("n" * 64).encode()).hexdigest()
+assert app.handler(event("POST /register", register_body, {"X-JDU-Registration-Key": registration_key}), None)["statusCode"] == 401
+assert app.handler(event("POST /register", register_body, {"X-JDU-Registration-Key": "n" * 64}), None)["statusCode"] == 200
+assert app.handler(event("POST /status", {"server_id": server_id}, auth), None)["statusCode"] == 200
+assert app.handler(event("POST /submit", submit_body, auth), None)["statusCode"] == 200
+assert app.handler(event("POST /student/session", {"server_id": server_id}, auth), None)["statusCode"] == 200
+assert app.handler(event("POST /admin/session", {}, {"X-JDU-Admin-Key": admin_key}), None)["statusCode"] == 200
+print("PASS retired registration key rejected while existing submission and viewing remain available")
