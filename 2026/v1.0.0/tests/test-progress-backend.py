@@ -147,10 +147,12 @@ partial_dashboard = app.handler(event("GET /dashboard", query={"session": sessio
 assert "Ubuntu 2/2" in partial_dashboard["body"]
 assert "CloudShell 3/4" in partial_dashboard["body"]
 assert "M6 5/6" in partial_dashboard["body"]
-assert "0/8" in partial_dashboard["body"]
-assert "P1 6/6" in partial_dashboard["body"]
-assert "P6 U2/2 C3/4" in partial_dashboard["body"]
-assert "1/6" in partial_dashboard["body"]
+assert '<td class="done">T1<br>6/6</td>' in partial_dashboard["body"]
+assert '<td class="partial"><strong>T6 5/6</strong>' in partial_dashboard["body"]
+assert "Guided P1" not in partial_dashboard["body"] and "Challenge" not in partial_dashboard["body"]
+expected_headers = ["M0", "T1", "M1", "T2", "M2", "T3", "M3", "T4", "M4", "T5", "M5", "T6", "M6", "M7"]
+actual_headers = app.re.findall(r'<th scope=col>([MT][0-9])</th>', partial_dashboard["body"])
+assert actual_headers == expected_headers
 
 m6_cloud["passed"] = 4
 assert app.handler(event("POST /submit", m6_cloud, {"Authorization": f"Bearer {server_token}"}), None)["statusCode"] == 200
@@ -164,9 +166,8 @@ assert "1/2" in dashboard["body"]
 assert "Ubuntu 2/2" in dashboard["body"]
 assert "CloudShell 4/4" in dashboard["body"]
 assert "M6 6/6" in dashboard["body"]
-assert "1/8" in dashboard["body"]
-assert "P6 U2/2 C4/4" in dashboard["body"]
-assert "2/6" in dashboard["body"]
+assert '<td class="done"><strong>T6 6/6</strong>' in dashboard["body"]
+assert '<td class="missing">T2<br>—</td>' in dashboard["body"]
 assert "入力したメールの本人確認は行っていません" in dashboard["body"]
 assert app.handler(event("GET /health"), None)["statusCode"] == 200
 print("PASS progress backend registration, authentication, submission, session, and dashboard")

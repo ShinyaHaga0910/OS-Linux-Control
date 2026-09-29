@@ -282,6 +282,12 @@ def mission_score(missions, name):
     }
 
 
+DISPLAY_MISSIONS = [("M0", "M0")]
+for number in range(1, 7):
+    DISPLAY_MISSIONS.extend([(f"T{number}", f"P{number}"), (f"M{number}", f"M{number}")])
+DISPLAY_MISSIONS.append(("M7", "M7"))
+
+
 def standard_mission_cell(name, score):
     if not score:
         return f'<td class="missing">{name}<br>—</td>'
@@ -289,47 +295,20 @@ def standard_mission_cell(name, score):
     return f'<td class="{css}">{name}<br>{score["passed"]}/{score["total"]}</td>'
 
 
-def m6_mission_cell(missions):
-    ubuntu = mission_score(missions, "M6U")
-    cloud = mission_score(missions, "M6C")
+def paired_mission_cell(missions, stored_name, display_name):
+    ubuntu = mission_score(missions, f"{stored_name}U")
+    cloud = mission_score(missions, f"{stored_name}C")
     if not ubuntu and not cloud:
-        return '<td class="missing m6">M6<br>—</td>'
+        return f'<td class="missing">{display_name}<br>—</td>'
     passed = (ubuntu or {}).get("passed", 0) + (cloud or {}).get("passed", 0)
     ubuntu_text = f'{ubuntu["passed"]}/{ubuntu["total"]}' if ubuntu else "—/2"
     cloud_text = f'{cloud["passed"]}/{cloud["total"]}' if cloud else "—/4"
     complete = bool(ubuntu and cloud and ubuntu["complete"] and cloud["complete"])
     css = "done" if complete else "partial"
     return (
-        f'<td class="{css} m6"><strong>M6 {passed}/6</strong><br>'
+        f'<td class="{css}"><strong>{display_name} {passed}/6</strong><br>'
         f'<small>Ubuntu {ubuntu_text}<br>CloudShell {cloud_text}</small></td>'
     )
-
-
-def paired_complete(missions, prefix):
-    ubuntu = mission_score(missions, f"{prefix}U")
-    cloud = mission_score(missions, f"{prefix}C")
-    return bool(ubuntu and cloud and ubuntu["complete"] and cloud["complete"])
-
-
-def guided_progress_cell(missions):
-    completed = sum(
-        1
-        for name in ["P1", "P2", "P3", "P4", "P5"]
-        if (mission_score(missions, name) or {}).get("complete")
-    )
-    if paired_complete(missions, "P6"):
-        completed += 1
-    parts = []
-    for name in ["P1", "P2", "P3", "P4", "P5"]:
-        score = mission_score(missions, name)
-        parts.append(f'{name} {score["passed"]}/{score["total"]}' if score else f"{name} —")
-    ubuntu = mission_score(missions, "P6U")
-    cloud = mission_score(missions, "P6C")
-    ubuntu_text = f'{ubuntu["passed"]}/{ubuntu["total"]}' if ubuntu else "—/2"
-    cloud_text = f'{cloud["passed"]}/{cloud["total"]}' if cloud else "—/4"
-    parts.append(f"P6 U{ubuntu_text} C{cloud_text}")
-    css = "done" if completed == 6 else ("partial" if any(mission_score(missions, name) for name in ["P1", "P2", "P3", "P4", "P5", "P6U", "P6C"]) else "missing")
-    return f'<td class="{css} guided"><strong>{completed}/6</strong><br><small>{"<br>".join(parts)}</small></td>'
 
 
 def dashboard(event):
@@ -344,21 +323,16 @@ def dashboard(event):
     rows = []
     for server in scan_servers():
         missions = server.get("missions", {}).get("M", {})
-        completed = sum(
-            1
-            for name in ["M0", "M1", "M2", "M3", "M4", "M5", "M7"]
-            if (mission_score(missions, name) or {}).get("complete")
-        )
-        if paired_complete(missions, "M6"):
-            completed += 1
-        cells = [standard_mission_cell(f"M{i}", mission_score(missions, f"M{i}")) for i in range(6)]
-        cells.append(m6_mission_cell(missions))
-        cells.append(standard_mission_cell("M7", mission_score(missions, "M7")))
-        guided_cell = guided_progress_cell(missions)
-        rows.append((attr_s(server, "serverId"), f"<tr><td><strong>{html.escape(attr_s(server, 'studentEmail')) or 'メール未登録'}</strong><br><small>{html.escape(attr_s(server, 'serverId'))}</small><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></td>{guided_cell}<td><strong>{completed}/8</strong><div class=bar><i style=\"width:{completed * 12.5}%\"></i></div></td>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
+        cells = [
+            paired_mission_cell(missions, stored_name, display_name)
+            if stored_name in {"P6", "M6"}
+            else standard_mission_cell(display_name, mission_score(missions, stored_name))
+            for display_name, stored_name in DISPLAY_MISSIONS
+        ]
+        rows.append((attr_s(server, "serverId"), f"<tr><th scope=row><strong>{html.escape(attr_s(server, 'studentEmail')) or 'メール未登録'}</strong><br><small>{html.escape(attr_s(server, 'serverId'))}</small><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></th>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
     rows.sort(key=lambda pair: pair[0])
-    body_rows = "".join(row for _, row in rows) or '<tr><td colspan="12">まだ進捗報告はありません。</td></tr>'
-    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:collapse;width:100%;min-width:1250px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child,td:first-child{{text-align:left}}th{{background:#edf2f7;position:sticky;top:0}}td span,small{{color:#66788a}}.guided{{min-width:145px;text-align:left}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}.bar{{height:8px;background:#e4e9ee;border-radius:8px;margin-top:6px}}.bar i{{display:block;height:100%;background:#238636;border-radius:8px}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>完全手順付き演習P1～P6と、自力課題M0～M7の最新結果です。30秒ごとに更新します。</p><div class=wrap><table><thead><tr><th>Student email / Server</th><th>Guided P1–P6</th><th>Challenge</th>{''.join(f'<th>M{i}</th>' for i in range(8))}<th>Last report (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
+    body_rows = "".join(row for _, row in rows) or '<tr><td colspan="16">まだ進捗報告はありません。</td></tr>'
+    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child{{text-align:left;position:sticky;left:0;min-width:220px}}tbody th{{background:white;z-index:1}}thead th:first-child{{z-index:3}}thead th{{background:#edf2f7;position:sticky;top:0;z-index:2}}td span,small{{color:#66788a}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>T1～T6（練習）とM0～M7（課題）の最新結果です。Tの送信コマンドはPを使います（例：T1 → jdu-check P1）。30秒ごとに更新します。</p><div class=wrap role=region aria-label="課題の進捗一覧" tabindex=0><table><thead><tr><th scope=col>学生メール / サーバー</th>{''.join(f'<th scope=col>{name}</th>' for name, _ in DISPLAY_MISSIONS)}<th scope=col>最終送信 (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
     return response(200, page, "text/html; charset=utf-8")
 
 

@@ -33,6 +33,18 @@ The command authenticates with the admin key stored in `~/.jdu-teacher/admin.key
 
 The HTTPS endpoint is internet reachable because the browser must reach it. The admin endpoint is protected by a random key kept in the teacher CloudShell. The browser receives only a short-lived session token.
 
+The dashboard shows individual columns in learning order: M0, T1, M1, T2, M2, …, T6, M6, M7. T1–T6 are display names for the existing P1–P6 practice submissions; commands and stored mission IDs still use P. There are no Guided or Challenge summary columns. T6 and M6 combine both sides while retaining their Ubuntu/CloudShell breakdown. Missing reports show a dash, partial results are yellow, and complete results are green. This remains a latest-result view, not a highest-score grade book.
+
+## Student viewing: proposed operation
+
+The current dashboard is teacher-only and lists every student's self-declared email and progress. Do not distribute its session URL to students: anyone holding that URL can view the entire table until it expires. HTTPS certificates protect the connection; they do not decide whose progress a viewer may see. The existing AWS-managed execute-api HTTPS endpoint does not require students to install certificates or sign into AWS to open a properly authorized browser page. Client certificates (mutual TLS) are not configured or proposed.
+
+For student viewing, add a separate personal read-only page rather than opening the teacher dashboard. The proposed student CloudShell command authenticates using the student's existing server token and requests a short-lived read-only URL. Store the session's role and server ID server-side; personal pages fetch only that specific record and must not scan all students. Reject a changed server ID, expired session, missing session, and attempts to use a student session on the teacher dashboard. The read-only session must not authorize submission, email changes, or admin actions. Never put the permanent server token in a browser URL. Set no-store and no-referrer headers and avoid third-party assets. Close the page on shared PCs; its URL is a bearer credential until expiry.
+
+These student pages are **not yet implemented**. Existing email linking proves possession of the lab token, not ownership of an email address. If university account identity is required, assess Google sign-in separately, including account availability, OAuth configuration and Academy permissions. University-wide login is not necessary for a first personal lab progress view.
+
+References (checked 2026-09-29): [HTTP API endpoints](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop.html), [mutual TLS client certificates](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-mutual-tls.html).
+
 The fixed registration key is public by design. It cannot open the teacher dashboard, but anyone who knows the endpoint and key can create a new anonymous server record. Therefore, use this dashboard for formative progress only, not identity verification or formal grading.
 
 ## Data policy
