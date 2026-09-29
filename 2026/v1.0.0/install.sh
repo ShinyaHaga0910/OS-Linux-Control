@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 VERSION="v1.0.0"
 STACK_NAME="jdu-intro-cybersecurity-2026"
-INSTANCE_TYPE="t3.micro"
+INSTANCE_TYPE="auto"
 INSTANCE_PROFILE_NAME="LabInstanceProfile"
 REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-}}"
 BASE_URL="https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/${VERSION}"
@@ -13,7 +13,7 @@ REGISTRATION_KEY="${JDU_PROGRESS_REGISTRATION_KEY:-}"
 student_state_dir="${JDU_STUDENT_STATE_DIR:-$HOME/.jdu-student}"
 
 usage() {
-  printf '%s\n' "Usage: bash install.sh [--region REGION] [--stack-name NAME] [--instance-type t2.micro|t3.micro] [--instance-profile NAME] [--progress-endpoint HTTPS_URL --registration-key KEY]"
+  printf '%s\n' "Usage: bash install.sh [--region REGION] [--stack-name NAME] [--instance-type auto|tN.micro] [--instance-profile NAME] [--progress-endpoint HTTPS_URL --registration-key KEY]"
 }
 
 while (($#)); do
@@ -44,10 +44,10 @@ if [[ -z "$REGION" ]]; then
   exit 2
 fi
 
-case "$INSTANCE_TYPE" in
-  t2.micro|t3.micro) ;;
-  *) printf 'ERROR Unsupported instance type: %s\n' "$INSTANCE_TYPE" >&2; exit 2 ;;
-esac
+if [[ "$INSTANCE_TYPE" != auto && ! "$INSTANCE_TYPE" =~ ^t[1-9][0-9]*[a-z]*\.micro$ ]]; then
+  printf 'ERROR Expected auto or a T-series micro instance type: %s\n' "$INSTANCE_TYPE" >&2
+  exit 2
+fi
 
 if [[ ! "$PROGRESS_ENDPOINT" =~ ^https://[^[:space:]]+$ || ! "$REGISTRATION_KEY" =~ ^[0-9a-f]{64}$ ]]; then
   printf '%s\n' 'ERROR Use the complete setup command provided privately by your teacher in Google Classroom. The course endpoint and semester registration key are required.' >&2
@@ -221,40 +221,75 @@ printf '%s\n' 'Checking AWS login and CloudFormation template...'
 aws sts get-caller-identity --region "$REGION" --output json >/dev/null
 aws cloudformation validate-template --region "$REGION" --template-body "file://$template_path" >/dev/null
 
-select_lab_availability_zone() {
-  local subnet_id existing_zone offered_zone
+select_lab_instance() {
+  local subnet_id existing_zone='' existing_id existing_type='' candidates
+  aws ec2 describe-instance-types --region "$REGION" \
+    --filters 'Name=instance-type,Values=t*.micro' 'Name=processor-info.supported-architecture,Values=x86_64' \
+    --output json > "$work_dir/instance-types.json" || return 1
+  candidates="$(python3 - "$work_dir/instance-types.json" <<'PYSELECT'
+import json, re, sys
+items = json.load(open(sys.argv[1]))['InstanceTypes']
+names = sorted({i['InstanceType'] for i in items
+                if re.fullmatch(r't[1-9][0-9]*[a-z]*\.micro', i['InstanceType'])
+                and 'x86_64' in i['ProcessorInfo']['SupportedArchitectures']})
+if not names:
+    sys.exit('ERROR No x86_64 T-series micro instance types are offered in this region.')
+print(','.join(names))
+PYSELECT
+)" || return 1
   aws ec2 describe-instance-type-offerings --region "$REGION" \
-    --location-type availability-zone --filters "Name=instance-type,Values=$INSTANCE_TYPE" \
-    --query 'InstanceTypeOfferings[].Location' --output text > "$work_dir/offered-zones.txt" || return 1
+    --location-type availability-zone --filters "Name=instance-type,Values=$candidates" \
+    --output json > "$work_dir/instance-offerings.json" || return 1
   aws ec2 describe-availability-zones --region "$REGION" \
     --filters Name=state,Values=available --query 'AvailabilityZones[].ZoneName' \
     --output text > "$work_dir/available-zones.txt" || return 1
-  offered_zone="$(python3 - "$work_dir/offered-zones.txt" "$work_dir/available-zones.txt" <<'PY'
-import pathlib, sys
-offered, available = (set(pathlib.Path(p).read_text().split()) - {'None'} for p in sys.argv[1:])
-zones = sorted(offered & available)
-if not zones:
-    sys.exit('ERROR No available Availability Zone supports the selected instance type.')
-print(zones[0])
-PY
-)" || return 1
-  # Preserve an existing subnet's placement during ordinary installer updates.
+  # Preserve subnet placement and the running instance type on ordinary updates.
   subnet_id="$(aws cloudformation describe-stack-resource --region "$REGION" \
     --stack-name "$STACK_NAME" --logical-resource-id PublicSubnet \
     --query 'StackResourceDetail.PhysicalResourceId' --output text 2>/dev/null || true)"
   if [[ "$subnet_id" == subnet-* ]]; then
     existing_zone="$(aws ec2 describe-subnets --region "$REGION" --subnet-ids "$subnet_id" \
       --query 'Subnets[0].AvailabilityZone' --output text)" || return 1
-    if ! tr '[:space:]' '\n' < "$work_dir/offered-zones.txt" | grep -Fxq "$existing_zone"; then
-      printf 'ERROR Existing subnet zone %s does not support %s. No resources were moved.\n' "$existing_zone" "$INSTANCE_TYPE" >&2
-      return 1
+    existing_id="$(aws cloudformation describe-stack-resource --region "$REGION" \
+      --stack-name "$STACK_NAME" --logical-resource-id UbuntuLabInstance \
+      --query 'StackResourceDetail.PhysicalResourceId' --output text 2>/dev/null || true)"
+    if [[ "$existing_id" == i-* ]]; then
+      existing_type="$(aws ec2 describe-instances --region "$REGION" --instance-ids "$existing_id" \
+        --query 'Reservations[0].Instances[0].InstanceType' --output text)" || return 1
+      if [[ -z "$existing_type" || "$existing_type" == None ]]; then
+        printf '%s\n' 'ERROR Cannot determine the existing instance type. No resources were moved.' >&2
+        return 1
+      fi
     fi
-    offered_zone="$existing_zone"
   fi
-  printf '%s\n' "$offered_zone"
+  python3 - "$work_dir/instance-types.json" "$work_dir/instance-offerings.json" \
+    "$work_dir/available-zones.txt" "$INSTANCE_TYPE" "$existing_zone" "$existing_type" <<'PYSELECT'
+import json, pathlib, re, sys
+metadata, offerings, zones_file, requested, existing_zone, existing_type = sys.argv[1:]
+types = {i['InstanceType'] for i in json.load(open(metadata))['InstanceTypes']
+         if re.fullmatch(r't[1-9][0-9]*[a-z]*\.micro', i['InstanceType'])
+         and 'x86_64' in i['ProcessorInfo']['SupportedArchitectures']}
+zones = set(pathlib.Path(zones_file).read_text().split()) - {'None'}
+if existing_zone:
+    zones &= {existing_zone}
+selected_type = existing_type if requested == 'auto' and existing_type else requested
+pairs = {(i['InstanceType'], i['Location'])
+         for i in json.load(open(offerings))['InstanceTypeOfferings']
+         if i['InstanceType'] in types and i['Location'] in zones
+         and (selected_type == 'auto' or i['InstanceType'] == selected_type)}
+if not pairs:
+    sys.exit('ERROR No compatible x86_64 T-series micro instance/AZ pair. Existing resources were not moved.')
+def rank(pair):
+    name, zone = pair
+    generation, variant = re.fullmatch(r't([0-9]+)([a-z]*)\.micro', name).groups()
+    return (-int(generation), bool(variant), variant, zone)
+name, zone = min(pairs, key=rank)
+print(name, zone)
+PYSELECT
 }
-lab_availability_zone="$(select_lab_availability_zone)"
-printf 'Selected Availability Zone: %s (%s)\n' "$lab_availability_zone" "$INSTANCE_TYPE"
+selection="$(select_lab_instance)"
+read -r INSTANCE_TYPE lab_availability_zone <<< "$selection"
+printf 'Selected instance: %s (x86_64), Availability Zone: %s\n' "$INSTANCE_TYPE" "$lab_availability_zone"
 printf 'Deploying stack %s in %s...\n' "$STACK_NAME" "$REGION"
 aws cloudformation deploy \
   --region "$REGION" \

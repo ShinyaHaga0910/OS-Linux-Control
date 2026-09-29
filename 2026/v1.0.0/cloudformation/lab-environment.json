@@ -10,7 +10,7 @@
     "InstanceType": {
       "Type": "String",
       "Default": "t3.micro",
-      "AllowedValues": ["t2.micro", "t3.micro"],
+      "AllowedPattern": "t[1-9][0-9]*[a-z]*\\.micro",
       "Description": "Choose a type allowed by the Learner Lab policy"
     },
     "LabAvailabilityZone": {
