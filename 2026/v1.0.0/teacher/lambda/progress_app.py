@@ -130,6 +130,49 @@ def register(event):
     return response(200, {"ok": True, "server_id": server_id})
 
 
+def registration_status(event):
+    try:
+        server_id = text_field(parse_body(event), "server_id", 64)
+        if not SERVER_ID_RE.fullmatch(server_id):
+            raise ValueError("invalid server id")
+    except (ValueError, json.JSONDecodeError, UnicodeDecodeError):
+        return response(400, {"error": "invalid request"})
+    authorization = header(event, "Authorization")
+    token = authorization[7:] if authorization.startswith("Bearer ") else ""
+    item = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"SERVER#{server_id}"}}, ConsistentRead=True).get("Item")
+    if not item or not valid_secret(token, item.get("tokenHash", {}).get("S", "")):
+        return response(401, {"error": "unauthorized"})
+    return response(200, {
+        "ok": True,
+        "registered": True,
+        "server_id": server_id,
+        "instance_id": item.get("instanceId", {}).get("S", ""),
+        "email_linked": bool(item.get("studentEmail", {}).get("S", "")),
+    })
+
+
+def link_email(event):
+    try:
+        body = parse_body(event)
+        server_id = text_field(body, "server_id", 64)
+        email = text_field(body, "student_email", 254).strip().lower()
+        if not SERVER_ID_RE.fullmatch(server_id) or not re.fullmatch(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+", email):
+            raise ValueError("invalid registration")
+    except (ValueError, json.JSONDecodeError, UnicodeDecodeError):
+        return response(400, {"error": "invalid request"})
+    authorization = header(event, "Authorization")
+    token = authorization[7:] if authorization.startswith("Bearer ") else ""
+    item = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"SERVER#{server_id}"}}, ConsistentRead=True).get("Item")
+    if not item or not valid_secret(token, item.get("tokenHash", {}).get("S", "")):
+        return response(401, {"error": "unauthorized"})
+    DDB.update_item(
+        TableName=TABLE_NAME, Key={"pk": {"S": f"SERVER#{server_id}"}},
+        UpdateExpression="SET studentEmail=:studentEmail, updatedAt=:updatedAt",
+        ExpressionAttributeValues={":studentEmail": {"S": email}, ":updatedAt": {"S": now_iso()}},
+    )
+    return response(200, {"ok": True})
+
+
 def submit(event):
     try:
         body = parse_body(event)
@@ -312,10 +355,10 @@ def dashboard(event):
         cells.append(m6_mission_cell(missions))
         cells.append(standard_mission_cell("M7", mission_score(missions, "M7")))
         guided_cell = guided_progress_cell(missions)
-        rows.append((attr_s(server, "serverId"), f"<tr><td><strong>{html.escape(attr_s(server, 'serverId'))}</strong><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></td>{guided_cell}<td><strong>{completed}/8</strong><div class=bar><i style=\"width:{completed * 12.5}%\"></i></div></td>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
+        rows.append((attr_s(server, "serverId"), f"<tr><td><strong>{html.escape(attr_s(server, 'studentEmail')) or 'メール未登録'}</strong><br><small>{html.escape(attr_s(server, 'serverId'))}</small><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></td>{guided_cell}<td><strong>{completed}/8</strong><div class=bar><i style=\"width:{completed * 12.5}%\"></i></div></td>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
     rows.sort(key=lambda pair: pair[0])
     body_rows = "".join(row for _, row in rows) or '<tr><td colspan="12">まだ進捗報告はありません。</td></tr>'
-    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:collapse;width:100%;min-width:1250px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child,td:first-child{{text-align:left}}th{{background:#edf2f7;position:sticky;top:0}}td span,small{{color:#66788a}}.guided{{min-width:145px;text-align:left}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}.bar{{height:8px;background:#e4e9ee;border-radius:8px;margin-top:6px}}.bar i{{display:block;height:100%;background:#238636;border-radius:8px}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>完全手順付き演習P1～P6と、自力課題M0～M7の最新結果です。30秒ごとに更新します。</p><div class=wrap><table><thead><tr><th>Server</th><th>Guided P1–P6</th><th>Challenge</th>{''.join(f'<th>M{i}</th>' for i in range(8))}<th>Last report (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。学生名・メールアドレスは保存しません。</footer></body></html>"""
+    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:collapse;width:100%;min-width:1250px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child,td:first-child{{text-align:left}}th{{background:#edf2f7;position:sticky;top:0}}td span,small{{color:#66788a}}.guided{{min-width:145px;text-align:left}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}.bar{{height:8px;background:#e4e9ee;border-radius:8px;margin-top:6px}}.bar i{{display:block;height:100%;background:#238636;border-radius:8px}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>完全手順付き演習P1～P6と、自力課題M0～M7の最新結果です。30秒ごとに更新します。</p><div class=wrap><table><thead><tr><th>Student email / Server</th><th>Guided P1–P6</th><th>Challenge</th>{''.join(f'<th>M{i}</th>' for i in range(8))}<th>Last report (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
     return response(200, page, "text/html; charset=utf-8")
 
 
@@ -324,6 +367,10 @@ def handler(event, context):
     try:
         if route == "POST /register":
             return register(event)
+        if route == "POST /status":
+            return registration_status(event)
+        if route == "POST /link-email":
+            return link_email(event)
         if route == "POST /submit":
             return submit(event)
         if route == "POST /admin/session":

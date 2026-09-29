@@ -8,12 +8,20 @@ Status: First distribution candidate / local acceptance tests passed / Learner L
 
 Learner Labを開始し、CloudShellで実行します。
 
+教員が配布した最新の構築コマンドを使用してください。教員用installerが、実際の進捗送信先と登録キーを含むコマンドを生成します。以下は既定の送信先を使う場合の例です。
+
 ```bash
 curl -fsSLO https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/install.sh
 bash install.sh --region us-east-1
 ```
 
-`install.sh`は、CloudFormationの構築、CloudShell専用SSH鍵、Session Manager tunnel、Ubuntu初期設定、P1～P6とM1～M7の初期化、教員進捗サーバーへの登録を実行します。進捗送信先と登録キーは設定済みで、学生による入力は不要です。Security Groupのinbound ruleは0件で、TCP 22をインターネットへ公開しません。
+`install.sh`は、CloudFormationの構築、CloudShell専用SSH鍵、Session Manager tunnel、Ubuntu初期設定、P1～P6とM1～M7の初期化、教員進捗サーバーへの登録を実行します。進捗送信先と登録キーは教員の配布コマンドに含まれ、学生による手入力は不要です。Security Groupのinbound ruleは0件で、TCP 22をインターネットへ公開しません。
+
+初回構築時に、**Google Classroomで使うメールアドレスを一度入力**してください。入力は画面に表示されません。形式が正しければ、そのメールとServer IDを教員の進捗画面で紐づけます。メールの所有者を認証する仕組みではありません。Server IDをClassroomへ手入力して提出する必要はありません。
+
+メールは教員の進捗確認用DynamoDBと自分のCloudShellの非公開ファイルへ保存します。CloudFormation、EC2、公開GitHub、構築出力にはメールを保存・表示しません。完了条件はUbuntu初期設定の完了と、教員側に同じEC2・Server IDが登録され、メールが紐づいたことの確認です。通信・登録に失敗した場合は完了と表示しません。
+
+メールの修正はCloudShellで `jdu-register --change-email`、登録通信の再確認は `jdu-register` を実行します。課題をresetする必要はありません。教員用スタックを先に更新していないと、新しい登録確認APIは使えません。
 
 Ubuntuへ接続します。
 
@@ -67,6 +75,7 @@ jdu-check P1
 | `scripts/jdu-labcheck` | Ubuntu側の課題判定 |
 | `scripts/jdu-cloudcheck` | CloudShell側P6/M6の判定 |
 | `scripts/jdu-progress` | 匿名server IDと結果のHTTPS送信 |
+| `scripts/register-student.py` | Classroomメールの入力・紐づけ・教員側への登録確認（CloudShell） |
 | `GUIDED_PRACTICE.md` | P1～P6の問題文と手順付き解答 |
 | `MISSION_GUIDE.md` | M0～M7の課題文 |
 | `tests/run-tests.sh` | ローカル受入試験 |

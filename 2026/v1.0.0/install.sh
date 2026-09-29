@@ -29,7 +29,7 @@ while (($#)); do
   esac
 done
 
-for command_name in aws curl sha256sum ssh ssh-keygen base64 sort openssl; do
+for command_name in aws curl sha256sum ssh ssh-keygen base64 sort openssl python3; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     printf 'ERROR Required command is missing: %s\n' "$command_name" >&2
     exit 2
@@ -178,6 +178,7 @@ template_path="$work_dir/lab-environment.json"
 checker_path="$work_dir/check-aws-environment.sh"
 cloudcheck_path="$work_dir/jdu-cloudcheck"
 cloudreset_path="$work_dir/jdu-cloud-reset"
+registration_path="$work_dir/register-student.py"
 checksums_path="$work_dir/SHA256SUMS"
 
 printf '%s\n' 'Downloading the fixed-version lab files...'
@@ -185,6 +186,7 @@ curl -fsSL --retry 3 "$BASE_URL/cloudformation/lab-environment.json" -o "$templa
 curl -fsSL --retry 3 "$BASE_URL/scripts/check-aws-environment.sh" -o "$checker_path"
 curl -fsSL --retry 3 "$BASE_URL/scripts/jdu-cloudcheck" -o "$cloudcheck_path"
 curl -fsSL --retry 3 "$BASE_URL/scripts/jdu-cloud-reset" -o "$cloudreset_path"
+curl -fsSL --retry 3 "$BASE_URL/scripts/register-student.py" -o "$registration_path"
 curl -fsSL --retry 3 "$BASE_URL/SHA256SUMS" -o "$checksums_path"
 chmod 0755 "$checker_path"
 chmod 0755 "$cloudcheck_path"
@@ -204,6 +206,7 @@ verify_download cloudformation/lab-environment.json "$template_path"
 verify_download scripts/check-aws-environment.sh "$checker_path"
 verify_download scripts/jdu-cloudcheck "$cloudcheck_path"
 verify_download scripts/jdu-cloud-reset "$cloudreset_path"
+verify_download scripts/register-student.py "$registration_path"
 printf '%s\n' 'PASS Download checksums match.'
 
 install -d -m 0755 "$HOME/.local/bin"
@@ -252,6 +255,26 @@ if ! $ssh_ready; then
   printf '%s\n' 'ERROR The instance is online in Systems Manager, but the SSH acceptance check failed.' >&2
   printf '%s\n' 'Run: ssh -vv jdu-ubuntu' >&2
   exit 1
+fi
+
+printf '%s\n' 'Checking Ubuntu initialization (this can take several minutes)...'
+setup_ready=false
+for attempt in {1..40}; do
+  if ssh -o BatchMode=yes -o ConnectTimeout=15 jdu-ubuntu \
+    'test -f /var/lib/cloud/instance/boot-finished && sudo cloud-init status >/dev/null && sudo grep -Fxq JDU_SETUP_COMPLETE /var/log/cloud-init-output.log'; then
+    setup_ready=true
+    break
+  fi
+  if ((attempt < 40)); then sleep 6; fi
+done
+if ! $setup_ready; then
+  printf '%s\n' 'ERROR Ubuntu initialization or initial progress registration did not complete. Ask your teacher; do not recreate the stack yet.' >&2
+  exit 1
+fi
+printf '%s\n' 'PASS Ubuntu initialization is complete.'
+if [[ -n "$progress_server_id" ]]; then
+  install -m 0755 "$registration_path" "$HOME/.local/bin/jdu-register"
+  JDU_STUDENT_STATE_DIR="$student_state_dir" JDU_INSTANCE_ID="$instance_id" python3 "$registration_path"
 fi
 
 printf '\n%s\n' 'PASS The AWS lab environment is ready.'

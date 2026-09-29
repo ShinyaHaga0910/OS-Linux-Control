@@ -59,12 +59,8 @@ grep -Fq 'Run exit until id -un prints definitely-not-current' <<<"$wrong_user_o
 printf '%s\n' 'PASS wrong-user execution stops with a clear recovery message'
 
 grep -Fq 'DEFAULT_REGISTRATION_KEY="c3bde59c59075843251914a28ce6006d7d912b39023c05ab7deb720259c30c0f"' "$root_dir/teacher/install-teacher.sh"
-grep -Fq "bash /tmp/jdu-install.sh --region '%s'" "$root_dir/teacher/install-teacher.sh"
-if grep -Fq -- '--progress-endpoint' "$root_dir/teacher/install-teacher.sh"; then
-  printf '%s\n' 'Teacher installer still prints a manual progress endpoint option.' >&2
-  exit 1
-fi
-printf '%s\n' 'PASS student bootstrap uses the fixed public progress configuration'
+grep -Fq -- '--progress-endpoint %q --registration-key %q' "$root_dir/teacher/install-teacher.sh"
+printf '%s\n' 'PASS teacher command includes the deployed progress configuration'
 
 declare -A expected_counts=(
   [P1]=6 [P2]=6 [P3]=2 [P4]=3 [P5]=4 [P6]=2
@@ -357,7 +353,7 @@ assert resources["ProgressFunction"]["Properties"]["Code"]["ZipFile"] == lambda_
 assert template["Parameters"]["AdminKeyHash"]["NoEcho"] is True
 assert template["Parameters"]["RegistrationKeyHash"]["NoEcho"] is True
 route_keys = {value["Properties"]["RouteKey"] for value in resources.values() if value["Type"] == "AWS::ApiGatewayV2::Route"}
-assert route_keys == {"POST /register", "POST /submit", "POST /admin/session", "GET /dashboard", "GET /health"}
+assert route_keys == {"POST /register", "POST /status", "POST /link-email", "POST /submit", "POST /admin/session", "GET /dashboard", "GET /health"}
 assert template["Outputs"]["BaseUrl"]["Value"]["Fn::Sub"].startswith("https://")
 assert 'M6U|M6C' in lambda_source
 assert 'P[1-6]|P6U|P6C' in lambda_source
@@ -368,6 +364,8 @@ print("PASS teacher CloudFormation uses managed HTTPS without a public EC2 serve
 PY
 
 python3 "$root_dir/tests/test-progress-backend.py" "$root_dir/teacher/lambda/progress_app.py"
+python3 "$root_dir/tests/test-student-registration.py" "$root_dir/scripts/register-student.py"
+python3 "$root_dir/tests/test-install-registration.py" "$root_dir"
 
 progress_test_dir="$(mktemp -d)"
 progress_endpoint='https://example.execute-api.us-east-1.amazonaws.com'

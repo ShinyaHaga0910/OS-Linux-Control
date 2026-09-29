@@ -134,5 +134,5 @@ printf 'HTTPS endpoint: %s\n' "$endpoint"
 printf '%s\n' 'Dashboard: jdu-dashboard'
 printf '%s\n' 'Keep ~/.jdu-teacher/admin.key only in the teacher CloudShell. The registration key is a public course bootstrap value.'
 printf '\n%s\n' 'Run this in each student CloudShell:'
-printf "curl -fsSL '%s/install.sh' -o /tmp/jdu-install.sh && bash /tmp/jdu-install.sh --region '%s'\n" \
-  "$BASE_URL" "$REGION"
+printf 'curl -fsSL %q -o /tmp/jdu-install.sh && bash /tmp/jdu-install.sh --region %q --progress-endpoint %q --registration-key %q\n' \
+  "$BASE_URL/install.sh" "$REGION" "$endpoint" "$registration_key_value"

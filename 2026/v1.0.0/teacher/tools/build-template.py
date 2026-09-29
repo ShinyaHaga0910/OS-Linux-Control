@@ -8,7 +8,7 @@ lambda_code = (root / "lambda" / "progress_app.py").read_text(encoding="utf-8")
 
 template = {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "JDU teacher progress server: HTTPS API, short-lived dashboard sessions, and anonymous server progress",
+    "Description": "JDU teacher progress server: HTTPS API, short-lived dashboard sessions, and email-linked server progress",
     "Parameters": {
         "LambdaExecutionRoleName": {
             "Type": "String",
@@ -116,6 +116,8 @@ template = {
 
 for logical_id, method, path in [
     ("RegisterRoute", "POST", "/register"),
+    ("StatusRoute", "POST", "/status"),
+    ("EmailRoute", "POST", "/link-email"),
     ("SubmitRoute", "POST", "/submit"),
     ("SessionRoute", "POST", "/admin/session"),
     ("DashboardRoute", "GET", "/dashboard"),
@@ -132,5 +134,5 @@ for logical_id, method, path in [
 
 destination = root / "cloudformation" / "progress-server.json"
 destination.parent.mkdir(parents=True, exist_ok=True)
-destination.write_text(json.dumps(template, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+destination.write_text(json.dumps(template, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 print(destination)
