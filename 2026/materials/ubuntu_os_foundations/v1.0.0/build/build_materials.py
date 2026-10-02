@@ -387,8 +387,8 @@ def main():
     chapters=sorted(TEXTBOOK.glob("*.md"))
     sets=[
         ("オペレーティングシステムとLinuxの基本操作","",chapters,"ubuntu_os_textbook_ja"),
-        ("Ubuntu・OS基礎 練習課題と解答例","P1～P6 課題と操作手順",[ROOT/"docs/ja/practice.md"],"ubuntu_os_guided_practice_ja"),
-        ("Ubuntu・OS基礎 自力課題","M0～M7 Mission Guide",[ROOT/"docs/ja/missions.md"],"ubuntu_os_missions_ja"),
+        ("Ubuntu・OS基礎 練習課題と解答例","P0～P6 課題と操作手順",[ROOT/"docs/ja/practice.md"],"ubuntu_os_guided_practice_ja"),
+        ("Ubuntu・OS基礎 自力課題","M1～M7 Mission Guide",[ROOT/"docs/ja/missions.md"],"ubuntu_os_missions_ja"),
         ("Ubuntu・OS基礎 参照資料","用語集・コマンド早見表",[ROOT/"docs/ja/reference.md"],"ubuntu_os_reference_ja"),
     ]
     for title,subtitle,sources,stem in sets:

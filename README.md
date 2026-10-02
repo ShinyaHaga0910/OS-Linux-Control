@@ -16,8 +16,8 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 2026/
 ├── v1.0.0/                                  # AWS実習Lab。配布URLを固定
 │   ├── README.md
-│   ├── GUIDED_PRACTICE.md                    # 完全手順付き演習P1～P6
-│   ├── MISSION_GUIDE.md                      # 自力課題M0～M7
+│   ├── GUIDED_PRACTICE.md                    # 完全手順付き演習P0～P6
+│   ├── MISSION_GUIDE.md                      # 自力課題M1～M7
 │   ├── install.sh
 │   ├── cloudformation/
 │   ├── scripts/
@@ -46,7 +46,7 @@ PDFだけでなく、本文のMarkdown、図の生成元、生成プログラム
 1. AWS Academy Learner Labを開始し、CloudShellを開きます。
 2. [Labの初回構築手順](./2026/v1.0.0/README.md)に従います。
 3. `ssh jdu-ubuntu`でUbuntuに接続します。
-4. P1～P6で練習し、M0～M7へ取り組みます。
+4. P0～P6で練習し、M1～M7へ取り組みます。
 
 Security Groupのinbound ruleは0件です。SSHのTCP 22をインターネットへ公開しません。秘密鍵はCloudShellから持ち出しません。[教員による学生手順の試行ガイド](./2026/STUDENT_TRIAL.md)もあります。
 

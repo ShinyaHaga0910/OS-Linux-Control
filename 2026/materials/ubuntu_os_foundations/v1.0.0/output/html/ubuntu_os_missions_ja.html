@@ -22,9 +22,9 @@ blockquote { background:#EEF4FB; border-left:4px solid #4A90C2; padding:3mm; }
 </style></head><body>
 <section class='cover'><h1>Ubuntu・OS基礎 自力課題</h1><p class='meta'>Ubuntu Server 24.04 LTS / JDU Cyber Security<br>2026-09-25</p></section>
 <h1>Ubuntu and OS Foundations — 自力課題 Mission Guide</h1>
-<p>対象: Mission 0～7 環境: Ubuntu Server 24.04 LTS 進め方: 授業回ではなく、学生ごとの進度でMissionを進める。</p>
-<p>この文書は、commandを自分で選ぶ課題M0～M7である。完全なcommand手順が必要な場合は、先に[GUIDED_PRACTICE.md](GUIDED_PRACTICE.md)のP1～P6を実施する。</p>
-<p>PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は<code>P1 → M1 → P2 → M2 → … → P6 → M6 → M7</code>である。M0と統合課題M7には対応するPを設けない。</p>
+<p>対象: Mission 1～7 環境: Ubuntu Server 24.04 LTS 進め方: 授業回ではなく、学生ごとの進度でMissionを進める。</p>
+<p>この文書は、commandを自分で選ぶ課題M1～M7である。完全なcommand手順が必要な場合は、先に[GUIDED_PRACTICE.md](GUIDED_PRACTICE.md)のP0～P6を実施する。</p>
+<p>PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は<code>P0 → P1 → M1 → P2 → M2 → … → P6 → M6 → M7</code>である。旧M0は手順付き練習P0へ移した。統合課題M7には対応するPを設けない。</p>
 <h2>最初にUbuntuへ接続する</h2>
 <p>AWS Academy Learner Labのセットアップを完了してから、AWSコンソールでCloudShellを開く。CloudShellで次のcommandを実行し、自分のUbuntu演習サーバーへ接続する。</p>
 <pre><code>ssh jdu-ubuntu</code></pre>
@@ -55,16 +55,6 @@ id -un</code></pre>
 <p>最初からやり直す場合だけ、そのMissionをresetする。</p>
 <pre><code>jdu-reset M1</code></pre>
 <p>reset直後は、すべての課題が<code>FAIL</code>になる。これは正常である。LabCheckは状態を修正しない。</p>
-<h2>M0 Environment and OS</h2>
-<p>Ubuntu、Linux kernel、PID 1、現在のuser、hostnameを実機から確認する。<code>~/jdu-lab/m0/observation.env</code>へ6項目を記録する。</p>
-<pre><code>OS_ID=
-OS_VERSION_ID=
-KERNEL_RELEASE=
-PID1_COMM=
-USER_NAME=
-HOST_NAME=</code></pre>
-<p>値は実機のcommand出力から取得する。推測しない。</p>
-<pre><code>jdu-check M0</code></pre>
 <h2>M1 Shell, path, file, and text</h2>
 <h3>目的</h3>
 <p>相対pathと絶対pathを区別する。Directoryとfileを作る。Fileをコピーする。Logから必要な行を取り出す。</p>

@@ -1,12 +1,12 @@
 # Ubuntu and OS Foundations — 自力課題 Mission Guide
 
-対象: Mission 0～7
+対象: Mission 1～7
 環境: Ubuntu Server 24.04 LTS
 進め方: 授業回ではなく、学生ごとの進度でMissionを進める。
 
-この文書は、commandを自分で選ぶ課題M0～M7である。完全なcommand手順が必要な場合は、先に[GUIDED_PRACTICE.md](GUIDED_PRACTICE.md)のP1～P6を実施する。
+この文書は、commandを自分で選ぶ課題M1～M7である。完全なcommand手順が必要な場合は、先に[GUIDED_PRACTICE.md](GUIDED_PRACTICE.md)のP0～P6を実施する。
 
-PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は`P1 → M1 → P2 → M2 → … → P6 → M6 → M7`である。M0と統合課題M7には対応するPを設けない。
+PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は`P0 → P1 → M1 → P2 → M2 → … → P6 → M6 → M7`である。旧M0は手順付き練習P0へ移した。統合課題M7には対応するPを設けない。
 
 ## 最初にUbuntuへ接続する
 
@@ -83,25 +83,6 @@ jdu-reset M1
 ```
 
 reset直後は、すべての課題が`FAIL`になる。これは正常である。LabCheckは状態を修正しない。
-
-## M0 Environment and OS
-
-Ubuntu、Linux kernel、PID 1、現在のuser、hostnameを実機から確認する。`~/jdu-lab/m0/observation.env`へ6項目を記録する。
-
-```text
-OS_ID=
-OS_VERSION_ID=
-KERNEL_RELEASE=
-PID1_COMM=
-USER_NAME=
-HOST_NAME=
-```
-
-値は実機のcommand出力から取得する。推測しない。
-
-```bash
-jdu-check M0
-```
 
 ## M1 Shell, path, file, and text
 

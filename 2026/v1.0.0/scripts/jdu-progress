@@ -90,8 +90,9 @@ case "$command_name" in
   submit)
     mission="${2:-}"; passed="${3:-}"; total="${4:-}"
     mission="${mission^^}"
-    [[ "$mission" =~ ^(M[0-7]|M6U|M6C|P[1-6]|P6U|P6C)$ && "$passed" =~ ^[0-9]+$ && "$total" =~ ^[1-9][0-9]*$ ]] || {
-      printf '%s\n' 'Usage: jdu-progress submit P1|...|P6|P6U|P6C|M0|...|M7|M6U|M6C PASSED TOTAL' >&2
+    [[ "$mission" == M0 ]] && mission=P0
+    [[ "$mission" =~ ^(M[0-7]|M6U|M6C|P[0-6]|P6U|P6C)$ && "$passed" =~ ^[0-9]+$ && "$total" =~ ^[1-9][0-9]*$ ]] || {
+      printf '%s\n' 'Usage: jdu-progress submit P0|...|P6|P6U|P6C|M1|...|M7|M6U|M6C PASSED TOTAL' >&2
       exit 2
     }
     ((passed <= total && total <= 50)) || {

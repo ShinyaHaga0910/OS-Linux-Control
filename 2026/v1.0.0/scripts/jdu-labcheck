@@ -98,17 +98,19 @@ service_user() {
   ps -o user= -p "$pid" 2>/dev/null | awk '{$1=$1; print}'
 }
 
-check_m0() {
-  local evidence="$student_home/jdu-lab/m0/observation.env" os_id os_version
+check_p0() {
+  local evidence="$student_home/jdu-lab/p0/observation.env" os_id os_version
+  # Read old evidence without moving or deleting existing student work.
+  [[ -d "$student_home/jdu-lab/p0" ]] || evidence="$student_home/jdu-lab/m0/observation.env"
   os_id="$(. /etc/os-release && printf '%s' "$ID")"
   os_version="$(. /etc/os-release && printf '%s' "$VERSION_ID")"
-  printf '%s\n' 'Mission M0 (6 questions)'
-  check_env_field M0-OBS-01 "$evidence" OS_ID "$os_id" 'OS_ID matches the live system'
-  check_env_field M0-OBS-02 "$evidence" OS_VERSION_ID "$os_version" 'OS_VERSION_ID matches the live system'
-  check_env_field M0-OBS-03 "$evidence" KERNEL_RELEASE "$(uname -r)" 'KERNEL_RELEASE matches the live system'
-  check_env_field M0-OBS-04 "$evidence" PID1_COMM "$(cat /proc/1/comm)" 'PID1_COMM matches the live system'
-  check_env_field M0-OBS-05 "$evidence" USER_NAME "$student_user" 'USER_NAME matches the live system'
-  check_env_field M0-OBS-06 "$evidence" HOST_NAME "$(hostname)" 'HOST_NAME matches the live system'
+  printf '%s\n' 'Guided Practice P0 (6 observations)'
+  check_env_field P0-OBS-01 "$evidence" OS_ID "$os_id" 'OS_ID matches the live system'
+  check_env_field P0-OBS-02 "$evidence" OS_VERSION_ID "$os_version" 'OS_VERSION_ID matches the live system'
+  check_env_field P0-OBS-03 "$evidence" KERNEL_RELEASE "$(uname -r)" 'KERNEL_RELEASE matches the live system'
+  check_env_field P0-OBS-04 "$evidence" PID1_COMM "$(cat /proc/1/comm)" 'PID1_COMM matches the live system'
+  check_env_field P0-OBS-05 "$evidence" USER_NAME "$student_user" 'USER_NAME matches the live system'
+  check_env_field P0-OBS-06 "$evidence" HOST_NAME "$(hostname)" 'HOST_NAME matches the live system'
 }
 
 check_m1() {
@@ -312,7 +314,7 @@ check_p6() {
 }
 
 if [[ "${1:-}" == list ]]; then
-  printf '%s\n' 'P1 Guided shell, path, file, and text' 'P2 Guided user, group, and permission' 'P3 Guided process and package' 'P4 Guided systemd service' 'P5 Guided port, socket, and log' 'P6 Guided SSH and remote operation' 'M0 Environment and OS' 'M1 Shell, path, file, and text' 'M2 User, group, permission, and sudo' 'M3 Process and package' 'M4 systemd service' 'M5 Port, socket, and log' 'M6 SSH and remote operation' 'M7 Integrated Ubuntu check'
+  printf '%s\n' 'P0 Environment and OS' 'P1 Guided shell, path, file, and text' 'P2 Guided user, group, and permission' 'P3 Guided process and package' 'P4 Guided systemd service' 'P5 Guided port, socket, and log' 'P6 Guided SSH and remote operation' 'M1 Shell, path, file, and text' 'M2 User, group, permission, and sudo' 'M3 Process and package' 'M4 systemd service' 'M5 Port, socket, and log' 'M6 SSH and remote operation' 'M7 Integrated Ubuntu check'
   exit 0
 fi
 
@@ -330,11 +332,13 @@ while (($#)); do
   case "$1" in
     --submit) SUBMIT_PROGRESS=true ;;
     --no-submit) SUBMIT_PROGRESS=false ;;
-    *) printf 'ERROR Unknown option: %s\n' "$1" >&2; printf '%s\n' 'Usage: jdu-check P1|...|P6|M0|...|M7 [--no-submit]' >&2; exit 2 ;;
+    *) printf 'ERROR Unknown option: %s\n' "$1" >&2; printf '%s\n' 'Usage: jdu-check P0|...|P6|M1|...|M7 [--no-submit]' >&2; exit 2 ;;
   esac
   shift
 done
 mission="${mission^^}"
+# Compatibility with previously distributed commands.
+[[ "$mission" == M0 ]] && mission=P0
 case "$mission" in
   P1) check_p1 ;;
   P2) check_p2 ;;
@@ -342,7 +346,7 @@ case "$mission" in
   P4) check_p4 ;;
   P5) check_p5 ;;
   P6) check_p6 ;;
-  M0) check_m0 ;;
+  P0) check_p0 ;;
   M1) check_m1 ;;
   M2) check_m2 ;;
   M3) check_m3 ;;
@@ -350,6 +354,6 @@ case "$mission" in
   M5) check_m5 ;;
   M6) check_m6 ;;
   M7) check_m7 ;;
-  *) printf '%s\n' 'Usage: jdu-check P1|...|P6|M0|...|M7 [--no-submit]' >&2; exit 2 ;;
+  *) printf '%s\n' 'Usage: jdu-check P0|...|P6|M1|...|M7 [--no-submit]' >&2; exit 2 ;;
 esac
 finish

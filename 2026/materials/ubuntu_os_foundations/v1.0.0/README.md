@@ -7,8 +7,8 @@ Linux未経験の学生が、コンピューター、OS、Linuxの機能を理�
 ## 教材と制作元
 
 - 教科書正本: [`docs/ja/textbook/`](./docs/ja/textbook/)
-- 練習課題と解答例P1～P6: [`docs/ja/practice.md`](./docs/ja/practice.md)
-- 自力課題M0～M7: [`docs/ja/missions.md`](./docs/ja/missions.md)
+- 練習課題と解答例P0～P6: [`docs/ja/practice.md`](./docs/ja/practice.md)
+- 自力課題M1～M7: [`docs/ja/missions.md`](./docs/ja/missions.md)
 - 用語集・コマンド早見表: [`docs/ja/reference.md`](./docs/ja/reference.md)
 - 説明図と歴史写真: [`assets/`](./assets/)
 - 図の生成元: [`assets/figure-sources-v1.2/`](./assets/figure-sources-v1.2/)
@@ -43,7 +43,7 @@ CPU・メモリ・保存領域の役割とOSがそれらを管理する理由は
 
 [ロシア語版](./docs/ru/README.md)もChatGPTで教科書12章・巻末・練習・課題・参照資料、図21点、A4 PDF 4冊の初稿を作成しました。ロシア語で定着したIT用語を用い、コマンド等のリテラル値は保持しています。ロシア語話者の校閲と学生試読は未実施です。
 
-日本語の練習P1～P6には、2026年9月に各Pの問題文を追加しました。ウズベク語版とロシア語版の練習原稿・PDFは、現時点ではこの追加前の内容です。翻訳が終わるまでは日本語版を参照してください。
+日本語の練習P0～P6には、2026年9月に各Pの問題文を追加しました。ウズベク語版とロシア語版の練習原稿・PDFは、現時点ではこの追加前の内容です。翻訳が終わるまでは日本語版を参照してください。
 
 ## 設計と検証
 

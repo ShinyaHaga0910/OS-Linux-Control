@@ -4,7 +4,7 @@
 
 | 対象 | 本文章 | 練習課題と解答例 | 自力課題 | 採点数 | 教材で説明する判定根拠 |
 | --- | --- | --- | --- | ---: | --- |
-| M0 | 1、3、4 | なし | missions M0 | 6 | OS ID/version、kernel、PID1、user、hostを別の観測元から取得 |
+| P0 | 1、3、4 | practice P0 | なし | 6 | OS ID/version、kernel、PID1、user、hostを別の観測元から取得 |
 | 1 | 4、5 | P1 | M1 | P6 / M6 | path、directory、copy、削除、grep、tail、redirect（P1の所有者条件は維持、M1は所有者を採点しない） |
 | 2 | 6、7 | P2 | M2 | P6 / M6 | group登録、2775、664、setgid、writer作成、viewer read/write |
 | 3 | 8、9 | P3 | M3 | P2 / M2 | Main PID照合とTERM、指定packageの導入・実行file・version |
@@ -14,7 +14,7 @@
 | 6 CloudShell | 5、12 | P6 | M6 | P4 / M4 | local source、upload hash、remote値、download hash |
 | 7 | 6、7、10、11 | なし | M7 | 6 | file、writer/viewer、service、socket、HTTP、journal |
 
-合計: P1～P6は27判定、M0～M7は39判定。M6はUbuntu 2件とCloudShell 4件を分ける。
+合計: P0～P6は33判定、M1～M7は32判定。M6はUbuntu 2件とCloudShell 4件を分ける。
 
 ## 理解を自動採点で代替しない項目
 

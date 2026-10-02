@@ -1,6 +1,6 @@
 # Ubuntu and OS Foundations — 練習課題と解答例
 
-対象: 練習課題P1～P6
+対象: 練習課題P0～P6
 
 環境: Ubuntu Server 24.04 LTS
 
@@ -14,11 +14,11 @@ AWS Academy Learner Labのセットアップを完了してから、AWSコンソ
 ssh jdu-ubuntu
 ```
 
-P1は、接続先のUbuntuで進める。CloudShell側の操作が必要なP6では、手順中に実行場所を示す。
+P0～P5は、接続先のUbuntuで進める。CloudShell側の操作が必要なP6では、手順中に実行場所を示す。
 
 ## 0. 共通ルール
 
-P1～P6は練習用である。M1～M6とは別のdirectory、user、group、service、portを使う。M7は統合課題であるため、対応する練習課題を設けない。
+P0～P6は練習用である。P0はOSの観察を手順付きで行う導入練習である。M1～M6とは別のdirectory、user、group、service、portを使う。M7は統合課題であるため、対応する練習課題を設けない。
 
 各Pには、最初に問題文、その後に解答例を置く。問題文だけを読んで解いてもよい。解答例の手順を見ながら進めてもよい。PとMの採点対象は別であり、PのPASSはMのPASSにならない。
 
@@ -50,6 +50,117 @@ jdu-check P1
 ```bash
 jdu-reset P1
 ```
+
+## P0 Environment and OS
+
+### 学ぶこと
+
+- UbuntuというOSとLinux kernelの情報を区別する。
+- 現在のユーザー、ホスト名、PID 1のプロセスを実機で確認する。
+- コマンドの結果をファイルへ記録し、保存・確認・提出する。
+
+### 課題
+
+自分のUbuntu演習サーバーから6項目を調べ、`~/jdu-lab/p0/observation.env`へ記録する。以前のM0を、手順付き練習P0に変更したものである。値は以下の例や他の学生からコピーせず、自分のサーバーの表示を使う。6項目を`jdu-check P0`で確認する。
+
+### 解答例（操作手順）
+
+#### 手順1: 接続先とユーザーを確認する
+
+この資料の冒頭のとおり、CloudShellで`ssh jdu-ubuntu`を実行する。以下の手順はすべて接続先のUbuntuで行う。
+
+```bash
+cd ~
+pwd
+id -un
+```
+
+`id -un`の表示が`ssm-user`であることを確認する。これが後で記録する`USER_NAME`である。以降の表示はメモしておく。
+
+#### 手順2: OSの種類とバージョンを確認する
+
+```bash
+cat /etc/os-release
+```
+
+`ID=`の値を`OS_ID`、`VERSION_ID=`の値を`OS_VERSION_ID`としてメモする。`NAME`や`PRETTY_NAME`とは異なる項目である。表示に引用符がある場合は、値だけを記録し、引用符は付けない。
+
+#### 手順3: Linux kernelのバージョンを確認する
+
+```bash
+uname -r
+```
+
+`-r`はkernelのreleaseを表示する指定である。表示された文字列全体を`KERNEL_RELEASE`としてメモする。OSのバージョンとkernelのバージョンは別の情報である。
+
+#### 手順4: PID 1のプロセス名を確認する
+
+```bash
+cat /proc/1/comm
+```
+
+`/proc`には実行中のシステムの情報が公開されている。`1`はプロセス番号（PID）、`comm`はそのプロセスの名前を確認するファイルである。表示を`PID1_COMM`としてメモする。
+
+#### 手順5: ユーザー名とホスト名を確認する
+
+```bash
+id -un
+hostname
+```
+
+1つ目を`USER_NAME`、2つ目を`HOST_NAME`としてメモする。ホスト名はサーバーを識別する名前であり、ユーザー名や提出用Server IDとは別である。
+
+#### 手順6: 記録用ファイルを作成する
+
+```bash
+cd ~
+mkdir -p jdu-lab/p0
+cd jdu-lab/p0
+pwd
+nano observation.env
+```
+
+`nano`が開いたら、次の6行を入力し、それぞれの`=`の右にメモした値を入れる。この枠は編集するファイルの内容であり、コマンドとして実行しない。
+
+```text
+OS_ID=
+OS_VERSION_ID=
+KERNEL_RELEASE=
+PID1_COMM=
+USER_NAME=
+HOST_NAME=
+```
+
+各項目を1行にし、項目名や`=`の前後に空白を入れない。値に引用符は付けない。`Ctrl+O`で保存し、ファイル名が`observation.env`であることを確認して`Enter`を押す。`Ctrl+X`でエディタを閉じる。
+
+#### 手順7: 保存した内容を確認する
+
+```bash
+pwd
+ls -l observation.env
+cat observation.env
+```
+
+6行すべてに値があり、手順1～5の出力と一致するか確認する。空欄や誤記があれば`nano observation.env`で修正し、再び保存する。
+
+#### 手順8: 判定・提出する
+
+```bash
+id -un
+jdu-check P0
+```
+
+6件すべてが`PASS`、結果が`6 / 6 checks cleared`になればP0の記録は完成である。`FAIL`なら指摘された項目の実機情報を再確認し、ファイルを修正して再実行する。何度でも実行できる。
+
+`RESULT`は課題の判定、`REPORT`は教員サーバーへの送信結果である。送信に失敗した場合はファイルを消したりresetしたりせず、通信・登録の状態を確認して再実行する。
+
+#### 手順9: 次の練習へ進む
+
+```bash
+cd ~
+```
+
+P1へ進む。CloudShellへ戻りたい場合だけ`exit`を実行する。初回のP0ではreset不要である。P0の記録を消してやり直す場合だけ、Ubuntuで`jdu-reset P0`を実行する。
 
 ## P1 Shell、path、file、text
 
@@ -731,7 +842,7 @@ CloudShell側4件がPASSになったら、M6へ進む。
 
 教科書の章は授業回数と一対一ではない。理解した範囲から演習へ進み、必要なら章へ戻る。
 
-- 第1～3章と第4章の編集の基本を読む。その後、M0で実機のOSを観察する。
+- 第1～3章と第4章の編集の基本を読む。その後、P0の手順で実機のOSを観察する。
 - 第4・5章を読んでP1、M1へ進む。
 - 第6・7章を読んでP2、M2へ進む。
 - 第8章を読んでP3手順1～4を行う。第9章を読んでP3手順5～6を行い、最後にM3へ進む。
@@ -741,7 +852,7 @@ CloudShell側4件がPASSになったら、M6へ進む。
 演習全体では次の順序を推奨する。
 
 ```text
-P1 → M1 → P2 → M2 → P3 → M3 → P4 → M4
+P0 → P1 → M1 → P2 → M2 → P3 → M3 → P4 → M4
    → P5 → M5 → P6 → M6 → M7（統合課題）
 ```
 

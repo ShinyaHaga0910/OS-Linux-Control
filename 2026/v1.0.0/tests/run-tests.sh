@@ -43,12 +43,14 @@ python3 "$root_dir/tests/test-availability-zone.py"
 printf '%s\n' 'PASS published checksums'
 
 list_output="$(bash "$root_dir/scripts/jdu-labcheck" list)"
-[[ "$(grep -c '^M[0-7] ' <<<"$list_output")" -eq 8 ]]
-[[ "$(grep -c '^P[1-6] ' <<<"$list_output")" -eq 6 ]]
+[[ "$(grep -c '^M[1-7] ' <<<"$list_output")" -eq 7 ]]
+[[ "$(grep -c '^P[0-6] ' <<<"$list_output")" -eq 7 ]]
 grep -Fq 'jdu-check' "$root_dir/scripts/jdu-labcheck"
 grep -Fq '/usr/local/bin/jdu-check' "$root_dir/scripts/setup-instance.sh"
 grep -Fq '/usr/local/bin/jdu-reset' "$root_dir/scripts/setup-instance.sh"
 printf '%s\n' 'PASS short student command interface'
+python3 "$root_dir/tests/test-p0.py" "$root_dir/scripts/jdu-labcheck"
+
 
 set +e
 wrong_user_output="$(JDU_STUDENT_USER=definitely-not-current bash "$root_dir/scripts/jdu-labcheck" M1 2>&1)"
@@ -64,11 +66,11 @@ grep -Fq -- '--progress-endpoint %q --registration-key %q' "$root_dir/teacher/in
 printf '%s\n' 'PASS teacher command includes the deployed progress configuration'
 
 declare -A expected_counts=(
-  [P1]=6 [P2]=6 [P3]=2 [P4]=3 [P5]=4 [P6]=2
+  [P0]=6 [P1]=6 [P2]=6 [P3]=2 [P4]=3 [P5]=4 [P6]=2
   [M1]=5 [M2]=6 [M3]=2 [M4]=3 [M5]=4 [M6]=2 [M7]=6
 )
 
-for mission in P1 P2 P4 P5 P6 M1 M2 M4 M5 M6 M7; do
+for mission in P0 P1 P2 P4 P5 P6 M1 M2 M4 M5 M6 M7; do
   test_home="$(mktemp -d)"
   set +e
   output="$(HOME="$test_home" bash "$root_dir/scripts/jdu-labcheck" "$mission" 2>&1)"
@@ -290,17 +292,18 @@ for mission in range(1, 8):
     assert f"reset_m{mission}()" in fixture
     assert f"check_m{mission}()" in checker
     assert f"## M{mission} " in guide
-for practice in range(1, 7):
+for practice in range(0, 7):
     assert f"reset_p{practice}()" in fixture
     assert f"check_p{practice}()" in checker
     assert f"## P{practice} " in guided
-assert guided.count("### 課題\n") == 6
-assert guided.count("### 解答例（操作手順）\n") == 6
-for practice in range(1, 7):
+assert guided.count("### 課題\n") == 7
+assert guided.count("### 解答例（操作手順）\n") == 7
+for practice in range(0, 7):
     section = guided.split(f"## P{practice} ", 1)[1].split("\n## ", 1)[0]
     assert section.index("### 課題\n") < section.index("### 解答例（操作手順）\n") < section.index("#### 手順1:")
 assert "reset_p7()" not in fixture and "check_p7()" not in checker and "## P7 " not in guided
 expected_ids = {
+    "P0": {f"P0-OBS-{n:02d}" for n in range(1, 7)},
     "P1": {"P1-FS-01", "P1-FS-02", "P1-FS-03", "P1-FS-04", "P1-TXT-01", "P1-TXT-02"},
     "P2": {"P2-ID-01", "P2-PERM-01", "P2-PERM-02", "P2-PERM-03", "P2-PERM-04", "P2-PERM-05"},
     "P3": {"P3-PROC-01", "P3-APT-01"},
@@ -357,7 +360,7 @@ route_keys = {value["Properties"]["RouteKey"] for value in resources.values() if
 assert route_keys == {"POST /register", "POST /status", "POST /link-email", "POST /submit", "POST /admin/session", "GET /dashboard", "GET /health", "POST /student/session", "GET /student/progress"}
 assert template["Outputs"]["BaseUrl"]["Value"]["Fn::Sub"].startswith("https://")
 assert 'M6U|M6C' in lambda_source
-assert 'P[1-6]|P6U|P6C' in lambda_source
+assert 'P[0-6]|P6U|P6C' in lambda_source
 assert 'Ubuntu {ubuntu_text}' in lambda_source
 assert 'CloudShell {cloud_text}' in lambda_source
 assert 'DISPLAY_MISSIONS' in lambda_source

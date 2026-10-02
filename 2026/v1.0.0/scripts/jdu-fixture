@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 usage() {
-  printf '%s\n' 'Usage: jdu-reset P1|P2|P3|P4|P5|P6|M0|M1|M2|M3|M4|M5|M6|M7|all'
+  printf '%s\n' 'Usage: jdu-reset P0|P1|P2|P3|P4|P5|P6|M1|M2|M3|M4|M5|M6|M7|all'
 }
 
 if [[ "${1:-}" == reset ]]; then
@@ -25,6 +25,7 @@ if ((EUID != 0)); then
 fi
 
 mission="${requested_mission^^}"
+[[ "$mission" == M0 ]] && mission=P0
 student_user="${JDU_STUDENT_USER:-${SUDO_USER:-ssm-user}}"
 if [[ "$student_user" == root ]] || ! getent passwd "$student_user" >/dev/null; then
   student_user=ssm-user
@@ -52,9 +53,9 @@ ensure_account() {
   fi
 }
 
-reset_m0() {
-  prepare_home_directory M0
-  printf '%s\n' 'M0 reset complete. observation.env is intentionally absent.'
+reset_p0() {
+  prepare_home_directory P0
+  printf '%s\n' 'P0 reset complete. observation.env is intentionally absent.'
 }
 
 reset_m1() {
@@ -287,7 +288,7 @@ case "$mission" in
   P4) reset_p4 ;;
   P5) reset_p5 ;;
   P6) reset_p6 ;;
-  M0) reset_m0 ;;
+  P0) reset_p0 ;;
   M1) reset_m1 ;;
   M2) reset_m2 ;;
   M3) reset_m3 ;;
@@ -295,6 +296,6 @@ case "$mission" in
   M5) reset_m5 ;;
   M6) reset_m6 ;;
   M7) reset_m7 ;;
-  ALL) reset_p1; reset_p2; reset_p3; reset_p4; reset_p5; reset_p6; reset_m0; reset_m1; reset_m2; reset_m3; reset_m4; reset_m5; reset_m6; reset_m7 ;;
+  ALL) reset_p1; reset_p2; reset_p3; reset_p4; reset_p5; reset_p6; reset_p0; reset_m1; reset_m2; reset_m3; reset_m4; reset_m5; reset_m6; reset_m7 ;;
   *) printf 'ERROR Unknown Mission: %s\n' "$mission" >&2; usage >&2; exit 2 ;;
 esac

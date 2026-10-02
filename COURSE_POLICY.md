@@ -21,7 +21,7 @@ Linux未経験の大学生が、操作の手順だけでなく、コンピュー
 
 教科書は12章と章番号のない巻末まとめで構成する。第1～3章でコンピューター、OS、Unix/Linuxの位置付け、GUI・CLI・シェルを導入する。第4～12章でファイル、入出力、ユーザー・グループ、権限、プロセス、APT、systemd、通信・ログ、SSHを説明する。詳細な[章と演習の対応](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/coverage.md)を保つ。
 
-練習P1～P6は、まず課題文を示し、その後に初心者向けの完全な操作例を載せる。`cd`、編集、保存、実行場所、ユーザー切替、`exit`などを省かない。自力課題M0～M7は要件を示し、コマンドを学生が選ぶ。PとMは別の対象を使い、Pを終えてもMが自動でPASSにならない。M0と統合課題M7に対応するPは作らない。M7の完成手順を教科書に掲載しない。
+練習P0～P6は、まず課題文を示し、その後に初心者向けの完全な操作例を載せる。`cd`、編集、保存、実行場所、ユーザー切替、`exit`などを省かない。自力課題M1～M7は要件を示し、コマンドを学生が選ぶ。PとMは別の対象を使い、Pを終えてもMが自動でPASSにならない。旧M0は手順付き練習P0に変更する。統合課題M7に対応するPは作らない。M7の完成手順を教科書に掲載しない。
 
 採点スクリプトは到達状態を確認するもので、理解や操作経路を全面的に証明するものではない。教材の編集だけを理由に課題条件やLabの初期状態を変えない。課題条件を変更する依頼がある場合は、問題文・fixture・checker・教員Dashboard・テストを一組として扱う。
 
@@ -30,8 +30,8 @@ Linux未経験の大学生が、操作の手順だけでなく、コンピュー
 | 内容 | 編集する正本 | 関連する配布物・確認先 |
 | --- | --- | --- |
 | 教科書本文 | [`docs/ja/textbook/`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/textbook/) | `output/html/`と`output/pdf/`を再生成 |
-| 練習P1～P6 | [`docs/ja/practice.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md) | [`LabのGUIDED_PRACTICE.md`](./2026/v1.0.0/GUIDED_PRACTICE.md)と`docs/ja/GUIDED_PRACTICE.md`を同内容に保つ |
-| 自力課題M0～M7 | [`docs/ja/missions.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/missions.md) | [`LabのMISSION_GUIDE.md`](./2026/v1.0.0/MISSION_GUIDE.md)を同内容に保つ |
+| 練習P0～P6 | [`docs/ja/practice.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md) | [`LabのGUIDED_PRACTICE.md`](./2026/v1.0.0/GUIDED_PRACTICE.md)と`docs/ja/GUIDED_PRACTICE.md`を同内容に保つ |
+| 自力課題M1～M7 | [`docs/ja/missions.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/missions.md) | [`LabのMISSION_GUIDE.md`](./2026/v1.0.0/MISSION_GUIDE.md)を同内容に保つ |
 | 用語・コマンド早見表 | [`docs/ja/reference.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/reference.md) | 用語の技術的意味を本文と一致させる |
 | 図 | [`assets/figure-sources-v1.2/`](./2026/materials/ubuntu_os_foundations/v1.0.0/assets/figure-sources-v1.2/) | [`figure-register.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/figure-register.md)と本文・PDFを確認 |
 | Lab実装 | [`2026/v1.0.0/`](./2026/v1.0.0/) | CloudFormation、初期設定、採点、教員進捗、テストの整合を確認 |

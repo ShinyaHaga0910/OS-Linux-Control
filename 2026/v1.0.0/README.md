@@ -10,7 +10,7 @@ Learner Labを開始し、CloudShellで実行します。
 
 Google Classroomで教員が配布した、このセミスター用の構築コマンドをコピーして実行してください。教員用installerが、実際の進捗送信先と非公開の登録キーを含むコマンドを生成します。公開GitHubには実際のキーを載せません。配布コマンドを公開リポジトリ、公開チャット、スクリーンショットに転載しないでください。送信先・キーを指定せずにinstallerを実行すると、AWSの構築前に停止します。
 
-`install.sh`は、CloudFormationの構築、CloudShell専用SSH鍵、Session Manager tunnel、Ubuntu初期設定、P1～P6とM1～M7の初期化、教員進捗サーバーへの登録を実行します。進捗送信先と登録キーは教員の配布コマンドに含まれ、学生による手入力は不要です。Security Groupのinbound ruleは0件で、TCP 22をインターネットへ公開しません。
+`install.sh`は、CloudFormationの構築、CloudShell専用SSH鍵、Session Manager tunnel、Ubuntu初期設定、P0～P6とM1～M7の初期化、教員進捗サーバーへの登録を実行します。進捗送信先と登録キーは教員の配布コマンドに含まれ、学生による手入力は不要です。Security Groupのinbound ruleは0件で、TCP 22をインターネットへ公開しません。
 
 初回構築時に、**Google Classroomで使うメールアドレスを一度入力**してください。入力は画面に表示されません。形式が正しければ、そのメールとServer IDを教員の進捗画面で紐づけます。メールの所有者を認証する仕組みではありません。Server IDをClassroomへ手入力して提出する必要はありません。
 
@@ -26,10 +26,10 @@ ssh jdu-ubuntu
 
 ## 演習と確認
 
-問題文と手順付き解答を載せた[練習P1～P6](GUIDED_PRACTICE.md)と、[自力課題M0～M7](MISSION_GUIDE.md)があります。M0と統合課題M7には対応するPを設けていません。
+問題文と手順付き解答を載せた[練習P0～P6](GUIDED_PRACTICE.md)と、[自力課題M1～M7](MISSION_GUIDE.md)があります。旧M0は手順付き練習P0へ移しました。統合課題M7には対応するPを設けていません。
 
 ```text
-M0 → P1 → M1 → P2 → M2 → P3前半 → 第9章 → P3後半 → M3
+P0 → P1 → M1 → P2 → M2 → P3前半 → 第9章 → P3後半 → M3
    → P4 → M4 → P5 → M5 → P6 → M6 → M7
 ```
 
@@ -41,22 +41,29 @@ jdu-check M1
 jdu-reset M1   # 最初からやり直すときだけ
 ```
 
-確認結果は、設定済みの教員進捗サーバーへ自動送信されます。通信を止めてローカル判定だけ行う場合は`--no-submit`を指定します。初回構築直後に学生が`jdu-reset`する必要はありません。P1～P6とM1～M7の初期状態は0件PASSを意図しています。
+確認結果は、設定済みの教員進捗サーバーへ自動送信されます。通信を止めてローカル判定だけ行う場合は`--no-submit`を指定します。初回構築直後に学生が`jdu-reset`する必要はありません。P0～P6とM1～M7の初期状態は0件PASSを意図しています。
 
 P6とM6はUbuntuとCloudShellで別々に`jdu-check`を実行します。DashboardはUbuntu側2件、CloudShell側4件を分けて表示し、双方が全件PASSになったときに完了です。
 
 ### 既存のUbuntu環境を使い続ける場合
 
-今回のM1所有者判定の削除は、新しくCloudFormationから作る環境には自動で入ります。すでに作成したUbuntu環境では、`ssm-user`として接続し、判定スクリプトだけを更新できます。演習成果物のresetは不要です。
+P0への変更とM1所有者判定の削除は、新規構築には自動で入ります。既存環境では、先に教員の進捗サーバーを更新し、その後にUbuntuの配布スクリプト3点を更新します。演習成果物のresetやEC2の再作成は不要です。
+
+教員のCloudShellでは、[教員用の更新手順](teacher/README.md#p0への更新)を実施します。学生のUbuntuでは、`ssm-user`で以下を実行します。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/jdu-labcheck -o /tmp/jdu-labcheck-v1.0.0
-printf '%s  %s\n' 'c1e684c8505705be768b1ea8742b2f9a5d9d7087da593b4d4d7b85b9517633f4' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check
-sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
-jdu-check M1 --no-submit
+printf '%s  %s\n' '1b0040fb50b079ae75b16017fab21a002c5b2a9f65d34ca00dfda6079113b8a6' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/jdu-fixture -o /tmp/jdu-fixture-v1.0.0
+printf '%s  %s\n' 'a8f822c65ac098bb445a0e69c102d23ce01ec68cedb0462493c593ec54dbb651' '/tmp/jdu-fixture-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-fixture-v1.0.0 /opt/jdu-lab/bin/jdu-fixture
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/jdu-progress -o /tmp/jdu-progress-v1.0.0
+printf '%s  %s\n' '6f77a05a934c78ab7c19e447930df7e08a5e1ea85cb2338a030f9c1395f37a2b' '/tmp/jdu-progress-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-progress-v1.0.0 /opt/jdu-lab/bin/jdu-progress
+jdu-check list
 ```
 
-更新するまでは、既存環境のM1に所有者判定が残り、6項目で動きます。更新後はM1が5項目になります。教員画面の既存結果は、更新後に学生が再提出した時点で5項目の結果に置き換わります。
+一覧の先頭がP0なら更新済みです。旧コマンド`jdu-check M0`は互換入口としてP0へ切り替えます。P0の新しい記録先は`~/jdu-lab/p0/observation.env`で、P0ディレクトリがまだない場合は旧`m0/observation.env`を読みます。自動で旧ファイルを移動・削除しません。
+
+教員画面ではP0として表示します。新しいP0の結果を優先し、まだP0の提出がない場合は既存M0の結果を表示します。教員側を更新するまではP0の送信が拒否されるため、更新の順序を守ってください。
 
 ## 主なファイル
 
@@ -71,8 +78,8 @@ jdu-check M1 --no-submit
 | `scripts/jdu-cloudcheck` | CloudShell側P6/M6の判定 |
 | `scripts/jdu-progress` | 匿名server IDと結果のHTTPS送信 |
 | `scripts/register-student.py` | Classroomメールの入力・紐づけ・教員側への登録確認（CloudShell） |
-| `GUIDED_PRACTICE.md` | P1～P6の問題文と手順付き解答 |
-| `MISSION_GUIDE.md` | M0～M7の課題文 |
+| `GUIDED_PRACTICE.md` | P0～P6の問題文と手順付き解答 |
+| `MISSION_GUIDE.md` | M1～M7の課題文 |
 | `tests/run-tests.sh` | ローカル受入試験 |
 | `SHA256SUMS` | 配布物のチェックサム |
 
@@ -99,7 +106,7 @@ install -D -m 0755 /tmp/jdu-my-progress "$HOME/.local/bin/jdu-my-progress"
 jdu-my-progress
 ```
 
-認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。表示上のT1～T6は既存の練習P1～P6に対応し、送信には `jdu-check P1` などを使います。
+認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。表示上のT1～T6は既存の練習P0～P6に対応し、送信には `jdu-check P1` などを使います。
 
 旧環境で「no progress endpoint saved」と表示された場合は、教員がこのクラスの実際の送信先URLを確認し、`~/.jdu-student/progress.env` に `JDU_PROGRESS_ENDPOINT=https://…` の1行を追加します。既存のサーバーIDとtokenは変更しません。送信先を別のクラスや古いスタックから転記しないでください。
 

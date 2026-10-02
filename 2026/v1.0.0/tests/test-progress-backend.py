@@ -116,6 +116,7 @@ submitted = app.handler(event("POST /submit", submit_body, {"Authorization": f"B
 assert submitted["statusCode"] == 200
 
 for practice_body in [
+    {"server_id": server_id, "mission": "P0", "passed": 6, "total": 6},
     {"server_id": server_id, "mission": "P1", "passed": 6, "total": 6},
     {"server_id": server_id, "mission": "P6U", "passed": 2, "total": 2},
     {"server_id": server_id, "mission": "P6C", "passed": 3, "total": 4},
@@ -150,9 +151,19 @@ assert "M6 5/6" in partial_dashboard["body"]
 assert '<td class="done">T1<br>6/6</td>' in partial_dashboard["body"]
 assert '<td class="partial"><strong>T6 5/6</strong>' in partial_dashboard["body"]
 assert "Guided P1" not in partial_dashboard["body"] and "Challenge" not in partial_dashboard["body"]
-expected_headers = ["M0", "T1", "M1", "T2", "M2", "T3", "M3", "T4", "M4", "T5", "M5", "T6", "M6", "M7"]
-actual_headers = app.re.findall(r'<th scope=col>([MT][0-9])</th>', partial_dashboard["body"])
+expected_headers = ["P0", "T1", "M1", "T2", "M2", "T3", "M3", "T4", "M4", "T5", "M5", "T6", "M6", "M7"]
+actual_headers = app.re.findall(r'<th scope=col>([PMT][0-9])</th>', partial_dashboard["body"])
 assert actual_headers == expected_headers
+assert '<td class="done">P0<br>6/6</td>' in partial_dashboard["body"]
+# Existing stored M0 reports remain visible under P0 until a new submission.
+legacy_score = stored_server["missions"]["M"].pop("P0")
+stored_server["missions"]["M"]["M0"] = legacy_score
+legacy_dashboard = app.handler(event("GET /dashboard", query={"session": session_token}), None)
+assert '<td class="done">P0<br>6/6</td>' in legacy_dashboard["body"]
+legacy_body = {"server_id": server_id, "mission": "M0", "passed": 4, "total": 6}
+assert app.handler(event("POST /submit", legacy_body, {"Authorization": f"Bearer {server_token}"}), None)["statusCode"] == 200
+assert app.mission_score(stored_server["missions"]["M"], "P0")["passed"] == 4
+
 
 m6_cloud["passed"] = 4
 assert app.handler(event("POST /submit", m6_cloud, {"Authorization": f"Bearer {server_token}"}), None)["statusCode"] == 200
