@@ -148,11 +148,11 @@ partial_dashboard = app.handler(event("GET /dashboard", query={"session": sessio
 assert "Ubuntu 2/2" in partial_dashboard["body"]
 assert "CloudShell 3/4" in partial_dashboard["body"]
 assert "M6 5/6" in partial_dashboard["body"]
-assert '<td class="done">T1<br>6/6</td>' in partial_dashboard["body"]
-assert '<td class="partial"><strong>T6 5/6</strong>' in partial_dashboard["body"]
+assert '<td class="done">P1<br>6/6</td>' in partial_dashboard["body"]
+assert '<td class="partial"><strong>P6 5/6</strong>' in partial_dashboard["body"]
 assert "Guided P1" not in partial_dashboard["body"] and "Challenge" not in partial_dashboard["body"]
-expected_headers = ["P0", "T1", "M1", "T2", "M2", "T3", "M3", "T4", "M4", "T5", "M5", "T6", "M6", "M7"]
-actual_headers = app.re.findall(r'<th scope=col>([PMT][0-9])</th>', partial_dashboard["body"])
+expected_headers = ["P0", "P1", "M1", "P2", "M2", "P3", "M3", "P4", "M4", "P5", "M5", "P6", "M6", "M7"]
+actual_headers = app.re.findall(r'<th scope=col>([PM][0-9])</th>', partial_dashboard["body"])
 assert actual_headers == expected_headers
 assert '<td class="done">P0<br>6/6</td>' in partial_dashboard["body"]
 # Existing stored M0 reports remain visible under P0 until a new submission.
@@ -177,8 +177,8 @@ assert "1/2" in dashboard["body"]
 assert "Ubuntu 2/2" in dashboard["body"]
 assert "CloudShell 4/4" in dashboard["body"]
 assert "M6 6/6" in dashboard["body"]
-assert '<td class="done"><strong>T6 6/6</strong>' in dashboard["body"]
-assert '<td class="missing">T2<br>—</td>' in dashboard["body"]
+assert '<td class="done"><strong>P6 6/6</strong>' in dashboard["body"]
+assert '<td class="missing">P2<br>—</td>' in dashboard["body"]
 assert "入力したメールの本人確認は行っていません" in dashboard["body"]
 assert app.handler(event("GET /health"), None)["statusCode"] == 200
 print("PASS progress backend registration, authentication, submission, session, and dashboard")
@@ -201,7 +201,12 @@ original_scan = fake_ddb.scan
 fake_ddb.scan = forbidden_scan
 personal_view = app.handler(event("GET /student/progress", query={"session": personal_token}), None)
 assert personal_view["statusCode"] == 200
-assert "T1" in personal_view["body"] and "M6 6/6" in personal_view["body"]
+assert "P1" in personal_view["body"] and "M6 6/6" in personal_view["body"]
+assert app.re.findall(r'<th scope=col>([PM][0-9])</th>', personal_view["body"]) == expected_headers
+for view in [personal_view, partial_dashboard]:
+    assert not app.re.search(r'\bT[0-6]\b', view["body"])
+    assert not app.re.search(r'\bM0\b', view["body"])
+
 assert "other@example.test" not in personal_view["body"] and "srv-other1234" not in personal_view["body"]
 assert "student@example.test" not in personal_view["body"]
 assert "tokenHash" not in personal_view["body"] and server_token not in personal_view["body"]

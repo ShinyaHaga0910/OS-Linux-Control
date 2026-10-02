@@ -96,7 +96,7 @@ bash /tmp/jdu-install-teacher.sh --region us-east-1
 
 ## 学生が自分の進捗を確認する
 
-学生のCloudShellで `jdu-my-progress` を実行し、表示されたHTTPS URLをブラウザで開きます。自分のサーバーのM・Tの最新結果だけを表示する読み取り専用ページです。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
+学生のCloudShellで `jdu-my-progress` を実行し、表示されたHTTPS URLをブラウザで開きます。自分のサーバーのP・Mの最新結果だけを表示する読み取り専用ページです。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
 
 最新のinstallerで構築した学生CloudShellにはコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
 
@@ -106,7 +106,7 @@ install -D -m 0755 /tmp/jdu-my-progress "$HOME/.local/bin/jdu-my-progress"
 jdu-my-progress
 ```
 
-認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。表示上のT1～T6は既存の練習P0～P6に対応し、送信には `jdu-check P1` などを使います。
+認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。学生・教員ともに、練習はP0～P6、課題はM1～M7と表示します。表示と送信コマンドのIDは同じです（例：P1 → `jdu-check P1`）。
 
 旧環境で「no progress endpoint saved」と表示された場合は、教員がこのクラスの実際の送信先URLを確認し、`~/.jdu-student/progress.env` に `JDU_PROGRESS_ENDPOINT=https://…` の1行を追加します。既存のサーバーIDとtokenは変更しません。送信先を別のクラスや古いスタックから転記しないでください。
 

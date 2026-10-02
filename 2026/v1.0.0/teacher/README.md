@@ -45,7 +45,7 @@ The command authenticates with the admin key stored in `~/.jdu-teacher/admin.key
 
 The HTTPS endpoint is internet reachable because the browser must reach it. The admin endpoint is protected by a random key kept in the teacher CloudShell. The browser receives only a short-lived session token.
 
-The dashboard shows individual columns in learning order: P0, T1, M1, T2, M2, …, T6, M6, M7. T1–T6 are display names for the existing P1–P6 practice submissions; commands and stored mission IDs still use P. There are no Guided or Challenge summary columns. T6 and M6 combine both sides while retaining their Ubuntu/CloudShell breakdown. Missing reports show a dash, partial results are yellow, and complete results are green. This remains a latest-result view, not a highest-score grade book.
+The teacher and student dashboards show individual columns in learning order: P0, P1, M1, P2, M2, …, P6, M6, M7. Display labels match the submission IDs; there are no T labels or Guided/Challenge summary columns. P6 and M6 combine both sides while retaining their Ubuntu/CloudShell breakdown. Missing reports show a dash, partial results are yellow, and complete results are green. This remains a latest-result view, not a highest-score grade book.
 
 ## Student viewing
 
@@ -73,13 +73,13 @@ This is **self-declared email linking**, not Google authentication or verificati
 
 To correct an email or retry linking after an API problem, the student can run `jdu-register --change-email` or `jdu-register` in the same CloudShell. This does not reset any exercise or alter scores. Initial setup must have registered the server successfully; otherwise diagnose the setup/registration logs first. Do not collect progress.env, server tokens, SSH private keys, or dashboard session URLs as student submissions.
 
-P0-P6 are checked on each student's Ubuntu instance by `jdu-check P1` through `jdu-check P6`; P6 also requires `jdu-check P6` in CloudShell. Each run submits its latest PASS count over HTTPS. The teacher stack receives and displays those results; it does not independently log in to or re-check student instances. The student CloudFormation stack already installs the guided fixtures and check scripts, so no separate teacher-side CloudFormation stack is needed for P0-P6 beyond this progress server.
+P0-P6 are checked on each student's Ubuntu instance by `jdu-check P0` through `jdu-check P6`; P6 also requires `jdu-check P6` in CloudShell. Each run submits its latest PASS count over HTTPS. The teacher stack receives and displays those results; it does not independently log in to or re-check student instances. The student CloudFormation stack already installs the guided fixtures and check scripts, so no separate teacher-side CloudFormation stack is needed for P0-P6 beyond this progress server.
 
 This is a formative progress view. It is not a tamper-proof examination system because students have administrative access to their own lab server.
 
 ## P0への更新
 
-旧M0を手順付き練習P0へ変更しました。P0の送信に対応するため、既存の教員CloudShellでinstallerを再実行して同じスタックを更新します。別のスタックを作らず、現在のスタック名・リージョンを指定してください。既定構成の場合は以下を使います。
+旧M0を手順付き練習P0へ変更しました。P0の送信と、学生・教員画面のP表記に対応するため、既存の教員CloudShellでinstallerを再実行して同じスタックを更新します。別のスタックを作らず、現在のスタック名・リージョンを指定してください。既定構成の場合は以下を使います。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/teacher/install-teacher.sh -o /tmp/jdu-install-teacher.sh
