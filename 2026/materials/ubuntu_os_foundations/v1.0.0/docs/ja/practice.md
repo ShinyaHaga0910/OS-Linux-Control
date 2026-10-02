@@ -256,10 +256,19 @@ id jdupracticeviewer
 ```bash
 cd /srv
 pwd
-sudo chown root:practiceops jdu-practice-share
-sudo chmod 2775 jdu-practice-share
-stat -c '%U:%G %a %n' jdu-practice-share
+ls -ld jdu-practice-share
 ```
+
+変更前の権限・所有者・所有グループを確認する。`ls -l`は詳細表示、`-d`はディレクトリの中身ではなくディレクトリ自体を表示する指定である。表示の先頭が権限、その後のリンク数に続く2列が所有者と所有グループである。
+
+```bash
+sudo chown root:practiceops jdu-practice-share
+ls -ld jdu-practice-share
+sudo chmod 2775 jdu-practice-share
+ls -ld jdu-practice-share
+```
+
+`chown`の後は所有者・所有グループが`root practiceops`、`chmod`の後は権限が`drwxrwsr-x`になることを確認する。グループの実行権限の位置にある`s`はsetgidを表し、このディレクトリ内に作るファイルが所有グループを引き継ぐ。
 
 #### 手順5: GUIDE.txtを設定する
 
@@ -268,10 +277,19 @@ stat -c '%U:%G %a %n' jdu-practice-share
 ```bash
 cd /srv/jdu-practice-share
 pwd
-sudo chown root:practiceops GUIDE.txt
-sudo chmod 664 GUIDE.txt
-stat -c '%U:%G %a %n' GUIDE.txt
+ls -l GUIDE.txt
 ```
+
+変更前のファイルの権限・所有者・所有グループを確認してから設定する。
+
+```bash
+sudo chown root:practiceops GUIDE.txt
+ls -l GUIDE.txt
+sudo chmod 664 GUIDE.txt
+ls -l GUIDE.txt
+```
+
+所有者・所有グループが`root practiceops`、権限が`-rw-rw-r--`になることを確認する。所有者と所有グループには読み書き、その他のユーザーには読み取りだけを許可している。
 
 #### 手順6: Writerへ切り替えてfileを作る
 
@@ -306,6 +324,8 @@ id -un
 ```
 
 `cat`は成功する。`touch`は`Permission denied`になる。これは想定した失敗である。
+
+`jdupracticeviewer`は所有者の`root`ではなく、手順3で`practiceops`からも外したため、「その他のユーザー」の権限が適用される。`GUIDE.txt`はその他のユーザーにも読み取り権限（`r--`）があるので、`cat`で読める。一方、共有ディレクトリのその他のユーザーの権限は`r-x`で、書き込み権限（`w`）がない。新しいファイルを作るには、そのファイルを置くディレクトリへの書き込み権限と実行権限が必要なので、`touch`による作成は拒否される。
 
 #### 手順8: 採点する
 

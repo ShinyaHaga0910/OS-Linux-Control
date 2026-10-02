@@ -2,7 +2,7 @@
   "course": "ubuntu_os_foundations",
   "source_language": "ja",
   "source_status": "reviewed_current_source",
-  "ja_revision": "2026-10-02: SSH entry; P1 tree/find/rm; command-reading and find reference",
+  "ja_revision": "2026-10-02: SSH entry; P1 tree/find/rm; command-reading and find reference; P2 ls permission inspection and failure explanation",
   "version": "1.0.0",
   "languages": {
     "en": { "role": "future_source", "status": "planned" },
