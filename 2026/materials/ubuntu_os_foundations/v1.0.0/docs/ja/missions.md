@@ -8,6 +8,22 @@
 
 PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は`P1 → M1 → P2 → M2 → … → P6 → M6 → M7`である。M0と統合課題M7には対応するPを設けない。
 
+## 最初にUbuntuへ接続する
+
+AWS Academy Learner Labのセットアップを完了してから、AWSコンソールでCloudShellを開く。CloudShellで次のcommandを実行し、自分のUbuntu演習サーバーへ接続する。
+
+```bash
+ssh jdu-ubuntu
+```
+
+接続後、Ubuntuで次を実行する。
+
+```bash
+id -un
+```
+
+`ssm-user`と表示されることを確認する。この文書のUbuntu側の操作は、この接続先で実行する。CloudShellで操作する課題では、課題中の指示に従って`exit`でCloudShellへ戻る。
+
 ## 共通操作
 
 初回構築時に、すべてのMissionは自動で未完成の状態になる。最初にresetする必要はない。

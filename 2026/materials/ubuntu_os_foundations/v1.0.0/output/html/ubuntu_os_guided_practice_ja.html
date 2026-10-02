@@ -25,6 +25,10 @@ blockquote { background:#EEF4FB; border-left:4px solid #4A90C2; padding:3mm; }
 <p>対象: 練習課題P1～P6</p>
 <p>環境: Ubuntu Server 24.04 LTS</p>
 <p>進め方: まず各Pの「課題」を読む。自分で試した後、「解答例」の手順で操作と考え方を確認する。同じ技能を使うMission Mは自力で解く。</p>
+<h2>最初にUbuntuへ接続する</h2>
+<p>AWS Academy Learner Labのセットアップを完了してから、AWSコンソールでCloudShellを開く。CloudShellで次を実行して、自分のUbuntu演習サーバーへ接続する。</p>
+<pre><code>ssh jdu-ubuntu</code></pre>
+<p>P1は、接続先のUbuntuで進める。CloudShell側の操作が必要なP6では、手順中に実行場所を示す。</p>
 <h2>0. 共通ルール</h2>
 <p>P1～P6は練習用である。M1～M6とは別のdirectory、user、group、service、portを使う。M7は統合課題であるため、対応する練習課題を設けない。</p>
 <p>各Pには、最初に問題文、その後に解答例を置く。問題文だけを読んで解いてもよい。解答例の手順を見ながら進めてもよい。PとMの採点対象は別であり、PのPASSはMのPASSにならない。</p>
@@ -74,28 +78,35 @@ ls -l</code></pre>
 pwd
 cp ../../inbox/logs/practice.log .
 ls -l</code></pre>
-<h4>手順6: 一時fileを探して削除する</h4>
-<p><code>practice01</code>へ移動する。</p>
+<h4>手順6: 一時fileを確認して削除する</h4>
+<p><code>practice01</code>へ移動し、削除前の構成を確認する。</p>
 <pre><code>cd ~/jdu-lab/p1/practice01
 pwd
-find . -type f -name &#x27;*.tmp&#x27; -print
-find . -type f -name &#x27;*.tmp&#x27; -delete
-find . -type f -name &#x27;*.tmp&#x27; -print</code></pre>
-<p>最後のcommandで何も表示されないことを確認する。</p>
-<h4>手順7: WARN行を保存する</h4>
-<p>出力先の<code>notes</code>へ移動する。</p>
+tree</code></pre>
+<p><code>staging</code>の中にある<code>training.conf.tmp</code>と<code>practice.log.tmp</code>を確認する。この2つの不要なfileを<code>rm</code>で削除する。</p>
+<pre><code>rm staging/training.conf.tmp staging/practice.log.tmp
+tree</code></pre>
+<p>削除後の<code>tree</code>で、2つの<code>.tmp</code>ファイルが表示されないことを確認する。コピーした<code>config/training.conf</code>と<code>logs/practice.log</code>が残っていることも確認する。</p>
+<h4>手順7: WARN行を確認して保存する</h4>
+<p>出力先の<code>notes</code>へ移動する。まず、<code>grep</code>の結果を画面で確認する。</p>
 <pre><code>cd ~/jdu-lab/p1/practice01/notes
 pwd
-grep &#x27;WARN&#x27; ../logs/practice.log &gt; warnings.txt
+grep &#x27;WARN&#x27; ../logs/practice.log</code></pre>
+<p><code>WARN</code>を含む行だけが表示されることを確認する。次に、同じcommandに<code>&gt;</code>を追加して、結果を<code>warnings.txt</code>へ保存する。<code>&gt;</code>は出力先を画面からfileへ変更し、同名のfileがあれば内容を上書きする。</p>
+<pre><code>grep &#x27;WARN&#x27; ../logs/practice.log &gt; warnings.txt
 cat warnings.txt</code></pre>
-<h4>手順8: 最後の4行を保存する</h4>
+<p><code>cat</code>で、先ほど画面に表示された行が保存されていることを確認する。</p>
+<h4>手順8: 最後の4行を確認して保存する</h4>
+<p>まず、<code>tail</code>の結果を画面で確認する。</p>
 <pre><code>cd ~/jdu-lab/p1/practice01/notes
-tail -n 4 ../logs/practice.log &gt; recent.txt
+tail -n 4 ../logs/practice.log</code></pre>
+<p>ログの最後の4行が、元の順序で表示されることを確認する。次に、<code>&gt;</code>を追加して結果を<code>recent.txt</code>へ保存する。</p>
+<pre><code>tail -n 4 ../logs/practice.log &gt; recent.txt
 cat recent.txt</code></pre>
+<p><code>cat</code>で、先ほど画面に表示された4行が保存されていることを確認する。</p>
 <h4>手順9: 全体を確認する</h4>
 <pre><code>cd ~/jdu-lab/p1
 tree practice01
-stat -c &#x27;%U:%G %a %n&#x27; practice01 practice01/config/training.conf practice01/logs/practice.log practice01/notes/warnings.txt practice01/notes/recent.txt
 jdu-check P1</code></pre>
 <p>全6件がPASSになったら、M1へ進む。</p>
 <h2>P2 User、group、permission、setgid</h2>

@@ -2,12 +2,13 @@
   "course": "ubuntu_os_foundations",
   "source_language": "ja",
   "source_status": "reviewed_current_source",
+  "ja_revision": "2026-10-02: SSH entry and P1 rm/tree, grep/tail observation, stat removal",
   "version": "1.0.0",
   "languages": {
     "en": { "role": "future_source", "status": "planned" },
     "ja": { "role": "current_source", "status": "reviewed" },
-    "uz": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "outdated_after_ja_practice_revision", "method": "ChatGPT", "figures": 21, "pdfs": 4 },
-    "ru": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "outdated_after_ja_practice_revision", "method": "ChatGPT", "figures": 21, "pdfs": 4 }
+    "uz": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "outdated_after_ja_practice_revision", "missions_status": "outdated_after_ja_connection_instructions", "method": "ChatGPT", "figures": 21, "pdfs": 4 },
+    "ru": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "outdated_after_ja_practice_revision", "missions_status": "outdated_after_ja_connection_instructions", "method": "ChatGPT", "figures": 21, "pdfs": 4 }
   },
   "chapters": [
     { "id": "ch01", "file": "textbook/01-os-and-system.md" },

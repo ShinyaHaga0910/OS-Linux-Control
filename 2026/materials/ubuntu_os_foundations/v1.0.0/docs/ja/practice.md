@@ -6,6 +6,16 @@
 
 進め方: まず各Pの「課題」を読む。自分で試した後、「解答例」の手順で操作と考え方を確認する。同じ技能を使うMission Mは自力で解く。
 
+## 最初にUbuntuへ接続する
+
+AWS Academy Learner Labのセットアップを完了してから、AWSコンソールでCloudShellを開く。CloudShellで次を実行して、自分のUbuntu演習サーバーへ接続する。
+
+```bash
+ssh jdu-ubuntu
+```
+
+P1は、接続先のUbuntuで進める。CloudShell側の操作が必要なP6では、手順中に実行場所を示す。
+
 ## 0. 共通ルール
 
 P1～P6は練習用である。M1～M6とは別のdirectory、user、group、service、portを使う。M7は統合課題であるため、対応する練習課題を設けない。
@@ -116,45 +126,67 @@ cp ../../inbox/logs/practice.log .
 ls -l
 ```
 
-#### 手順6: 一時fileを探して削除する
+#### 手順6: 一時fileを確認して削除する
 
-`practice01`へ移動する。
+`practice01`へ移動し、削除前の構成を確認する。
 
 ```bash
 cd ~/jdu-lab/p1/practice01
 pwd
-find . -type f -name '*.tmp' -print
-find . -type f -name '*.tmp' -delete
-find . -type f -name '*.tmp' -print
+tree
 ```
 
-最後のcommandで何も表示されないことを確認する。
+`staging`の中にある`training.conf.tmp`と`practice.log.tmp`を確認する。この2つの不要なfileを`rm`で削除する。
 
-#### 手順7: WARN行を保存する
+```bash
+rm staging/training.conf.tmp staging/practice.log.tmp
+tree
+```
 
-出力先の`notes`へ移動する。
+削除後の`tree`で、2つの`.tmp`ファイルが表示されないことを確認する。コピーした`config/training.conf`と`logs/practice.log`が残っていることも確認する。
+
+#### 手順7: WARN行を確認して保存する
+
+出力先の`notes`へ移動する。まず、`grep`の結果を画面で確認する。
 
 ```bash
 cd ~/jdu-lab/p1/practice01/notes
 pwd
+grep 'WARN' ../logs/practice.log
+```
+
+`WARN`を含む行だけが表示されることを確認する。次に、同じcommandに`>`を追加して、結果を`warnings.txt`へ保存する。`>`は出力先を画面からfileへ変更し、同名のfileがあれば内容を上書きする。
+
+```bash
 grep 'WARN' ../logs/practice.log > warnings.txt
 cat warnings.txt
 ```
 
-#### 手順8: 最後の4行を保存する
+`cat`で、先ほど画面に表示された行が保存されていることを確認する。
+
+#### 手順8: 最後の4行を確認して保存する
+
+まず、`tail`の結果を画面で確認する。
 
 ```bash
 cd ~/jdu-lab/p1/practice01/notes
+tail -n 4 ../logs/practice.log
+```
+
+ログの最後の4行が、元の順序で表示されることを確認する。次に、`>`を追加して結果を`recent.txt`へ保存する。
+
+```bash
 tail -n 4 ../logs/practice.log > recent.txt
 cat recent.txt
 ```
+
+`cat`で、先ほど画面に表示された4行が保存されていることを確認する。
 
 #### 手順9: 全体を確認する
 
 ```bash
 cd ~/jdu-lab/p1
 tree practice01
-stat -c '%U:%G %a %n' practice01 practice01/config/training.conf practice01/logs/practice.log practice01/notes/warnings.txt practice01/notes/recent.txt
 jdu-check P1
 ```
 

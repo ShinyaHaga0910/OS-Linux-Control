@@ -7,6 +7,7 @@ h1:first-of-type { page-break-before:auto; }
 h2 { color:#245E9A; margin-top:9mm; border-left:4px solid #4A90C2; padding-left:3mm; }
 @media print { h2.chapter-answers { break-before: page; page-break-before: always; } }
 h3 { color:#315E79; margin-top:6mm; }
+h4 { color:#315E79; margin-top:4mm; margin-bottom:2mm; font-size:10.5pt; }
 p { text-align:justify; }
 code { font-family: Consolas,'Noto Sans Mono',monospace; background:#EEF2F7; padding:0 1mm; }
 pre { background:#172033; color:#F6F8FB; padding:4mm; border-radius:2mm; white-space:pre-wrap; overflow-wrap:anywhere; }
@@ -24,6 +25,12 @@ blockquote { background:#EEF4FB; border-left:4px solid #4A90C2; padding:3mm; }
 <p>対象: Mission 0～7 環境: Ubuntu Server 24.04 LTS 進め方: 授業回ではなく、学生ごとの進度でMissionを進める。</p>
 <p>この文書は、commandを自分で選ぶ課題M0～M7である。完全なcommand手順が必要な場合は、先に[GUIDED_PRACTICE.md](GUIDED_PRACTICE.md)のP1～P6を実施する。</p>
 <p>PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は<code>P1 → M1 → P2 → M2 → … → P6 → M6 → M7</code>である。M0と統合課題M7には対応するPを設けない。</p>
+<h2>最初にUbuntuへ接続する</h2>
+<p>AWS Academy Learner Labのセットアップを完了してから、AWSコンソールでCloudShellを開く。CloudShellで次のcommandを実行し、自分のUbuntu演習サーバーへ接続する。</p>
+<pre><code>ssh jdu-ubuntu</code></pre>
+<p>接続後、Ubuntuで次を実行する。</p>
+<pre><code>id -un</code></pre>
+<p><code>ssm-user</code>と表示されることを確認する。この文書のUbuntu側の操作は、この接続先で実行する。CloudShellで操作する課題では、課題中の指示に従って<code>exit</code>でCloudShellへ戻る。</p>
 <h2>共通操作</h2>
 <p>初回構築時に、すべてのMissionは自動で未完成の状態になる。最初にresetする必要はない。</p>
 <h3>実行user</h3>
