@@ -7,6 +7,7 @@ h1:first-of-type { page-break-before:auto; }
 h2 { color:#245E9A; margin-top:9mm; border-left:4px solid #4A90C2; padding-left:3mm; }
 @media print { h2.chapter-answers { break-before: page; page-break-before: always; } }
 h3 { color:#315E79; margin-top:6mm; }
+h4 { color:#315E79; margin-top:4mm; margin-bottom:2mm; font-size:10.5pt; }
 p { text-align:justify; }
 code { font-family: Consolas,'Noto Sans Mono',monospace; background:#EEF2F7; padding:0 1mm; }
 pre { background:#172033; color:#F6F8FB; padding:4mm; border-radius:2mm; white-space:pre-wrap; overflow-wrap:anywhere; }
@@ -92,6 +93,146 @@ blockquote { background:#EEF4FB; border-left:4px solid #4A90C2; padding:3mm; }
 <tr><td>SSH接続</td><td><code>ssh HOST</code>、<code>ssh HOST &#x27;COMMAND&#x27;</code></td><td>ホストエイリアスとDNSホスト名の違い、クォートによるローカル/リモートでの変数展開の違い、秘密鍵の保護に注意する</td><td><code>id -un</code>、<code>hostname</code>、<code>pwd</code>で接続先環境を確認する</td></tr>
 <tr><td>SCPファイル転送</td><td><code>scp SOURCE DEST</code></td><td>転送元（source）と転送先（destination）の取り違え、不用意な上書きに注意する</td><td>両環境で<code>sha256sum</code>を比較し、リモート側で<code>stat</code>を確認する</td></tr>
 </table>
+<h2>コマンドの読み方</h2>
+<p>コマンドは「名前・オプション・対象」に分けると読みやすい。例えば、<code>tail -n 4 practice.log</code>では、<code>tail</code>が実行するプログラム、<code>-n 4</code>が行数を指定するオプションと値、<code>practice.log</code>が読む対象である。空白で区切られた部分を順に読む。マニュアルに出る<code>FILE</code>や<code>PATH</code>、<code>N</code>などの大文字は、実際のファイル名・パス・数値に置き換える説明用の記号である。</p>
+<p>オプションは動作を変える指定である。短い形式は<code>-u</code>のように1文字、長い形式は<code>--user</code>のように単語で表すことが多い。ただし、すべてのコマンドが両方に対応するわけではない。<code>find</code>の<code>-name</code>のように、ハイフンが1つでも単語を使う指定もある。綴りから推測した後、必ずそのコマンドの説明で意味を確認する。</p>
+<h3>英語の意味と結び付けて覚える</h3>
+<p>次の英語は、コマンドを覚えるための手掛かりである。すべてを歴史的な正式名称・略語の由来として断定するものではない。<code>find</code>や<code>tail</code>は、英単語そのものを使っている。</p>
+<table>
+<tr><th>コマンド</th><th>覚えるための英語</th><th>読み方・用途</th></tr>
+<tr><td><code>pwd</code></td><td>print working directory</td><td>現在作業しているディレクトリを表示する</td></tr>
+<tr><td><code>cd</code></td><td>change directory</td><td>作業するディレクトリを変える</td></tr>
+<tr><td><code>ls</code></td><td>list</td><td>名前の一覧を表示する</td></tr>
+<tr><td><code>mkdir</code></td><td>make directory</td><td>ディレクトリを作る</td></tr>
+<tr><td><code>cp</code></td><td>copy</td><td>コピーする。コピー元、コピー先の順に指定する</td></tr>
+<tr><td><code>mv</code></td><td>move</td><td>移動する。同じディレクトリ内なら名前変更にも使う</td></tr>
+<tr><td><code>rm</code></td><td>remove</td><td>指定したファイルを削除する</td></tr>
+<tr><td><code>cat</code></td><td>concatenate（連結する）</td><td>複数ファイルの内容を連結して表示する。1ファイルの表示にも使う</td></tr>
+<tr><td><code>tree</code></td><td>tree（木）</td><td>枝のような形でディレクトリ構成を表示する</td></tr>
+<tr><td><code>find</code></td><td>find（探す）</td><td>ディレクトリをたどり、条件に合うファイルやディレクトリを探す</td></tr>
+<tr><td><code>grep</code></td><td>global / regular expression / print（<code>g/re/p</code>に由来）</td><td>ファイルの中の行を検索する。ファイル名を探す<code>find</code>と区別する</td></tr>
+<tr><td><code>tail</code></td><td>tail（末尾・しっぽ）</td><td>ファイルの末尾の行を表示する</td></tr>
+<tr><td><code>id</code></td><td>identity / identifier（識別情報・識別子）</td><td>ユーザーやグループの識別情報を表示する</td></tr>
+<tr><td><code>chown</code></td><td>change owner</td><td>所有者を変更する</td></tr>
+<tr><td><code>chmod</code></td><td>change mode</td><td>アクセス権のモードを変更する</td></tr>
+<tr><td><code>ssh</code></td><td>Secure Shell</td><td>別のコンピューターへ安全な通信で接続する</td></tr>
+</table>
+<h3>id -unを分解して読む</h3>
+<p><code>id</code>はユーザーやグループの識別情報を表示する。オプションなしの<code>id</code>はUID、GID、所属グループなどをまとめて表示する。</p>
+<pre><code>id
+id -u
+id -u -n
+id -un</code></pre>
+<p><code>-u</code>は<code>--user</code>に対応し、現在の実効ユーザーIDだけを表示する。<code>-n</code>は<code>--name</code>に対応し、番号の代わりに名前を表示する。したがって<code>id -u -n</code>と<code>id -un</code>は同じ意味で、今回のUbuntu接続直後なら<code>ssm-user</code>を表示する。</p>
+<p><strong><code>id -n</code>だけでは、どのIDを名前に変えるか決まらない。</strong> <code>-n</code>は<code>-u</code>、<code>-g</code>、<code>-G</code>のいずれかと組み合わせる。<code>id -gn</code>は実効グループ名、<code>id -Gn</code>は所属する全グループの名前を表示する。英語を手掛かりにするだけでなく、組み合わせの条件まで確認する。</p>
+<h3>同じ文字でも、コマンドによって意味が変わる</h3>
+<table>
+<tr><th>実行例</th><th>オプションの英語・意味</th><th>実行結果</th></tr>
+<tr><td><code>id -un</code></td><td><code>-u</code>＝user、<code>-n</code>＝name</td><td>現在の実効ユーザー名</td></tr>
+<tr><td><code>grep -n &#x27;WARN&#x27; practice.log</code></td><td><code>-n</code>＝<code>--line-number</code></td><td>一致した行に行番号を付ける</td></tr>
+<tr><td><code>tail -n 4 practice.log</code></td><td><code>-n</code>＝<code>--lines</code>。続く<code>4</code>が行数</td><td>最後の4行を表示する</td></tr>
+<tr><td><code>ls -la</code></td><td><code>-l</code>＝long形式、<code>-a</code>＝all</td><td>詳細表示で、隠しファイルも含める</td></tr>
+<tr><td><code>mkdir -p logs/archive</code></td><td><code>-p</code>＝<code>--parents</code></td><td>必要な親ディレクトリも作る</td></tr>
+<tr><td><code>grep -F &#x27;WARN&#x27; practice.log</code></td><td><code>-F</code>＝<code>--fixed-strings</code></td><td>正規表現ではなく文字列として検索する</td></tr>
+<tr><td><code>chown -R USER DIR</code></td><td><code>-R</code>＝<code>--recursive</code></td><td>DIRの中まで再帰的に所有者を変更する</td></tr>
+</table>
+<p><code>id -un</code>のようにまとめられる短いオプションもあるが、すべてをまとめられるとは限らない。<code>tail -n 4</code>のように値を取る指定や、<code>find -name</code>のような単語の指定は、今回の例の形で入力する。</p>
+<h3>保存記号はコマンドのオプションではない</h3>
+<pre><code>grep &#x27;WARN&#x27; ../logs/practice.log
+grep &#x27;WARN&#x27; ../logs/practice.log &gt; warnings.txt</code></pre>
+<p>1行目は結果を画面に表示する。2行目の<code>&gt;</code>は、シェルが標準出力の行き先を<code>warnings.txt</code>へ変える記号であり、<code>grep</code>のオプションではない。保存できたら<code>cat warnings.txt</code>で内容を確認する。<code>&gt;&gt;</code>は追記する記号である。</p>
+<h2>findを段階的に読む</h2>
+<p><code>tree</code>はディレクトリ全体の形を見て探すのに向いている。<code>find</code>は条件を指定して対象を絞り込むのに向いている。P1では、まず<code>tree</code>で構成を観察し、次に<code>find</code>で<code>.tmp</code>ファイルを検索し、確認したパスを<code>rm</code>へ指定する。</p>
+<h3>検索開始位置・条件・表示に分ける</h3>
+<pre><code>find . -type f -name &#x27;*.tmp&#x27; -print</code></pre>
+<p>このcommandは「現在地以下をたどり、通常のファイルで、名前が<code>.tmp</code>で終わるもののパスを表示する」と読む。</p>
+<table>
+<tr><th>部分</th><th>意味</th><th>覚え方・注意</th></tr>
+<tr><td><code>find</code></td><td>検索するコマンド</td><td>find＝探す</td></tr>
+<tr><td><code>.</code></td><td>検索を始める位置</td><td>現在のディレクトリ。配下もたどる</td></tr>
+<tr><td><code>-type f</code></td><td>通常のファイルに限定する条件</td><td>type＝種類、f＝file。ディレクトリなら<code>-type d</code></td></tr>
+<tr><td><code>-name &#x27;*.tmp&#x27;</code></td><td>名前がパターンに一致する条件</td><td>name＝名前。ファイル内容は検索しない</td></tr>
+<tr><td><code>-print</code></td><td>一致したパスを表示する動作</td><td>print＝出力する。ファイルを印刷する意味ではない</td></tr>
+</table>
+<p><code>-type</code>と<code>-name</code>は正確には「テスト（条件）」、<code>-print</code>は「アクション（動作）」である。間に演算子を置かない複数の条件は、通常「両方を満たす」というANDとして評価される。今回の<code>-type f -name &#x27;*.tmp&#x27;</code>なら、名前が一致してもディレクトリは表示しない。</p>
+<p><code>-print</code>などの動作を省いた単純な検索では、通常、検索結果のパスが表示される。ここでは何をするか読み取れるように<code>-print</code>を明示する。</p>
+<h3>小さい指定から条件を足す</h3>
+<p>P1で、次を1行ずつ実行して表示の変化を比べる。</p>
+<pre><code>cd ~/jdu-lab/p1/practice01
+find . -print
+find . -type f -print
+find . -type f -name &#x27;*.tmp&#x27; -print</code></pre>
+<p>最初は開始位置自身と配下の項目を表示し、次は通常のファイルだけを表示し、最後は名前が<code>.tmp</code>で終わる通常のファイルだけを表示する。1段階ずつ条件を足すと、各指定が何を絞っているか理解しやすい。</p>
+<p>削除前のP1では、最後の検索で次の2つが表示される。表示順は保証されない。</p>
+<pre><code>./staging/training.conf.tmp
+./staging/practice.log.tmp</code></pre>
+<p>すでに手順6で削除した場合は、この検索で何も表示されない。その場合も正常であり、確認のためだけに課題をリセットする必要はない。</p>
+<h3>なぜ引用符で囲むのか</h3>
+<p><code>&#x27;*.tmp&#x27;</code>の<code>*</code>は、0文字以上の任意の文字列に一致する。このパターンを引用符で囲むと、シェルが現在地の名前に展開せず、<code>find</code>へそのまま渡す。<code>find</code>が各階層のファイル名に対して一致を調べる。引用符を外すと、現在地に同じパターンの名前がある場合、<code>find</code>を実行する前に引数が変わってしまう。</p>
+<p><code>-name</code>は途中のディレクトリを含まない名前に対して調べる。<code>training.conf.tmp</code>を探すなら<code>-name &#x27;*.tmp&#x27;</code>を使う。パス全体に条件を付けたい場合は<code>-path</code>を使う。これは正規表現ではなく、ファイル名パターンの検索である。</p>
+<h3>よく使う条件を必要なときに追加する</h3>
+<table>
+<tr><th>指定</th><th>英語の手掛かり</th><th>意味</th></tr>
+<tr><td><code>-type d</code></td><td>directory</td><td>ディレクトリだけを検索する</td></tr>
+<tr><td><code>-iname &#x27;*.log&#x27;</code></td><td>大文字・小文字を区別しないname条件</td><td>名前の大文字・小文字を区別せず検索する</td></tr>
+<tr><td><code>-path &#x27;./staging/*&#x27;</code></td><td>path</td><td>パス全体がパターンに一致するものを検索する</td></tr>
+<tr><td><code>-maxdepth 2</code></td><td>maximum depth</td><td>開始位置を深さ0として、深さ2までたどる</td></tr>
+<tr><td><code>-mindepth 1</code></td><td>minimum depth</td><td>開始位置自身を結果に含めず、深さ1以降を評価する</td></tr>
+<tr><td><code>-empty</code></td><td>empty＝空</td><td>空の通常ファイル、または空のディレクトリに一致する</td></tr>
+<tr><td><code>-user ssm-user</code></td><td>user</td><td>指定したユーザーが所有する項目に一致する</td></tr>
+</table>
+<p><code>-maxdepth</code>や<code>-mindepth</code>は、検索の範囲を制御する指定なので、開始位置の直後に置くと読みやすい。例えば、次は現在地から2階層までで通常のファイルを探す。</p>
+<pre><code>find . -maxdepth 2 -type f -print</code></pre>
+<h3>条件と削除を分ける</h3>
+<p>P1では<code>find</code>は検索と表示だけに使う。検索結果を確認してから、<code>rm</code>に具体的なパスを指定する。</p>
+<pre><code>rm staging/training.conf.tmp staging/practice.log.tmp
+tree
+find . -type f -name &#x27;*.tmp&#x27; -print</code></pre>
+<p><code>tree</code>で構成を見直し、最後の<code>find</code>で該当するパスが表示されないことを確認する。<code>find</code>には<code>-delete</code>や<code>-exec</code>のように対象を変更したり別のコマンドを実行したりする動作もあるが、今回の練習では使わない。例を読み取れるまでは、検索条件と結果の確認を分けて進める。</p>
+<h2>grepでファイルの中の行を探す</h2>
+<p><code>grep</code>は、指定したパターンに一致する行を取り出す。名前はUnixの行エディター<code>ed</code>の<code>g/re/p</code>（global / regular expression / print）に由来する。まずは「内容を検索し、一致する行を表示する」と覚える。<code>find</code>はファイル名や種類などを探し、<code>grep</code>はファイルの内容を探す。</p>
+<pre><code>grep &#x27;WARN&#x27; ../logs/practice.log</code></pre>
+<p><code>grep</code>がコマンド、<code>&#x27;WARN&#x27;</code>が探すパターン、<code>../logs/practice.log</code>が読むファイルである。既定では大文字・小文字を区別し、パターンを基本正規表現として解釈する。今回の<code>WARN</code>は、その文字列を含む行に一致する。表示されるのは一致した単語だけでなく、行全体である。</p>
+<table>
+<tr><th>指定</th><th>対応する英語・長い形式</th><th>意味</th></tr>
+<tr><td><code>-n</code></td><td><code>--line-number</code></td><td>一致した行に元の行番号を付ける</td></tr>
+<tr><td><code>-i</code></td><td><code>--ignore-case</code></td><td>大文字・小文字を区別しない</td></tr>
+<tr><td><code>-F</code></td><td><code>--fixed-strings</code></td><td>パターンを正規表現ではなく文字列として扱う</td></tr>
+<tr><td><code>-v</code></td><td><code>--invert-match</code></td><td>一致しない行を取り出す</td></tr>
+<tr><td><code>-c</code></td><td><code>--count</code></td><td>一致した行の数を表示する。単語の出現回数ではない</td></tr>
+</table>
+<p>例えば、<code>grep -n &#x27;WARN&#x27; ../logs/practice.log</code>はWARN行に行番号を付ける。P1やM1で「行番号を付けない」と指定された提出ファイルでは、保存時に<code>-n</code>を使わない。<code>grep -F &#x27;WARN&#x27; ../logs/practice.log</code>なら、検索する内容を通常の文字列として指定できる。</p>
+<h3>観察してから保存する</h3>
+<pre><code>grep &#x27;WARN&#x27; ../logs/practice.log
+grep &#x27;WARN&#x27; ../logs/practice.log &gt; warnings.txt
+cat warnings.txt</code></pre>
+<p>まず抽出する行が正しいか画面で確認し、その後、同じ検索の結果を別ファイルへ保存する。<code>cat</code>で保存した内容を読み直す。<code>&gt;</code>を付けた実行で画面に結果が表示されなくても、保存先へ出力されていれば正常である。</p>
+<p>何も表示されない場合は、一致する行がないこともある。<code>grep</code>の終了ステータスは、通常、0が一致あり、1が一致なし、2がエラーである。ファイルが存在しない場合のエラー表示と、「一致する行がない」状態を区別する。</p>
+<h2>tailで末尾の行を読む</h2>
+<p><code>tail</code>は英語で「末尾・しっぽ」を意味する。ログの最後にどのような出来事が記録されたか確認するときに使う。オプションを付けない<code>tail FILE</code>は、既定で最後の10行を表示する。行数がそれより少なければ、存在する行だけを表示する。</p>
+<pre><code>tail -n 4 ../logs/practice.log</code></pre>
+<p><code>tail</code>がコマンド、<code>-n 4</code>が表示する行数、<code>../logs/practice.log</code>が読む対象である。<code>-n</code>は長い形式<code>--lines</code>に対応し、次の<code>4</code>を行数として受け取る。<code>grep -n</code>の「行番号を付ける」とは意味が異なる。</p>
+<table>
+<tr><th>指定</th><th>対応する英語・長い形式</th><th>意味</th></tr>
+<tr><td><code>-n 4</code></td><td><code>--lines=4</code></td><td>最後の4行を表示する</td></tr>
+<tr><td><code>-n 5</code></td><td><code>--lines=5</code></td><td>最後の5行を表示する</td></tr>
+<tr><td><code>-f</code></td><td><code>--follow</code></td><td>終了せず、新しく追加された内容も表示する</td></tr>
+</table>
+<p><code>tail</code>は最後の行から逆順に表示するコマンドではない。選ばれた末尾の行を、ファイル内と同じ順序で表示する。P1では最後の4行、M1では最後の5行を指定する。</p>
+<h3>観察してから保存する</h3>
+<pre><code>tail -n 4 ../logs/practice.log
+tail -n 4 ../logs/practice.log &gt; recent.txt
+cat recent.txt</code></pre>
+<p>最初の実行で行数と順序を観察し、次の実行で保存する。P1では<code>recent.txt</code>の内容が最後の4行と一致することを確認する。</p>
+<p>ログを見続ける補助的な操作には<code>tail -f FILE</code>がある。これは入力を待つ状態になるため、終了するときはCtrl+Cを押す。提出ファイルを作る今回の手順では、終了する<code>tail -n N FILE</code>を使う。</p>
+<h2>意味がわからない指定を調べる</h2>
+<pre><code>id --help
+find --help
+man find
+help cd</code></pre>
+<p><code>--help</code>は多くの外部コマンドの短い説明、<code>man</code>は詳しいマニュアル、<code>help</code>はBash内蔵コマンドの説明を読む手段である。<code>man</code>の画面は<code>q</code>で終了する。Labで<code>man</code>や個別のマニュアルが未導入なら、<code>--help</code>、<code>help</code>または次の公式資料を使う。</p>
+<ul><li><a href="https://www.gnu.org/software/coreutils/manual/html_node/id-invocation.html">GNU Coreutils: id</a></li><li><a href="https://www.gnu.org/software/grep/manual/grep.html">GNU Grepマニュアル</a></li><li><a href="https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html">GNU Coreutils: tail</a></li><li><a href="https://www.gnu.org/software/findutils/manual/html_mono/find.html">GNU Findutilsマニュアル</a></li></ul>
+<p>調べる順序は、(1) コマンドの役割、(2) オプションの意味、(3) 続く値、(4) 操作する対象である。AIに相談する場合も、<code>find . -type f -name &#x27;*.tmp&#x27; -print</code>を各部分に分けて説明してもらい、<code>--help</code>やマニュアルと照合する。</p>
 <h2>授業内で使うが暗記不要</h2>
 <p><code>uname -r</code>、<code>hostname</code>、<code>find</code>、<code>touch</code>、<code>stat</code>、<code>namei -l</code>、<code>test -r/-w</code>、<code>echo $?</code>、<code>printf</code>、<code>command -v</code>、<code>dpkg-query</code>、<code>dpkg -S</code>、<code>sha256sum</code>、<code>readlink</code>、<code>tr</code>、<code>/proc/PID/</code>。</p>
 <p>目的と出力の読み方を本文で確認し、必要なときにマニュアル（<code>man</code>/<code>help</code>）や本早見表を参照する。</p>

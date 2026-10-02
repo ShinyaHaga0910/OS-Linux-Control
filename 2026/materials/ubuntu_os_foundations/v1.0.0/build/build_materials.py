@@ -63,10 +63,16 @@ GRID = colors.HexColor("#CBD5E1")
 
 def inline_md(text: str) -> str:
     text = html.escape(text, quote=False)
-    text = re.sub(r"`([^`]+)`", r'<font name="NotoSansJP" backColor="#EEF2F7">\1</font>', text)
+    code_spans = []
+    def preserve_code(match):
+        code_spans.append('<font name="NotoSansJP" backColor="#EEF2F7">' + match.group(1) + '</font>')
+        return f"\x00CODE{len(code_spans)-1}\x00"
+    text = re.sub(r"`([^`]+)`", preserve_code, text)
     text = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2" color="#245E9A">\1</a>', text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
     text = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", text)
+    for index, span in enumerate(code_spans):
+        text = text.replace(f"\x00CODE{index}\x00", span)
     return text
 
 
@@ -169,10 +175,16 @@ def markdown_blocks(path: Path):
 
 def html_inline(text: str) -> str:
     text = html.escape(text)
-    text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
+    code_spans = []
+    def preserve_code(match):
+        code_spans.append('<code>' + match.group(1) + '</code>')
+        return f"\x00CODE{len(code_spans)-1}\x00"
+    text = re.sub(r"`([^`]+)`", preserve_code, text)
     text = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2">\1</a>', text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", text)
+    for index, span in enumerate(code_spans):
+        text = text.replace(f"\x00CODE{index}\x00", span)
     return text
 
 

@@ -7,6 +7,7 @@ h1:first-of-type { page-break-before:auto; }
 h2 { color:#245E9A; margin-top:9mm; border-left:4px solid #4A90C2; padding-left:3mm; }
 @media print { h2.chapter-answers { break-before: page; page-break-before: always; } }
 h3 { color:#315E79; margin-top:6mm; }
+h4 { color:#315E79; margin-top:4mm; margin-bottom:2mm; font-size:10.5pt; }
 p { text-align:justify; }
 code { font-family: Consolas,'Noto Sans Mono',monospace; background:#EEF2F7; padding:0 1mm; }
 pre { background:#172033; color:#F6F8FB; padding:4mm; border-radius:2mm; white-space:pre-wrap; overflow-wrap:anywhere; }
@@ -810,4 +811,5 @@ ssh study-server &#x27;printf &quot;%s\n&quot; &quot;$HOME&quot;&#x27; &gt; loca
 <p>コンピューター上のプログラムは、OSが提供する機能を利用して動く。Linuxを操作するときは、コマンドの名前だけでなく、その操作がファイル、ユーザー、プロセス、通信のどれに関わるかを考えると、結果を理解しやすい。</p>
 <p>設定ファイルが存在すること、サービスのプロセスが動いていること、ネットワークから期待した応答を得られることは、それぞれ異なる状態である。ある一つの状態が正しくても、ほかの状態が正しいとは限らない。ファイルの所有者やアクセス権、サービスの実行ユーザー、待受ソケット、ログを区別して読むことが大切である。</p>
 <p>後続の授業では、Nginx、BIND 9、PostgreSQLなど、用途の異なるソフトウェアを扱う。それぞれの設定方法は異なるが、「どのユーザーで動くか」「どのファイルを使うか」「どこで通信を受けるか」「動作をどこで確認できるか」という問いは共通して使える。本書で学んだOSの基本概念を、新しいシステムを理解するための土台にしてほしい。</p>
+<p>コマンドの綴りやオプションを読み直したい場合は、巻末の参照資料として用意した[用語集・コマンド早見表](../reference.md)の「コマンドの読み方」「findを段階的に読む」「grepでファイルの中の行を探す」「tailで末尾の行を読む」を参照してほしい。<code>id -un</code>のuser・nameの対応や、検索開始位置・条件・表示を分けた読み方を、短い実行例で説明している。</p>
 </body></html>

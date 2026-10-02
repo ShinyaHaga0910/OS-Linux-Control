@@ -75,3 +75,10 @@ GNU/Linuxの年表やUbuntuのDebianとの関係について、出典に年号�
 - OS層図は概念図と明示する。GUIを使うために必ずCLIを通る構造にしない。
 - service/socket図では、systemdがserviceを管理し、service processがsocket利用を要求し、kernelが通信機能を提供する主体を分ける。
 - 図の必要性は説明上の役割で判定する。公式に都合のよい一枚図がないことを理由に、図を省いたり無関係な図を代用したりしない。
+
+## 2026-10-02 コマンドの読み方と検索・末尾表示
+
+- GNU Grep公式マニュアル：https://www.gnu.org/software/grep/manual/grep.html 。g/re/p（global / regular expression / print）の由来を公式検索結果で確認。
+- GNU Findutils公式マニュアル：https://www.gnu.org/software/findutils/manual/html_mono/find.html 。検索開始位置・式の構造を公式検索結果で確認。詳細指定はローカルGNU find --helpと、使った検索の動作で確認。
+- GNU Coreutilsのid/tail説明：https://www.gnu.org/software/coreutils/manual/html_node/id-invocation.html 、 https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html 。ページ取得はタイムアウトのため、今回のオプション説明はローカルGNU id --help、tail --helpで確認。Ubuntu実機での今回の教材操作は未検証。
+- cd/pwdはBash help、grepの指定はgrep --helpでも照合。英語欄は学習用の意味対応とし、未確認の歴史的略語由来を断定しない。

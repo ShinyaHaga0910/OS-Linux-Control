@@ -47,16 +47,16 @@ P6とM6はUbuntuとCloudShellで別々に`jdu-check`を実行します。Dashboa
 
 ### 既存のUbuntu環境を使い続ける場合
 
-今回のP1判定修正は、新しくCloudFormationから作る環境には自動で入ります。すでに作成したUbuntu環境では、`ssm-user`として接続し、判定スクリプトだけを更新できます。演習成果物のresetは不要です。
+今回のM1所有者判定の削除は、新しくCloudFormationから作る環境には自動で入ります。すでに作成したUbuntu環境では、`ssm-user`として接続し、判定スクリプトだけを更新できます。演習成果物のresetは不要です。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/jdu-labcheck -o /tmp/jdu-labcheck-v1.0.0
-printf '%s  %s\n' '266ea663d86fd7480d5a8853e72d94717fa16e879afd54b82ec6ffdcf71719b4' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check
+printf '%s  %s\n' 'c1e684c8505705be768b1ea8742b2f9a5d9d7087da593b4d4d7b85b9517633f4' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check
 sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
-jdu-check P1
+jdu-check M1 --no-submit
 ```
 
-更新するまでは、既存環境のP1所有者判定が古い条件で動きます。
+更新するまでは、既存環境のM1に所有者判定が残り、6項目で動きます。更新後はM1が5項目になります。教員画面の既存結果は、更新後に学生が再提出した時点で5項目の結果に置き換わります。
 
 ## 主なファイル
 

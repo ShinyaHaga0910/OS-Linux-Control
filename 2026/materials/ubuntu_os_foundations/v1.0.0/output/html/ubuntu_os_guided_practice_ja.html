@@ -83,7 +83,10 @@ ls -l</code></pre>
 <pre><code>cd ~/jdu-lab/p1/practice01
 pwd
 tree</code></pre>
-<p><code>staging</code>の中にある<code>training.conf.tmp</code>と<code>practice.log.tmp</code>を確認する。この2つの不要なfileを<code>rm</code>で削除する。</p>
+<p><code>tree</code>の表示から、<code>staging</code>の中にある<code>training.conf.tmp</code>と<code>practice.log.tmp</code>を探す。次に、同じ2つのfileを<code>find</code>で検索する。</p>
+<pre><code>find . -type f -name &#x27;*.tmp&#x27; -print</code></pre>
+<p><code>.</code>は現在のdirectoryから探す指定、<code>-type f</code>は通常のfileだけを対象にする条件、<code>-name &#x27;*.tmp&#x27;</code>は名前が<code>.tmp</code>で終わる条件、<code>-print</code>は一致したパスを表示する指示である。<code>&#x27;*.tmp&#x27;</code>を引用符で囲む理由を含め、詳しい読み方は巻末の参照資料で説明する。</p>
+<p><code>./staging/training.conf.tmp</code>と<code>./staging/practice.log.tmp</code>が表示されることを確認する。表示順は問わない。検索結果と<code>tree</code>の構成を照合したら、この2つの不要なfileを<code>rm</code>で削除する。</p>
 <pre><code>rm staging/training.conf.tmp staging/practice.log.tmp
 tree</code></pre>
 <p>削除後の<code>tree</code>で、2つの<code>.tmp</code>ファイルが表示されないことを確認する。コピーした<code>config/training.conf</code>と<code>logs/practice.log</code>が残っていることも確認する。</p>

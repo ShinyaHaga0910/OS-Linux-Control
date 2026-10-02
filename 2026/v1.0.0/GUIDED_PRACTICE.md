@@ -136,7 +136,15 @@ pwd
 tree
 ```
 
-`staging`の中にある`training.conf.tmp`と`practice.log.tmp`を確認する。この2つの不要なfileを`rm`で削除する。
+`tree`の表示から、`staging`の中にある`training.conf.tmp`と`practice.log.tmp`を探す。次に、同じ2つのfileを`find`で検索する。
+
+```bash
+find . -type f -name '*.tmp' -print
+```
+
+`.`は現在のdirectoryから探す指定、`-type f`は通常のfileだけを対象にする条件、`-name '*.tmp'`は名前が`.tmp`で終わる条件、`-print`は一致したパスを表示する指示である。`'*.tmp'`を引用符で囲む理由を含め、詳しい読み方は巻末の参照資料で説明する。
+
+`./staging/training.conf.tmp`と`./staging/practice.log.tmp`が表示されることを確認する。表示順は問わない。検索結果と`tree`の構成を照合したら、この2つの不要なfileを`rm`で削除する。
 
 ```bash
 rm staging/training.conf.tmp staging/practice.log.tmp

@@ -76,11 +76,11 @@ HOST_NAME=</code></pre>
 ├── config/
 ├── logs/
 └── notes/</code></pre>
-<ol><li><code>inbox/config/app.conf</code>を<code>case01/config/app.conf</code>へコピーする。</li><li><code>inbox/logs/incident.log</code>を<code>case01/logs/incident.log</code>へコピーする。</li><li>コピーした2 fileの内容を変更しない。</li><li><code>case01</code>の中から<code>.tmp</code> fileをすべて除く。</li><li><code>case01</code>以下を、Ubuntuへ接続した管理user <code>ssm-user</code>が所有する状態にする。</li><li><code>incident.log</code>から<code>ERROR</code>を含む完全な行だけを取り出し、<code>notes/errors.txt</code>へ保存する。行番号を付けない。</li><li><code>incident.log</code>の最後の5行を順序を変えず、<code>notes/recent.txt</code>へ保存する。</li></ol>
+<ol><li><code>inbox/config/app.conf</code>を<code>case01/config/app.conf</code>へコピーする。</li><li><code>inbox/logs/incident.log</code>を<code>case01/logs/incident.log</code>へコピーする。</li><li>コピーした2 fileの内容を変更しない。</li><li><code>case01</code>の中から<code>.tmp</code> fileをすべて除く。</li><li><code>incident.log</code>から<code>ERROR</code>を含む完全な行だけを取り出し、<code>notes/errors.txt</code>へ保存する。行番号を付けない。</li><li><code>incident.log</code>の最後の5行を順序を変えず、<code>notes/recent.txt</code>へ保存する。</li></ol>
 <h3>判定</h3>
-<p>6課題を判定する。Directory、source file、<code>.tmp</code>、owner、<code>errors.txt</code>、<code>recent.txt</code>がそれぞれ課題に対応する。</p>
+<p>5項目を判定する。Directory、source file、<code>.tmp</code>、<code>errors.txt</code>、<code>recent.txt</code>がそれぞれ判定に対応する。</p>
 <pre><code>jdu-check M1</code></pre>
-<p>確認候補: <code>pwd</code>, <code>ls</code>, <code>tree</code>, <code>mkdir</code>, <code>cp</code>, <code>rm</code>, <code>find</code>, <code>grep</code>, <code>tail</code>, <code>stat</code></p>
+<p>確認候補: <code>pwd</code>, <code>ls</code>, <code>tree</code>, <code>mkdir</code>, <code>cp</code>, <code>rm</code>, <code>find</code>, <code>grep</code>, <code>tail</code></p>
 <h2>M2 User, group, permission, and sudo</h2>
 <h3>目的</h3>
 <p>User、primary group、supplementary groupを区別する。共有directoryへgroup accessとsetgidを設定する。</p>

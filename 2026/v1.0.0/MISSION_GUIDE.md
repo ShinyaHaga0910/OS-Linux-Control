@@ -128,19 +128,18 @@ jdu-check M0
 3. `inbox/logs/incident.log`を`case01/logs/incident.log`へコピーする。
 4. コピーした2 fileの内容を変更しない。
 5. `case01`の中から`.tmp` fileをすべて除く。
-6. `case01`以下を、Ubuntuへ接続した管理user `ssm-user`が所有する状態にする。
-7. `incident.log`から`ERROR`を含む完全な行だけを取り出し、`notes/errors.txt`へ保存する。行番号を付けない。
-8. `incident.log`の最後の5行を順序を変えず、`notes/recent.txt`へ保存する。
+6. `incident.log`から`ERROR`を含む完全な行だけを取り出し、`notes/errors.txt`へ保存する。行番号を付けない。
+7. `incident.log`の最後の5行を順序を変えず、`notes/recent.txt`へ保存する。
 
 ### 判定
 
-6課題を判定する。Directory、source file、`.tmp`、owner、`errors.txt`、`recent.txt`がそれぞれ課題に対応する。
+5項目を判定する。Directory、source file、`.tmp`、`errors.txt`、`recent.txt`がそれぞれ判定に対応する。
 
 ```bash
 jdu-check M1
 ```
 
-確認候補: `pwd`, `ls`, `tree`, `mkdir`, `cp`, `rm`, `find`, `grep`, `tail`, `stat`
+確認候補: `pwd`, `ls`, `tree`, `mkdir`, `cp`, `rm`, `find`, `grep`, `tail`
 
 ## M2 User, group, permission, and sudo
 

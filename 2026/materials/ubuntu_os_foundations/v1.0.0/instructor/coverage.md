@@ -5,7 +5,7 @@
 | 対象 | 本文章 | 練習課題と解答例 | 自力課題 | 採点数 | 教材で説明する判定根拠 |
 | --- | --- | --- | --- | ---: | --- |
 | M0 | 1、3、4 | なし | missions M0 | 6 | OS ID/version、kernel、PID1、user、hostを別の観測元から取得 |
-| 1 | 4、5 | P1 | M1 | P6 / M6 | path、directory、copy、削除、owner、grep、tail、redirect |
+| 1 | 4、5 | P1 | M1 | P6 / M6 | path、directory、copy、削除、grep、tail、redirect（P1の所有者条件は維持、M1は所有者を採点しない） |
 | 2 | 6、7 | P2 | M2 | P6 / M6 | group登録、2775、664、setgid、writer作成、viewer read/write |
 | 3 | 8、9 | P3 | M3 | P2 / M2 | Main PID照合とTERM、指定packageの導入・実行file・version |
 | 4 | 10 | P4 | M4 | P3 / M3 | active、enabled、unit不変、live user/command/cwd |

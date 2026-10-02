@@ -113,12 +113,11 @@ check_m0() {
 
 check_m1() {
   local base="$student_home/jdu-lab/m1/case01" source=/opt/jdu-lab/fixtures/m1/source evidence tree_ready=false files_ready=false
-  printf '%s\n' 'Mission M1 (6 tasks)'
+  printf '%s\n' 'Mission M1 (5 tasks)'
   [[ -d "$base/config" && -d "$base/logs" && -d "$base/notes" ]] && pass M1-FS-01 'Required directories exist' || not_ready M1-FS-01 'Build the required case01 tree'
   if [[ -d "$base/config" && -d "$base/logs" && -d "$base/notes" ]]; then tree_ready=true; fi
   if [[ -f "$base/config/app.conf" && -f "$base/logs/incident.log" ]] && cmp -s "$source/config/app.conf" "$base/config/app.conf" && cmp -s "$source/logs/incident.log" "$base/logs/incident.log"; then files_ready=true; pass M1-FS-02 'Required source files are copied without changes'; else not_ready M1-FS-02 'Copy the required source files without changing their contents'; fi
   if $tree_ready && $files_ready && ! find "$base" -maxdepth 2 -type f -name '*.tmp' 2>/dev/null | grep -q .; then pass M1-FS-03 'Temporary files are removed from case01'; else not_ready M1-FS-03 'Complete case01 and remove its .tmp files'; fi
-  if $tree_ready && ! find "$base" ! -user "$student_user" -print -quit | grep -q .; then pass M1-FS-04 'Student owns the completed case01 tree'; else not_ready M1-FS-04 'Complete case01 with student ownership'; fi
   evidence="$base/notes/errors.txt"
   if [[ ! -f "$evidence" ]]; then
     not_ready M1-TXT-01 'Create notes/errors.txt with the complete ERROR lines'

@@ -65,7 +65,7 @@ printf '%s\n' 'PASS teacher command includes the deployed progress configuration
 
 declare -A expected_counts=(
   [P1]=6 [P2]=6 [P3]=2 [P4]=3 [P5]=4 [P6]=2
-  [M1]=6 [M2]=6 [M3]=2 [M4]=3 [M5]=4 [M6]=2 [M7]=6
+  [M1]=5 [M2]=6 [M3]=2 [M4]=3 [M5]=4 [M6]=2 [M7]=6
 )
 
 for mission in P1 P2 P4 P5 P6 M1 M2 M4 M5 M6 M7; do
@@ -307,7 +307,7 @@ expected_ids = {
     "P4": {"P4-SVC-01", "P4-SVC-02", "P4-SVC-03"},
     "P5": {"P5-SOCK-01", "P5-HTTP-01", "P5-LOG-01", "P5-NEG-01"},
     "P6": {"P6-XFER-01", "P6-REMOTE-01"},
-    "M1": {"M1-FS-01", "M1-FS-02", "M1-FS-03", "M1-FS-04", "M1-TXT-01", "M1-TXT-02"},
+    "M1": {"M1-FS-01", "M1-FS-02", "M1-FS-03", "M1-TXT-01", "M1-TXT-02"},
     "M2": {"M2-ID-01", "M2-PERM-01", "M2-PERM-02", "M2-PERM-03", "M2-PERM-04", "M2-PERM-05"},
     "M3": {"M3-PROC-01", "M3-APT-01"},
     "M4": {"M4-SVC-01", "M4-SVC-02", "M4-SVC-03"},
@@ -417,7 +417,7 @@ automatic_output="$(HOME="$automatic_test_home" MOCK_PROGRESS_LOG="$automatic_pr
 automatic_status=$?
 set -e
 [[ "$automatic_status" -eq 1 ]]
-grep -Fxq 'submit M1 0 6' "$automatic_progress_log"
+grep -Fxq 'submit M1 0 5' "$automatic_progress_log"
 grep -Fq 'REPORT    PASS (server srv-0123456789abcdef)' <<<"$automatic_output"
 rm -f -- "$automatic_progress_log"
 set +e
