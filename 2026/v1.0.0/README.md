@@ -6,6 +6,8 @@ Status: First distribution candidate / local acceptance tests passed / Learner L
 
 ## 学生の初回構築
 
+操作を順番に確認するには、[初回セットアップ・採点システム登録の手順書（日本語・ロシア語・ウズベク語）](setup/README.md)を開いてください。教員の配布コマンドを実行し、自分専用の進捗ダッシュボードを開くまでを説明しています。
+
 Learner Labを開始し、CloudShellで実行します。
 
 Google Classroomで教員が配布した、このセミスター用の構築コマンドをコピーして実行してください。教員用installerが、実際の進捗送信先と非公開の登録キーを含むコマンドを生成します。公開GitHubには実際のキーを載せません。配布コマンドを公開リポジトリ、公開チャット、スクリーンショットに転載しないでください。送信先・キーを指定せずにinstallerを実行すると、AWSの構築前に停止します。
