@@ -13,7 +13,7 @@
 CloudShellで実行します。
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/install.sh
+curl -fsSLO https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/install.sh
 bash install.sh --region us-east-1
 ```
 

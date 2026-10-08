@@ -14,4 +14,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Lab tests
-        run: bash 2026/v1.0.0/tests/run-tests.sh
+        run: bash 2026/lab/tests/run-tests.sh

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -u
+
+service="${1:-}"
+operation="${2:-}"
+all_args="$*"
+
+case "$service:$operation" in
+  sts:get-caller-identity)
+    printf '%s\n' '{"Account":"111122223333","Arn":"arn:aws:sts::111122223333:assumed-role/LabRole/student","UserId":"test"}'
+    ;;
+  cloudformation:describe-stacks)
+    case "$all_args" in
+      *StackStatus*) printf '%s\n' 'CREATE_COMPLETE' ;;
+      *"OutputKey=='InstanceId'"*) printf '%s\n' 'i-0123456789abcdef0' ;;
+      *"OutputKey=='VpcId'"*) printf '%s\n' 'vpc-0123456789abcdef0' ;;
+      *"OutputKey=='PublicSubnetId'"*) printf '%s\n' 'subnet-0123456789abcdef0' ;;
+      *"OutputKey=='RouteTableId'"*) printf '%s\n' 'rtb-0123456789abcdef0' ;;
+      *"OutputKey=='SecurityGroupId'"*) printf '%s\n' 'sg-0123456789abcdef0' ;;
+      *"OutputKey=='InstanceProfileName'"*) printf '%s\n' 'LabInstanceProfile' ;;
+      *"OutputKey=='ConnectionMethod'"*) printf '%s\n' 'SSH over AWS Systems Manager Session Manager' ;;
+      *"OutputKey=='StudentSshUser'"*) printf '%s\n' 'ssm-user' ;;
+      *) exit 3 ;;
+    esac
+    ;;
+  ec2:describe-vpcs) printf '%s\n' '10.20.0.0/16' ;;
+  ec2:describe-subnets)
+    case "$all_args" in
+      *MapPublicIpOnLaunch*) printf '%s\n' 'True' ;;
+      *) printf '%s\n' '10.20.10.0/24' ;;
+    esac
+    ;;
+  ec2:describe-route-tables) printf '%s\n' 'igw-0123456789abcdef0' ;;
+  ec2:describe-security-groups)
+    if [[ "${MOCK_BAD_SG:-0}" == 1 ]]; then printf '%s\n' '1'; else printf '%s\n' '0'; fi
+    ;;
+  ec2:describe-instances)
+    case "$all_args" in
+      *State.Name*) printf '%s\n' 'running' ;;
+      *PublicIpAddress*) printf '%s\n' '198.51.100.10' ;;
+      *MetadataOptions.HttpTokens*) printf '%s\n' 'required' ;;
+      *IamInstanceProfile.Arn*) printf '%s\n' 'arn:aws:iam::111122223333:instance-profile/LabInstanceProfile' ;;
+      *"Key=='JDUCourse'"*) printf '%s\n' 'Introduction_CyberSecurity' ;;
+      *) exit 3 ;;
+    esac
+    ;;
+  ssm:describe-instance-information) printf '%s\n' 'Online' ;;
+  *) printf 'Unexpected mock AWS call: %s\n' "$all_args" >&2; exit 3 ;;
+esac

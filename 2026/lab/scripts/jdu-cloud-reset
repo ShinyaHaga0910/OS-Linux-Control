@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+mission="${1:-}"
+mission="${mission^^}"
+if [[ "$mission" != M6 && "$mission" != P6 ]]; then
+  printf '%s\n' 'Usage: jdu-reset P6|M6' >&2
+  exit 2
+fi
+
+if [[ "$mission" == P6 ]]; then
+  workspace="${JDU_P6_WORKSPACE:-$HOME/jdu-lab/p6}"
+  source_name=practice-source.txt
+  download_name=practice-downloaded-result.txt
+else
+  workspace="${JDU_M6_WORKSPACE:-$HOME/jdu-lab/m6}"
+  source_name=local-source.txt
+  download_name=downloaded-result.txt
+fi
+case "$workspace" in
+  "$HOME"/jdu-lab/p6|"$HOME"/jdu-lab/m6) ;;
+  *) printf 'ERROR Unsafe SSH workspace: %s\n' "$workspace" >&2; exit 2 ;;
+esac
+
+install -d -m 0700 "$workspace"
+rm -f -- "$workspace/$source_name" "$workspace/$download_name"
+printf '%s CloudShell reset complete. Transfer files are intentionally absent.\n' "$mission"

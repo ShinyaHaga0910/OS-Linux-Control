@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+student_user="${1:-ssm-user}"
+if [[ "$student_user" != "ssm-user" ]]; then
+  printf 'ERROR Unsupported student user: %s\n' "$student_user" >&2
+  exit 2
+fi
+
+if ! getent passwd "$student_user" >/dev/null; then
+  exit 0
+fi
+
+student_home="$(getent passwd "$student_user" | awk -F: '{print $6}')"
+student_group="$(id -gn "$student_user")"
+if [[ "$student_home" != "/home/ssm-user" ]]; then
+  printf 'ERROR Unexpected home for %s: %s\n' "$student_user" "$student_home" >&2
+  exit 2
+fi
+
+workspace="$student_home/jdu-lab"
+ssh_directory="$student_home/.ssh"
+authorized_keys="$ssh_directory/authorized_keys"
+install -d -o "$student_user" -g "$student_group" -m 0750 \
+  "$workspace" \
+  "$workspace/p1" \
+  "$workspace/p2" \
+  "$workspace/p3" \
+  "$workspace/p4" \
+  "$workspace/p5" \
+  "$workspace/p6" \
+  "$workspace/m0" \
+  "$workspace/m1" \
+  "$workspace/m2" \
+  "$workspace/m3" \
+  "$workspace/m4" \
+  "$workspace/m5" \
+  "$workspace/m6" \
+  "$workspace/m7" \
+  "$workspace/results"
+chown -R "$student_user:$student_group" "$workspace"
+find "$workspace" -type d -exec chmod u+rwx,go-rwx {} +
+
+if [[ -s /etc/jdu-lab/student-ssh-key.pub ]]; then
+  install -d -o "$student_user" -g "$student_group" -m 0700 "$ssh_directory"
+  touch "$authorized_keys"
+  if ! grep -Fqx -f /etc/jdu-lab/student-ssh-key.pub "$authorized_keys"; then
+    cat /etc/jdu-lab/student-ssh-key.pub >> "$authorized_keys"
+  fi
+  chown "$student_user:$student_group" "$authorized_keys"
+  chmod 0600 "$authorized_keys"
+fi
+
+printf 'Prepared %s for %s\n' "$workspace" "$student_user"

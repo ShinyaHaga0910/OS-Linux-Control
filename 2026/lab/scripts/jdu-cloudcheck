@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+set -u
+export LC_ALL=C
+
+alias_name="${JDU_SSH_ALIAS:-jdu-ubuntu}"
+progress_config="${JDU_CLOUD_PROGRESS_CONFIG:-$HOME/.jdu-student/progress.env}"
+submit_progress=true
+pass_count=0
+fail_count=0
+
+pass() { pass_count=$((pass_count + 1)); printf 'PASS      %-14s %s\n' "$1" "$2"; }
+fail() { fail_count=$((fail_count + 1)); printf 'FAIL      %-14s %s\n' "$1" "$2"; }
+finish() {
+  local total=$((pass_count + fail_count)) result_status=0 endpoint server_id server_token body report_mission
+  printf '\nRESULT    %d / %d checks cleared\n' "$pass_count" "$total"
+  printf 'PASS      %d\n' "$pass_count"
+  printf 'FAIL      %d\n' "$fail_count"
+  ((fail_count == 0)) || result_status=1
+  if $submit_progress && [[ -r "$progress_config" ]]; then
+    endpoint="$(sed -n 's/^JDU_PROGRESS_ENDPOINT=//p' "$progress_config" | tail -n 1)"
+    server_id="$(sed -n 's/^JDU_PROGRESS_SERVER_ID=//p' "$progress_config" | tail -n 1)"
+    server_token="$(sed -n 's/^JDU_PROGRESS_SERVER_TOKEN=//p' "$progress_config" | tail -n 1)"
+    if [[ "$endpoint" =~ ^https://[^[:space:]]+$ && "$server_id" =~ ^[A-Za-z0-9_-]{8,64}$ && ${#server_token} -ge 32 ]]; then
+      report_mission="${mission}C"
+      body="$(printf '{\"server_id\":\"%s\",\"mission\":\"%s\",\"passed\":%d,\"total\":%d}' "$server_id" "$report_mission" "$pass_count" "$total")"
+      if curl -fsS --retry 2 --max-time 15 -X POST -H "Authorization: Bearer $server_token" -H 'Content-Type: application/json' --data-binary "$body" "${endpoint%/}/submit" >/dev/null; then
+        printf 'REPORT    PASS (server %s, %s-CloudShell)\n' "$server_id" "$mission"
+      else
+        printf '%s\n' 'REPORT    FAIL (the CloudShell check result was not changed)' >&2
+      fi
+    fi
+  fi
+  return "$result_status"
+}
+
+mission=''
+while (($#)); do
+  case "$1" in
+    mission) shift; mission="${1:-}" ;;
+    M6|m6) mission=M6 ;;
+    P6|p6) mission=P6 ;;
+    --submit) submit_progress=true ;;
+    --no-submit) submit_progress=false ;;
+    *) printf 'ERROR Unknown option: %s\n' "$1" >&2; printf '%s\n' 'Usage: jdu-check P6|M6 [--no-submit]' >&2; exit 2 ;;
+  esac
+  shift
+done
+mission="${mission^^}"
+if [[ "$mission" != M6 && "$mission" != P6 ]]; then
+  printf '%s\n' 'Usage: jdu-check P6|M6 [--no-submit]' >&2
+  exit 2
+fi
+
+if [[ "$mission" == P6 ]]; then
+  workspace="${JDU_P6_WORKSPACE:-$HOME/jdu-lab/p6}"
+  local_name=practice-source.txt
+  upload_name=practice-upload.txt
+  result_name=practice-remote-result.txt
+  download_name=practice-downloaded-result.txt
+  required_line='JDU SSH guided transfer'
+  check_prefix=P6
+  printf '%s\n' 'Guided Practice P6 CloudShell side (4 tasks)'
+else
+  workspace="${JDU_M6_WORKSPACE:-$HOME/jdu-lab/m6}"
+  local_name=local-source.txt
+  upload_name=upload.txt
+  result_name=remote-result.txt
+  download_name=downloaded-result.txt
+  required_line='JDU SSH transfer test'
+  check_prefix=M6
+  printf '%s\n' 'Mission M6 CloudShell side (4 tasks)'
+fi
+
+local_source="$workspace/$local_name"
+local_hash=''
+if [[ -f "$local_source" ]] && grep -Fqx "$required_line" "$local_source" && [[ "$(wc -l < "$local_source")" -eq 1 ]]; then
+  local_hash="$(sha256sum "$local_source" | awk '{print $1}')"
+  pass "${check_prefix}-LOCAL-01" 'CloudShell source has the required one-line content'
+else
+  fail "${check_prefix}-LOCAL-01" "Create $local_name with the required one-line content"
+fi
+
+remote_upload_output="$(ssh -o BatchMode=yes -o ConnectTimeout=15 "$alias_name" "sha256sum ~/jdu-lab/${mission,,}/$upload_name" 2>/dev/null || true)"
+remote_upload_hash="$(awk '{print $1}' <<<"$remote_upload_output")"
+if [[ -n "$local_hash" && "$remote_upload_hash" == "$local_hash" ]]; then
+  pass "${check_prefix}-XFER-01" "Ubuntu $upload_name matches the CloudShell source"
+else
+  fail "${check_prefix}-XFER-01" "Transfer $local_name to Ubuntu as $upload_name"
+fi
+
+remote_expected="$(ssh -o BatchMode=yes -o ConnectTimeout=15 "$alias_name" 'printf "REMOTE_USER=%s\nREMOTE_HOST=%s\nREMOTE_PATH=%s\n" "$(id -un)" "$(hostname)" "$HOME"' 2>/dev/null || true)"
+remote_actual="$(ssh -o BatchMode=yes -o ConnectTimeout=15 "$alias_name" "cat ~/jdu-lab/${mission,,}/$result_name" 2>/dev/null || true)"
+if [[ -n "$remote_expected" && "$remote_actual" == "$remote_expected" ]]; then
+  pass "${check_prefix}-REMOTE-01" "Ubuntu $result_name records the live remote identity"
+else
+  fail "${check_prefix}-REMOTE-01" "Create $result_name by running a command through SSH"
+fi
+
+downloaded_result="$workspace/$download_name"
+downloaded_hash=''
+if [[ -f "$downloaded_result" ]]; then
+  downloaded_hash="$(sha256sum "$downloaded_result" | awk '{print $1}')"
+fi
+remote_result_output="$(ssh -o BatchMode=yes -o ConnectTimeout=15 "$alias_name" "sha256sum ~/jdu-lab/${mission,,}/$result_name" 2>/dev/null || true)"
+remote_result_hash="$(awk '{print $1}' <<<"$remote_result_output")"
+if [[ -n "$downloaded_hash" && "$remote_result_hash" == "$downloaded_hash" ]]; then
+  pass "${check_prefix}-XFER-02" 'CloudShell download matches the Ubuntu result'
+else
+  fail "${check_prefix}-XFER-02" "Download $result_name to $download_name"
+fi
+
+finish

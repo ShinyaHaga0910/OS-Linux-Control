@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+config_file="${JDU_TEACHER_CONFIG:-$HOME/.jdu-teacher/progress.env}"
+admin_key_file="${JDU_TEACHER_ADMIN_KEY:-$HOME/.jdu-teacher/admin.key}"
+
+if [[ ! -r "$config_file" || ! -r "$admin_key_file" ]]; then
+  printf '%s\n' 'ERROR Teacher progress configuration is missing. Run install-teacher.sh in the teacher CloudShell.' >&2
+  exit 2
+fi
+
+endpoint="$(sed -n 's/^JDU_PROGRESS_ENDPOINT=//p' "$config_file" | tail -n 1)"
+admin_key="$(tr -d '\r\n' < "$admin_key_file")"
+if [[ ! "$endpoint" =~ ^https://[^[:space:]]+$ || -z "$admin_key" ]]; then
+  printf '%s\n' 'ERROR Teacher progress configuration is invalid.' >&2
+  exit 2
+fi
+
+response="$(curl -fsS --retry 2 --max-time 15 \
+  -X POST \
+  -H "X-JDU-Admin-Key: $admin_key" \
+  -H 'Content-Type: application/json' \
+  --data '{}' \
+  "${endpoint%/}/admin/session")" || {
+    printf '%s\n' 'ERROR Could not create a dashboard session.' >&2
+    exit 1
+  }
+
+url="$(python3 -c 'import json,sys; print(json.load(sys.stdin)["url"])' <<<"$response")" || {
+  printf '%s\n' 'ERROR The progress server returned an invalid response.' >&2
+  exit 1
+}
+
+if [[ ! "$url" =~ ^https://[^[:space:][:cntrl:]]+$ ]]; then
+  printf '%s\n' 'ERROR The progress server returned an invalid dashboard URL.' >&2
+  exit 1
+fi
+
+if [[ -t 1 ]]; then
+  printf '\033]8;;%s\033\\%s\033]8;;\033\\\n' "$url" "$url"
+else
+  printf '%s\n' "$url"
+fi
