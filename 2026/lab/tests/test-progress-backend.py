@@ -253,6 +253,8 @@ for language, heading, title in [
     assert "updated@jdu.uz" in translated["body"]
     assert "other@example.test" not in translated["body"]
     assert f'<input type="hidden" name="session" value="{personal_token}">' in translated["body"]
+    assert f'name="lang" value="{language}" lang="{language}" aria-pressed="true"' in translated["body"]
+    assert all(f'name="lang" value="{choice}" lang="{choice}"' in translated["body"] for choice in ("ja", "uz", "ru"))
 for view in [personal_view, partial_dashboard]:
     assert not app.re.search(r'\bT[0-6]\b', view["body"])
     assert not app.re.search(r'\bM0\b', view["body"])
