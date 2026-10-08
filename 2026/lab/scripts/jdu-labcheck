@@ -160,19 +160,16 @@ check_m3() {
 }
 
 check_m4() {
-  local pid active enabled user base_hash actual_hash properties command_line working_directory
-  printf '%s\n' 'Mission M4 (3 tasks)'
-  base_hash="$(cat /opt/jdu-lab/fixtures/m4/jdu-status.service.sha256 2>/dev/null || true)"; actual_hash="$(sha256sum /etc/systemd/system/jdu-status.service 2>/dev/null | awk '{print $1}')"
-  properties="$(systemctl show jdu-status.service -p User -p ExecStart -p WorkingDirectory 2>/dev/null || true)"
-  active="$(systemctl is-active jdu-status.service 2>/dev/null || true)"; enabled="$(systemctl is-enabled jdu-status.service 2>/dev/null || true)"; pid="$(service_pid jdu-status.service)"; user="$(service_user "$pid" 2>/dev/null || true)"
-  [[ "$active" == active ]] && pass M4-SVC-01 'Service is active' || not_ready M4-SVC-01 'Start the course service'
-  [[ "$enabled" == enabled ]] && pass M4-SVC-02 'Service is enabled for boot' || not_ready M4-SVC-02 'Set the required boot state'
-  command_line=''; working_directory=''
-  if [[ "$pid" =~ ^[1-9][0-9]*$ ]]; then
-    command_line="$(sudo -n cat "/proc/$pid/cmdline" 2>/dev/null | tr '\0' ' ' || true)"
-    working_directory="$(sudo -n readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
-  fi
-  if [[ -n "$base_hash" && "$actual_hash" == "$base_hash" && "$pid" =~ ^[1-9][0-9]*$ && "$user" == jduapp && "$command_line" == *'/opt/jdu-lab/bin/jdu-http-service'* && "$working_directory" == /srv/jdu-status ]] && grep -Fxq 'User=jduapp' <<<"$properties" && grep -Fxq 'WorkingDirectory=/srv/jdu-status' <<<"$properties"; then pass M4-SVC-03 'Live process matches the unchanged teacher unit'; else not_ready M4-SVC-03 'Start the unchanged unit and relate its MainPID, user, command, and working directory'; fi
+  local active enabled base_hash fixture_hash actual_hash unit_unchanged=false
+  printf '%s\n' 'Mission M4 (2 tasks)'
+  base_hash="$(cat /opt/jdu-lab/fixtures/m4/jdu-status.service.sha256 2>/dev/null || true)"
+  fixture_hash="$(sha256sum /opt/jdu-lab/fixtures/m4/jdu-status.service 2>/dev/null | awk '{print $1}')"
+  actual_hash="$(sha256sum /etc/systemd/system/jdu-status.service 2>/dev/null | awk '{print $1}')"
+  [[ -n "$base_hash" && "$fixture_hash" == "$base_hash" && "$actual_hash" == "$base_hash" ]] && unit_unchanged=true
+  active="$(systemctl is-active jdu-status.service 2>/dev/null || true)"
+  enabled="$(systemctl is-enabled jdu-status.service 2>/dev/null || true)"
+  if $unit_unchanged && [[ "$active" == active ]]; then pass M4-SVC-01 'Unchanged service is active'; else not_ready M4-SVC-01 'Start the unchanged course service'; fi
+  if $unit_unchanged && [[ "$enabled" == enabled ]]; then pass M4-SVC-02 'Unchanged service is enabled for boot'; else not_ready M4-SVC-02 'Enable the unchanged course service'; fi
 }
 
 check_m5() {
@@ -268,19 +265,16 @@ check_p3() {
 }
 
 check_p4() {
-  local pid active enabled user base_hash actual_hash properties command_line working_directory
-  printf '%s\n' 'Guided Practice P4 (3 tasks)'
-  base_hash="$(cat /opt/jdu-lab/fixtures/p4/jdu-practice-status.service.sha256 2>/dev/null || true)"; actual_hash="$(sha256sum /etc/systemd/system/jdu-practice-status.service 2>/dev/null | awk '{print $1}')"
-  properties="$(systemctl show jdu-practice-status.service -p User -p ExecStart -p WorkingDirectory 2>/dev/null || true)"
-  active="$(systemctl is-active jdu-practice-status.service 2>/dev/null || true)"; enabled="$(systemctl is-enabled jdu-practice-status.service 2>/dev/null || true)"; pid="$(service_pid jdu-practice-status.service)"; user="$(service_user "$pid" 2>/dev/null || true)"
-  [[ "$active" == active ]] && pass P4-SVC-01 'Guided service is active' || not_ready P4-SVC-01 'Start the guided service'
-  [[ "$enabled" == enabled ]] && pass P4-SVC-02 'Guided service is enabled' || not_ready P4-SVC-02 'Enable the guided service'
-  command_line=''; working_directory=''
-  if [[ "$pid" =~ ^[1-9][0-9]*$ ]]; then
-    command_line="$(sudo -n cat "/proc/$pid/cmdline" 2>/dev/null | tr '\0' ' ' || true)"
-    working_directory="$(sudo -n readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
-  fi
-  if [[ -n "$base_hash" && "$actual_hash" == "$base_hash" && "$pid" =~ ^[1-9][0-9]*$ && "$user" == jdupracticeapp && "$command_line" == *'/opt/jdu-lab/bin/jdu-http-service'* && "$working_directory" == /srv/jdu-practice-status ]] && grep -Fxq 'User=jdupracticeapp' <<<"$properties"; then pass P4-SVC-03 'Guided process matches the unchanged unit'; else not_ready P4-SVC-03 'Relate the guided unit to its live process'; fi
+  local active enabled base_hash fixture_hash actual_hash unit_unchanged=false
+  printf '%s\n' 'Guided Practice P4 (2 tasks)'
+  base_hash="$(cat /opt/jdu-lab/fixtures/p4/jdu-practice-status.service.sha256 2>/dev/null || true)"
+  fixture_hash="$(sha256sum /opt/jdu-lab/fixtures/p4/jdu-practice-status.service 2>/dev/null | awk '{print $1}')"
+  actual_hash="$(sha256sum /etc/systemd/system/jdu-practice-status.service 2>/dev/null | awk '{print $1}')"
+  [[ -n "$base_hash" && "$fixture_hash" == "$base_hash" && "$actual_hash" == "$base_hash" ]] && unit_unchanged=true
+  active="$(systemctl is-active jdu-practice-status.service 2>/dev/null || true)"
+  enabled="$(systemctl is-enabled jdu-practice-status.service 2>/dev/null || true)"
+  if $unit_unchanged && [[ "$active" == active ]]; then pass P4-SVC-01 'Unchanged guided service is active'; else not_ready P4-SVC-01 'Start the unchanged guided service'; fi
+  if $unit_unchanged && [[ "$enabled" == enabled ]]; then pass P4-SVC-02 'Unchanged guided service is enabled for boot'; else not_ready P4-SVC-02 'Enable the unchanged guided service'; fi
 }
 
 check_p5() {

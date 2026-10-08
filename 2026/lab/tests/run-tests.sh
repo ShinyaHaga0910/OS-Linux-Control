@@ -67,8 +67,8 @@ grep -Fq -- '--progress-endpoint %q --registration-key %q' "$root_dir/teacher/in
 printf '%s\n' 'PASS teacher command includes the deployed progress configuration'
 
 declare -A expected_counts=(
-  [P0]=6 [P1]=6 [P2]=6 [P3]=2 [P4]=3 [P5]=4 [P6]=2
-  [M1]=5 [M2]=6 [M3]=2 [M4]=3 [M5]=4 [M6]=2 [M7]=6
+  [P0]=6 [P1]=6 [P2]=6 [P3]=2 [P4]=2 [P5]=4 [P6]=2
+  [M1]=5 [M2]=6 [M3]=2 [M4]=2 [M5]=4 [M6]=2 [M7]=6
 )
 
 for mission in P0 P1 P2 P4 P5 P6 M1 M2 M4 M5 M6 M7; do
@@ -85,6 +85,8 @@ for mission in P0 P1 P2 P4 P5 P6 M1 M2 M4 M5 M6 M7; do
   rm -rf -- "$test_home"
 done
 printf '%s\n' 'PASS guided P1-P2/P4-P6 and challenge M1-M2/M4-M7 have zero initial PASS items'
+
+python3 "$root_dir/tests/test-service-two-checks.py" "$root_dir/scripts/jdu-labcheck"
 
 p1_fixture_home="$(mktemp -d)"
 mkdir -p "$p1_fixture_home/jdu-lab/p1/practice01/staging"
@@ -314,13 +316,13 @@ expected_ids = {
     "P1": {"P1-FS-01", "P1-FS-02", "P1-FS-03", "P1-FS-04", "P1-TXT-01", "P1-TXT-02"},
     "P2": {"P2-ID-01", "P2-PERM-01", "P2-PERM-02", "P2-PERM-03", "P2-PERM-04", "P2-PERM-05"},
     "P3": {"P3-PROC-01", "P3-APT-01"},
-    "P4": {"P4-SVC-01", "P4-SVC-02", "P4-SVC-03"},
+    "P4": {"P4-SVC-01", "P4-SVC-02"},
     "P5": {"P5-SOCK-01", "P5-HTTP-01", "P5-LOG-01", "P5-NEG-01"},
     "P6": {"P6-XFER-01", "P6-REMOTE-01"},
     "M1": {"M1-FS-01", "M1-FS-02", "M1-FS-03", "M1-TXT-01", "M1-TXT-02"},
     "M2": {"M2-ID-01", "M2-PERM-01", "M2-PERM-02", "M2-PERM-03", "M2-PERM-04", "M2-PERM-05"},
     "M3": {"M3-PROC-01", "M3-APT-01"},
-    "M4": {"M4-SVC-01", "M4-SVC-02", "M4-SVC-03"},
+    "M4": {"M4-SVC-01", "M4-SVC-02"},
     "M5": {"M5-SOCK-01", "M5-HTTP-01", "M5-LOG-01", "M5-NEG-01"},
     "M6": {"M6-XFER-01", "M6-REMOTE-01"},
     "M7": {"M7-FILE-01", "M7-PERM-01", "M7-SVC-01", "M7-SOCK-01", "M7-HTTP-01", "M7-LOG-01"},

@@ -63,7 +63,7 @@ P0への変更とM1所有者判定の削除は、新規構築には自動で入�
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-labcheck -o /tmp/jdu-labcheck-v1.0.0
-printf '%s  %s\n' '3568749bd9e3f780fd68277c02c9b32ac1250cb7c4e1751958b5e44e4d856903' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
+printf '%s  %s\n' 'decd3abb311ce5ff48f10dbdb541581acb7b3f278f25370b23b23f5581fa7d5d' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-fixture -o /tmp/jdu-fixture-v1.0.0
 printf '%s  %s\n' 'a8f822c65ac098bb445a0e69c102d23ce01ec68cedb0462493c593ec54dbb651' '/tmp/jdu-fixture-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-fixture-v1.0.0 /opt/jdu-lab/bin/jdu-fixture
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-progress -o /tmp/jdu-progress-v1.0.0

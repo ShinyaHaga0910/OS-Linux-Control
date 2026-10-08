@@ -281,11 +281,11 @@ jdu-check P3</code></pre>
 <p>全2件がPASSになったら、M3へ進む。</p>
 <h2>P4 systemd service</h2>
 <h3>学ぶこと</h3>
-<ul><li>Unit fileを読む。</li><li>Activeとenabledを別々に設定する。</li><li>Main PIDと実processを対応させる。</li></ul>
+<ul><li>Unit fileを読む。</li><li>Activeとenabledを別々に設定する。</li><li><code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>をunitの設定として読む。</li></ul>
 <h3>課題</h3>
 <p><code>jdu-practice-status.service</code>のユニットファイルは完成しているが、サービスは停止中で、自動起動も無効である。ユニットファイルを変更せずに次を行う。</p>
-<ol><li>ユニットファイルの<code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>を調べる。</li><li>サービスを起動し、現在の状態が<code>active</code>であることを確認する。</li><li>起動時の自動実行を有効にし、<code>enabled</code>であることを確認する。<code>active</code>と<code>enabled</code>は別の状態として調べる。</li><li>Main PIDのプロセスについて、実行ユーザー、コマンドライン、作業ディレクトリがユニットファイルと一致することを確かめる。</li></ol>
-<p><code>jdu-check P4</code>は、稼働状態、自動起動、変更されていないユニットと実プロセスの対応を計3項目で判定する。観察結果を別ファイルへ提出する必要はない。</p>
+<ol><li>ユニットファイルの<code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>を調べる。</li><li>サービスを起動し、現在の状態が<code>active</code>であることを確認する。</li><li>起動時の自動実行を有効にし、<code>enabled</code>であることを確認する。<code>active</code>と<code>enabled</code>は別の状態として調べる。</li></ol>
+<p><code>jdu-check P4</code>は、変更されていないユニットの稼働状態と自動起動を計2項目で判定する。観察結果を別ファイルへ提出する必要はない。</p>
 <h3>解答例（操作手順）</h3>
 <h4>手順1: Unit fileを読む</h4>
 <pre><code>cd ~
@@ -300,17 +300,10 @@ systemctl is-active jdu-practice-status.service</code></pre>
 <h4>手順4: Boot時にstartするよう設定する</h4>
 <pre><code>sudo systemctl enable jdu-practice-status.service
 systemctl is-enabled jdu-practice-status.service</code></pre>
-<h4>手順5: Main PIDとprocessを確認する</h4>
-<pre><code>P4_PID=$(systemctl show --property MainPID --value jdu-practice-status.service)
-printf &#x27;%s\n&#x27; &quot;$P4_PID&quot;
-ps -fp &quot;$P4_PID&quot;
-sudo cat &quot;/proc/$P4_PID/cmdline&quot; | tr &#x27;\0&#x27; &#x27; &#x27;
-printf &#x27;\n&#x27;
-sudo readlink -f &quot;/proc/$P4_PID/cwd&quot;</code></pre>
-<h4>手順6: 採点する</h4>
+<h4>手順5: 採点する</h4>
 <pre><code>cd ~
 jdu-check P4</code></pre>
-<p>全3件がPASSになったら、M4へ進む。</p>
+<p>全2件がPASSになったら、M4へ進む。</p>
 <h2>P5 Port、socket、HTTP、journal</h2>
 <h3>学ぶこと</h3>
 <ul><li>Service、process、listening socketを対応させる。</li><li>IP addressとportを読む。</li><li>HTTP requestがjournalへ記録されることを確認する。</li></ul>

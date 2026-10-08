@@ -8,13 +8,13 @@
 | 1 | 4、5 | P1 | M1 | P6 / M6 | path、directory、copy、削除、grep、tail、redirect（P1の所有者条件は維持、M1は所有者を採点しない） |
 | 2 | 6、7 | P2 | M2 | P6 / M6 | group登録、2775、664、setgid、writer作成、viewer read/write |
 | 3 | 8、9 | P3 | M3 | P2 / M2 | Main PID照合とTERM、指定packageの導入・実行file・version |
-| 4 | 10 | P4 | M4 | P3 / M3 | active、enabled、unit不変、live user/command/cwd |
+| 4 | 10 | P4 | M4 | P2 / M2 | 変更されていないunitのactiveとenabled |
 | 5 | 6、7、10、11 | P5 | M5 | P4 / M4 | loopback socketとPID、HTTP/permission、current log、closed port |
 | 6 Ubuntu | 5、12 | P6 | M6 | P2 / M2 | upload内容・owner・644、remote値 |
 | 6 CloudShell | 5、12 | P6 | M6 | P4 / M4 | local source、upload hash、remote値、download hash |
 | 7 | 6、7、10、11 | なし | M7 | 6 | file、writer/viewer、service、socket、HTTP、journal |
 
-合計: P0～P6は33判定、M1～M7は32判定。M6はUbuntu 2件とCloudShell 4件を分ける。
+合計: P0～P6は32判定、M1～M7は31判定。M6はUbuntu 2件とCloudShell 4件を分ける。
 
 ## 理解を自動採点で代替しない項目
 

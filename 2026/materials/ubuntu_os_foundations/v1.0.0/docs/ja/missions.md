@@ -204,7 +204,7 @@ jdu-check M3
 
 ### 目的
 
-Unit file、service、processの関係を確認する。Activeとenabledを区別する。
+Unit fileの設定を読み、serviceのactiveとenabledを区別する。
 
 ### 初期状態
 
@@ -216,18 +216,16 @@ Unit file、service、processの関係を確認する。Activeとenabledを区�
 2. Unit fileを変更せず、serviceをstartする。
 3. Boot時にstartするようenableする。
 4. Activeとenabledを別々に確認する。
-5. Main PIDを調べ、実際のprocessと対応させる。
-6. Processのuser、command line、working directoryがunitの指定と一致することを確認する。
 
 ### 判定
 
-3課題を判定する。Active、enabled、変更されていないunitと実processの対応がそれぞれ課題になる。提出fileはない。
+2課題を判定する。変更されていないunitのactiveとenabledを別々に確認する。提出fileはない。
 
 ```bash
 jdu-check M4
 ```
 
-確認候補: `systemctl cat`, `systemctl start`, `systemctl enable`, `systemctl is-active`, `systemctl is-enabled`, `systemctl show`, `ps`, `/proc/PID/cmdline`, `/proc/PID/cwd`
+確認候補: `systemctl cat`, `systemctl start`, `systemctl enable`, `systemctl is-active`, `systemctl is-enabled`
 
 ## M5 Port, socket, and log
 

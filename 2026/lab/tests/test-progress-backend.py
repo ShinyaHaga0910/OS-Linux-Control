@@ -121,6 +121,8 @@ assert submitted["statusCode"] == 200
 for practice_body in [
     {"server_id": server_id, "mission": "P0", "passed": 6, "total": 6},
     {"server_id": server_id, "mission": "P1", "passed": 6, "total": 6},
+    {"server_id": server_id, "mission": "P4", "passed": 3, "total": 3},
+    {"server_id": server_id, "mission": "M4", "passed": 3, "total": 3},
     {"server_id": server_id, "mission": "P6U", "passed": 2, "total": 2},
     {"server_id": server_id, "mission": "P6C", "passed": 3, "total": 4},
 ]:
@@ -152,6 +154,14 @@ assert "Ubuntu 2/2" in partial_dashboard["body"]
 assert "CloudShell 3/4" in partial_dashboard["body"]
 assert "M6 5/6" in partial_dashboard["body"]
 assert '<td class="done">P1<br>6/6</td>' in partial_dashboard["body"]
+assert '<td class="done">P4<br>3/3</td>' in partial_dashboard["body"]
+assert '<td class="done">M4<br>3/3</td>' in partial_dashboard["body"]
+for mission in ("P4", "M4"):
+    updated_score = {"server_id": server_id, "mission": mission, "passed": 2, "total": 2}
+    assert app.handler(event("POST /submit", updated_score, {"Authorization": f"Bearer {server_token}"}), None)["statusCode"] == 200
+updated_dashboard = app.handler(event("GET /dashboard", query={"session": session_token}), None)
+assert '<td class="done">P4<br>2/2</td>' in updated_dashboard["body"]
+assert '<td class="done">M4<br>2/2</td>' in updated_dashboard["body"]
 assert '<td class="partial"><strong>P6 5/6</strong>' in partial_dashboard["body"]
 assert "Guided P1" not in partial_dashboard["body"] and "Challenge" not in partial_dashboard["body"]
 expected_headers = ["P0", "P1", "M1", "P2", "M2", "P3", "M3", "P4", "M4", "P5", "M5", "P6", "M6", "M7"]
