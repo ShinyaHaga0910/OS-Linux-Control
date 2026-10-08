@@ -100,8 +100,6 @@ service_user() {
 
 check_p0() {
   local evidence="$student_home/jdu-lab/p0/observation.env" os_id os_version
-  # Read old evidence without moving or deleting existing student work.
-  [[ -d "$student_home/jdu-lab/p0" ]] || evidence="$student_home/jdu-lab/m0/observation.env"
   os_id="$(. /etc/os-release && printf '%s' "$ID")"
   os_version="$(. /etc/os-release && printf '%s' "$VERSION_ID")"
   printf '%s\n' 'Guided Practice P0 (6 observations)'

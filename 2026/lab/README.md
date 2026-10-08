@@ -63,7 +63,7 @@ P0への変更とM1所有者判定の削除は、新規構築には自動で入�
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-labcheck -o /tmp/jdu-labcheck-v1.0.0
-printf '%s  %s\n' '1b0040fb50b079ae75b16017fab21a002c5b2a9f65d34ca00dfda6079113b8a6' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
+printf '%s  %s\n' '3568749bd9e3f780fd68277c02c9b32ac1250cb7c4e1751958b5e44e4d856903' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-fixture -o /tmp/jdu-fixture-v1.0.0
 printf '%s  %s\n' 'a8f822c65ac098bb445a0e69c102d23ce01ec68cedb0462493c593ec54dbb651' '/tmp/jdu-fixture-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-fixture-v1.0.0 /opt/jdu-lab/bin/jdu-fixture
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-progress -o /tmp/jdu-progress-v1.0.0
@@ -71,7 +71,7 @@ printf '%s  %s\n' '6f77a05a934c78ab7c19e447930df7e08a5e1ea85cb2338a030f9c1395f37
 jdu-check list
 ```
 
-一覧の先頭がP0なら更新済みです。旧コマンド`jdu-check M0`は互換入口としてP0へ切り替えます。P0の新しい記録先は`~/jdu-lab/p0/observation.env`で、P0ディレクトリがまだない場合は旧`m0/observation.env`を読みます。自動で旧ファイルを移動・削除しません。
+一覧の先頭がP0なら更新済みです。旧コマンド`jdu-check M0`は互換入口としてP0へ切り替えます。P0が読む記録先は常に`~/jdu-lab/p0/observation.env`です。旧`m0/observation.env`を採点に流用せず、自動で移動・削除もしません。
 
 教員画面ではP0として表示します。新しいP0の結果を優先し、まだP0の提出がない場合は既存M0の結果を表示します。教員側を更新するまではP0の送信が拒否されるため、更新の順序を守ってください。
 
