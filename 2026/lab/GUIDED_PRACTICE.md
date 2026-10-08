@@ -70,8 +70,11 @@ jdu-reset P1
 この資料の冒頭のとおり、CloudShellで`ssh jdu-ubuntu`を実行する。以下の手順はすべて接続先のUbuntuで行う。
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# 現在のディレクトリを表示する。
 pwd
+# 現在のユーザー名を表示する。
 id -un
 ```
 
@@ -80,6 +83,7 @@ id -un
 #### 手順2: OSの種類とバージョンを確認する
 
 ```bash
+# OSの種類とバージョンを表示する。
 cat /etc/os-release
 ```
 
@@ -88,6 +92,7 @@ cat /etc/os-release
 #### 手順3: Linux kernelのバージョンを確認する
 
 ```bash
+# Linuxカーネルのリリース番号を表示する。
 uname -r
 ```
 
@@ -96,6 +101,7 @@ uname -r
 #### 手順4: PID 1のプロセス名を確認する
 
 ```bash
+# PID 1のプロセス名を表示する。
 cat /proc/1/comm
 ```
 
@@ -104,7 +110,9 @@ cat /proc/1/comm
 #### 手順5: ユーザー名とホスト名を確認する
 
 ```bash
+# 現在のユーザー名を表示する。
 id -un
+# サーバーのホスト名を表示する。
 hostname
 ```
 
@@ -113,10 +121,15 @@ hostname
 #### 手順6: 記録用ファイルを作成する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# P0の作業ディレクトリを作る。
 mkdir -p jdu-lab/p0
+# P0の作業ディレクトリへ移動する。
 cd jdu-lab/p0
+# 現在地を表示する。
 pwd
+# 記録ファイルを編集する。
 nano observation.env
 ```
 
@@ -136,8 +149,11 @@ HOST_NAME=
 #### 手順7: 保存した内容を確認する
 
 ```bash
+# 現在地を表示する。
 pwd
+# 記録ファイルの存在と権限を確認する。
 ls -l observation.env
+# 記録した6項目を表示する。
 cat observation.env
 ```
 
@@ -146,7 +162,9 @@ cat observation.env
 #### 手順8: 判定・提出する
 
 ```bash
+# 採点に使うユーザー名を確認する。
 id -un
+# P0の完成状態を採点する。
 jdu-check P0
 ```
 
@@ -157,6 +175,7 @@ jdu-check P0
 #### 手順9: 次の練習へ進む
 
 ```bash
+# 次の練習に備えてホームディレクトリへ戻る。
 cd ~
 ```
 
@@ -189,7 +208,9 @@ P1へ進む。CloudShellへ戻りたい場合だけ`exit`を実行する。初�
 #### 手順1: Home directoryへ移動する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# 現在地を表示する。
 pwd
 ```
 
@@ -198,8 +219,11 @@ pwd
 #### 手順2: P1 directoryへ移動する
 
 ```bash
+# P1の作業ディレクトリへ移動する。
 cd ~/jdu-lab/p1
+# 現在地を表示する。
 pwd
+# 元ファイルと未完成の提出先を木構造で表示する。
 tree
 ```
 
@@ -208,10 +232,15 @@ tree
 #### 手順3: 必要なdirectoryを作る
 
 ```bash
+# P1の作業ディレクトリへ移動する。
 cd ~/jdu-lab/p1
+# 設定ファイル用ディレクトリを作る。
 mkdir -p practice01/config
+# ログ用ディレクトリを作る。
 mkdir -p practice01/logs
+# 結果ファイル用ディレクトリを作る。
 mkdir -p practice01/notes
+# 作成した構成を表示する。
 tree practice01
 ```
 
@@ -220,9 +249,13 @@ tree practice01
 コピー先のdirectoryへ移動する。
 
 ```bash
+# コピー先の設定ディレクトリへ移動する。
 cd ~/jdu-lab/p1/practice01/config
+# 現在地を確認する。
 pwd
+# 元の設定ファイルを現在のディレクトリへコピーする。
 cp ../../inbox/config/training.conf .
+# コピーしたファイルを表示する。
 ls -l
 ```
 
@@ -231,9 +264,13 @@ ls -l
 #### 手順5: Log fileをコピーする
 
 ```bash
+# コピー先のログディレクトリへ移動する。
 cd ~/jdu-lab/p1/practice01/logs
+# 現在地を確認する。
 pwd
+# 元のログを現在のディレクトリへコピーする。
 cp ../../inbox/logs/practice.log .
+# コピーしたファイルを表示する。
 ls -l
 ```
 
@@ -242,14 +279,18 @@ ls -l
 `practice01`へ移動し、削除前の構成を確認する。
 
 ```bash
+# 完成させるディレクトリへ移動する。
 cd ~/jdu-lab/p1/practice01
+# 現在地を確認する。
 pwd
+# 削除前のファイル構成を表示する。
 tree
 ```
 
 `tree`の表示から、`staging`の中にある`training.conf.tmp`と`practice.log.tmp`を探す。次に、同じ2つのfileを`find`で検索する。
 
 ```bash
+# 現在地以下の.tmpファイルだけを検索する。
 find . -type f -name '*.tmp' -print
 ```
 
@@ -258,7 +299,9 @@ find . -type f -name '*.tmp' -print
 `./staging/training.conf.tmp`と`./staging/practice.log.tmp`が表示されることを確認する。表示順は問わない。検索結果と`tree`の構成を照合したら、この2つの不要なfileを`rm`で削除する。
 
 ```bash
+# 確認済みの不要な一時ファイル2件を削除する。
 rm staging/training.conf.tmp staging/practice.log.tmp
+# 削除後の構成を確認する。
 tree
 ```
 
@@ -269,15 +312,20 @@ tree
 出力先の`notes`へ移動する。まず、`grep`の結果を画面で確認する。
 
 ```bash
+# 結果ファイル用ディレクトリへ移動する。
 cd ~/jdu-lab/p1/practice01/notes
+# 現在地を確認する。
 pwd
+# ログのWARNを含む行を画面に表示する。
 grep 'WARN' ../logs/practice.log
 ```
 
 `WARN`を含む行だけが表示されることを確認する。次に、同じcommandに`>`を追加して、結果を`warnings.txt`へ保存する。`>`は出力先を画面からfileへ変更し、同名のfileがあれば内容を上書きする。
 
 ```bash
+# WARN行をwarnings.txtへ保存する。
 grep 'WARN' ../logs/practice.log > warnings.txt
+# 保存結果を表示する。
 cat warnings.txt
 ```
 
@@ -288,14 +336,18 @@ cat warnings.txt
 まず、`tail`の結果を画面で確認する。
 
 ```bash
+# 結果ファイル用ディレクトリへ移動する。
 cd ~/jdu-lab/p1/practice01/notes
+# ログの最後の4行を画面に表示する。
 tail -n 4 ../logs/practice.log
 ```
 
 ログの最後の4行が、元の順序で表示されることを確認する。次に、`>`を追加して結果を`recent.txt`へ保存する。
 
 ```bash
+# 最後の4行をrecent.txtへ保存する。
 tail -n 4 ../logs/practice.log > recent.txt
+# 保存結果を表示する。
 cat recent.txt
 ```
 
@@ -304,8 +356,11 @@ cat recent.txt
 #### 手順9: 全体を確認する
 
 ```bash
+# P1の作業ディレクトリへ戻る。
 cd ~/jdu-lab/p1
+# 完成したディレクトリ構成を表示する。
 tree practice01
+# P1の完成状態を採点する。
 jdu-check P1
 ```
 
@@ -336,16 +391,22 @@ jdu-check P1
 #### 手順1: 管理userを確認する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# 現在のユーザー名を表示する。
 id -un
+# 現在のユーザーIDと所属グループを表示する。
 id
 ```
 
 #### 手順2: 初期groupを確認する
 
 ```bash
+# 共有グループの登録内容を表示する。
 getent group practiceops
+# 書き込み担当者の所属グループを確認する。
 id jdupracticewriter
+# 閲覧担当者の所属グループを確認する。
 id jdupracticeviewer
 ```
 
@@ -354,28 +415,41 @@ id jdupracticeviewer
 #### 手順3: Group membershipを修正する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# 書き込み担当者を共有グループへ追加する。
 sudo usermod -aG practiceops jdupracticewriter
+# 閲覧担当者を共有グループから外す。
 sudo gpasswd -d jdupracticeviewer practiceops
+# 変更後の共有グループを表示する。
 getent group practiceops
+# 書き込み担当者の所属を確認する。
 id jdupracticewriter
+# 閲覧担当者の所属を確認する。
 id jdupracticeviewer
 ```
 
 #### 手順4: 共有directoryを設定する
 
 ```bash
+# /srvへ移動する。
 cd /srv
+# 現在地を表示する。
 pwd
+# 共有ディレクトリ自身の初期権限を表示する。
 ls -ld jdu-practice-share
 ```
 
 変更前の権限・所有者・所有グループを確認する。`ls -l`は詳細表示、`-d`はディレクトリの中身ではなくディレクトリ自体を表示する指定である。表示の先頭が権限、その後のリンク数に続く2列が所有者と所有グループである。
 
 ```bash
+# 共有ディレクトリの所有者とグループを変更する。
 sudo chown root:practiceops jdu-practice-share
+# 所有者とグループの変更を確認する。
 ls -ld jdu-practice-share
+# グループ継承を含む権限2775を設定する。
 sudo chmod 2775 jdu-practice-share
+# setgidのsと権限を確認する。
 ls -ld jdu-practice-share
 ```
 
@@ -386,17 +460,24 @@ ls -ld jdu-practice-share
 対象directoryへ移動する。
 
 ```bash
+# 共有ディレクトリへ移動する。
 cd /srv/jdu-practice-share
+# 現在地を表示する。
 pwd
+# GUIDE.txtの初期権限を表示する。
 ls -l GUIDE.txt
 ```
 
 変更前のファイルの権限・所有者・所有グループを確認してから設定する。
 
 ```bash
+# GUIDE.txtの所有者とグループを変更する。
 sudo chown root:practiceops GUIDE.txt
+# 所有者とグループを確認する。
 ls -l GUIDE.txt
+# 所有者とグループに読み書きを許可する。
 sudo chmod 664 GUIDE.txt
+# 最終的なファイル権限を確認する。
 ls -l GUIDE.txt
 ```
 
@@ -405,15 +486,25 @@ ls -l GUIDE.txt
 #### 手順6: Writerへ切り替えてfileを作る
 
 ```bash
+# ホームディレクトリへ戻る。
 cd ~
+# 書き込み担当者のシェルに切り替える。
 sudo su - jdupracticewriter
+# 切り替え後のユーザー名を確認する。
 id -un
+# 切り替え後の所属グループを確認する。
 id
+# 共有ディレクトリへ移動する。
 cd /srv/jdu-practice-share
+# 現在地を確認する。
 pwd
+# 書き込み担当者としてファイルを作る。
 printf '%s\n' 'guided writer file' > writer-created.txt
+# 作ったファイルの所有グループを確認する。
 ls -l writer-created.txt
+# 書き込み担当者のシェルを終了する。
 exit
+# 管理ユーザーに戻ったことを確認する。
 id -un
 ```
 
@@ -422,15 +513,25 @@ id -un
 #### 手順7: Viewerのreadとwriteを確認する
 
 ```bash
+# ホームディレクトリへ戻る。
 cd ~
+# 閲覧担当者のシェルに切り替える。
 sudo su - jdupracticeviewer
+# 切り替え後のユーザー名を確認する。
 id -un
+# 閲覧担当者の所属グループを確認する。
 id
+# 共有ディレクトリへ移動する。
 cd /srv/jdu-practice-share
+# 現在地を確認する。
 pwd
+# 閲覧担当者としてGUIDE.txtを読む。
 cat GUIDE.txt
+# 書き込みが拒否されることを確認する。
 touch viewer-created.txt
+# 閲覧担当者のシェルを終了する。
 exit
+# 管理ユーザーに戻ったことを確認する。
 id -un
 ```
 
@@ -441,8 +542,11 @@ id -un
 #### 手順8: 採点する
 
 ```bash
+# ホームディレクトリへ戻る。
 cd ~
+# 採点するユーザー名を確認する。
 id -un
+# P2の完成状態を採点する。
 jdu-check P2
 ```
 
@@ -473,15 +577,20 @@ jdu-check P2
 #### 手順1: 3 serviceを確認する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# P3のサービス一覧を表示する。
 systemctl list-units --type=service 'jdu-p3-*'
+# process1の状態を表示する。
 systemctl status jdu-p3-process1.service --no-pager
+# process3の状態を表示する。
 systemctl status jdu-p3-process3.service --no-pager
 ```
 
 #### 手順2: Process2のMain PIDを読む
 
 ```bash
+# process2の状態とMain PIDを表示する。
 systemctl status jdu-p3-process2.service
 ```
 
@@ -492,6 +601,7 @@ systemctl status jdu-p3-process2.service
 例えば、メモした番号が`1234`なら次のように入力する。`1234`を自分の画面の番号に置き換える。
 
 ```bash
+# メモしたPIDのプロセス情報を表示する。1234は自分の値に置き換える。
 ps -fp 1234
 ```
 
@@ -500,9 +610,13 @@ ps -fp 1234
 #### 手順4: Process2のserviceを停止する
 
 ```bash
+# process2のサービスを停止する。
 sudo systemctl stop jdu-p3-process2.service
+# process1が稼働中か確認する。
 systemctl is-active jdu-p3-process1.service
+# process2が停止中か確認する。
 systemctl is-active jdu-p3-process2.service
+# process3が稼働中か確認する。
 systemctl is-active jdu-p3-process3.service
 ```
 
@@ -511,12 +625,19 @@ systemctl is-active jdu-p3-process3.service
 #### 手順5: figletを調査してinstallする
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# figletのパッケージ情報を読む。
 apt show figlet
+# 利用可能なパッケージ一覧を更新する。
 sudo apt update
+# figletをインストールする。
 sudo apt install -y figlet
+# figletコマンドの場所を確認する。
 command -v figlet
+# figletを一度実行する。
 figlet JDU
+# P3の完成状態を採点する。
 jdu-check P3
 ```
 
@@ -539,6 +660,7 @@ jdu-check P3
 1. ユニットファイルの`User`、`WorkingDirectory`、`ExecStart`を調べる。
 2. サービスを起動し、現在の状態が`active`であることを確認する。
 3. 起動時の自動実行を有効にし、`enabled`であることを確認する。`active`と`enabled`は別の状態として調べる。
+
 `jdu-check P4`は、変更されていないユニットの稼働状態と自動起動を計2項目で判定する。観察結果を別ファイルへ提出する必要はない。
 
 ### 解答例（操作手順）
@@ -546,7 +668,9 @@ jdu-check P3
 #### 手順1: Unit fileを読む
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# サービスのユニット設定を表示する。
 systemctl cat jdu-practice-status.service
 ```
 
@@ -555,28 +679,36 @@ systemctl cat jdu-practice-status.service
 #### 手順2: 初期状態を確認する
 
 ```bash
+# 現在稼働しているか確認する。
 systemctl is-active jdu-practice-status.service
+# 起動時の自動実行が有効か確認する。
 systemctl is-enabled jdu-practice-status.service
 ```
 
 #### 手順3: Serviceをstartする
 
 ```bash
+# サービスを今すぐ起動する。
 sudo systemctl start jdu-practice-status.service
+# 現在の稼働状態を確認する。
 systemctl is-active jdu-practice-status.service
 ```
 
 #### 手順4: Boot時にstartするよう設定する
 
 ```bash
+# 起動時の自動実行を有効にする。
 sudo systemctl enable jdu-practice-status.service
+# 自動実行の設定を確認する。
 systemctl is-enabled jdu-practice-status.service
 ```
 
 #### 手順5: 採点する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# P4の完成状態を採点する。
 jdu-check P4
 ```
 
@@ -607,7 +739,9 @@ jdu-check P4
 #### 手順1: Unit fileを読む
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# Webサービスのユニット設定を表示する。
 systemctl cat jdu-practice-web.service
 ```
 
@@ -616,13 +750,16 @@ systemctl cat jdu-practice-web.service
 #### 手順2: Serviceをstartする
 
 ```bash
+# Webサービスを今すぐ起動する。
 sudo systemctl start jdu-practice-web.service
+# 稼働状態を確認する。
 systemctl is-active jdu-practice-web.service
 ```
 
 #### 手順3: Listening socketを確認する
 
 ```bash
+# 8181番ポートの待受アドレスとPIDを表示する。
 sudo ss -lntp | grep ':8181'
 ```
 
@@ -642,6 +779,7 @@ sudo ss -lntp | grep ':8181'
 #### 手順5: HTTP responseを確認する
 
 ```bash
+# HTTPの応答ヘッダーと本文を表示する。
 curl -i http://127.0.0.1:8181/
 ```
 
@@ -650,12 +788,19 @@ curl -i http://127.0.0.1:8181/
 Content directoryへ移動する。
 
 ```bash
+# 公開ファイルのディレクトリへ移動する。
 cd /srv/jdu-practice-web
+# 現在地を表示する。
 pwd
+# ファイルまでの各ディレクトリの権限を表示する。
 ls -ld /srv /srv/jdu-practice-web
+# 公開ファイルの所有者・グループ・権限を表示する。
 ls -l index.txt
+# サービス用ユーザーの所属グループを表示する。
 id jdupracticeweb
+# サービス用ユーザーのログインシェルを表示する。
 getent passwd jdupracticeweb
+# サービス用ユーザーの権限で一度だけファイルを読む。
 sudo -u jdupracticeweb -- cat index.txt
 ```
 
@@ -666,7 +811,9 @@ sudo -u jdupracticeweb -- cat index.txt
 #### 手順7: 学生用requestを送る
 
 ```bash
+# 指定したパスへHTTPリクエストを送る。
 curl -i http://127.0.0.1:8181/p5-check
+# サービスの最近のログを表示する。
 sudo journalctl -u jdu-practice-web.service --no-pager -n 20
 ```
 
@@ -675,7 +822,9 @@ sudo journalctl -u jdu-practice-web.service --no-pager -n 20
 #### 手順8: Closed portと比較する
 
 ```bash
+# 待受のない18181番ポートへ接続を試す。
 curl --max-time 2 http://127.0.0.1:18181/
+# 18181番ポートに待受がないことを確認する。
 sudo ss -lnt | grep ':18181'
 ```
 
@@ -684,7 +833,9 @@ sudo ss -lnt | grep ':18181'
 #### 手順9: 採点する
 
 ```bash
+# ホームディレクトリへ移動する。
 cd ~
+# P5の完成状態を採点する。
 jdu-check P5
 ```
 
@@ -726,31 +877,42 @@ P6はUbuntu側`2/2`とCloudShell側`4/4`の両方が揃って完了する。教�
 Ubuntuのpromptで実行する。
 
 ```bash
+# UbuntuのSSH接続を終了し、CloudShellへ戻る。
 exit
 ```
 
 CloudShellで現在地を確認する。
 
 ```bash
+# CloudShellのホームディレクトリへ移動する。
 cd ~
+# CloudShell側の現在地を表示する。
 pwd
+# CloudShell側のユーザー名を表示する。
 id -un
+# CloudShell側のホスト名を表示する。
 hostname
 ```
 
 #### 手順2: CloudShell側の作業directoryを作る
 
 ```bash
+# CloudShellにP6の作業ディレクトリを作る。
 mkdir -p ~/jdu-lab/p6
+# CloudShellのP6ディレクトリへ移動する。
 cd ~/jdu-lab/p6
+# 現在地を確認する。
 pwd
 ```
 
 #### 手順3: Upload元fileを作る
 
 ```bash
+# 転送元ファイルへ指定の1行を書く。
 printf '%s\n' 'JDU SSH guided transfer' > practice-source.txt
+# 転送元ファイルの内容を表示する。
 cat practice-source.txt
+# 転送前のSHA-256を表示する。
 sha256sum practice-source.txt
 ```
 
@@ -759,6 +921,7 @@ sha256sum practice-source.txt
 CloudShellで実行する。
 
 ```bash
+# SSH経由でUbuntu側のP6ディレクトリを作る。
 ssh jdu-ubuntu 'mkdir -p ~/jdu-lab/p6'
 ```
 
@@ -767,9 +930,13 @@ ssh jdu-ubuntu 'mkdir -p ~/jdu-lab/p6'
 CloudShellのP6 directoryにいる状態で実行する。
 
 ```bash
+# CloudShellのP6ディレクトリへ移動する。
 cd ~/jdu-lab/p6
+# scpでCloudShellからUbuntuへファイルを送る。
 scp practice-source.txt jdu-ubuntu:~/jdu-lab/p6/practice-upload.txt
+# Ubuntu上の転送後ファイルのSHA-256を表示する。
 ssh jdu-ubuntu 'sha256sum ~/jdu-lab/p6/practice-upload.txt'
+# CloudShell上の転送元ファイルのSHA-256を表示する。
 sha256sum practice-source.txt
 ```
 
@@ -780,12 +947,14 @@ sha256sum practice-source.txt
 CloudShellで、次の1 commandをそのまま実行する。
 
 ```bash
+# Ubuntu上で3つの実測値を結果ファイルへ保存する。
 ssh jdu-ubuntu 'cd ~/jdu-lab/p6 && printf "REMOTE_USER=%s\nREMOTE_HOST=%s\nREMOTE_PATH=%s\n" "$(id -un)" "$(hostname)" "$HOME" > practice-remote-result.txt'
 ```
 
 内容をremoteで確認する。
 
 ```bash
+# SSH経由でUbuntu上の結果ファイルを表示する。
 ssh jdu-ubuntu 'cat ~/jdu-lab/p6/practice-remote-result.txt'
 ```
 
@@ -794,11 +963,17 @@ ssh jdu-ubuntu 'cat ~/jdu-lab/p6/practice-remote-result.txt'
 Ubuntuへ接続する。
 
 ```bash
+# CloudShellからUbuntuへ接続する。
 ssh jdu-ubuntu
+# Ubuntu側のP6ディレクトリへ移動する。
 cd ~/jdu-lab/p6
+# Ubuntu側の現在地を表示する。
 pwd
+# 転送したファイルと結果ファイルを確認する。
 ls -l
+# Ubuntu側のP6を採点する。
 jdu-check P6
+# UbuntuのSSH接続を終了し、CloudShellへ戻る。
 exit
 ```
 
@@ -809,10 +984,15 @@ Ubuntu側2件がPASSになる。
 CloudShellで実行する。
 
 ```bash
+# CloudShellのP6ディレクトリへ移動する。
 cd ~/jdu-lab/p6
+# scpでUbuntuからCloudShellへ結果ファイルを戻す。
 scp jdu-ubuntu:~/jdu-lab/p6/practice-remote-result.txt practice-downloaded-result.txt
+# ダウンロードした内容を表示する。
 cat practice-downloaded-result.txt
+# CloudShell上のダウンロード後ファイルのSHA-256を表示する。
 sha256sum practice-downloaded-result.txt
+# Ubuntu上の転送元ファイルのSHA-256を表示する。
 ssh jdu-ubuntu 'sha256sum ~/jdu-lab/p6/practice-remote-result.txt'
 ```
 
@@ -821,7 +1001,9 @@ ssh jdu-ubuntu 'sha256sum ~/jdu-lab/p6/practice-remote-result.txt'
 #### 手順9: CloudShell側を採点する
 
 ```bash
+# CloudShellのP6ディレクトリへ移動する。
 cd ~/jdu-lab/p6
+# CloudShell側のP6を採点する。
 jdu-check P6
 ```
 
@@ -834,7 +1016,7 @@ CloudShell側4件がPASSになったら、M6へ進む。
 - 第1～3章と第4章の編集の基本を読む。その後、P0の手順で実機のOSを観察する。
 - 第4・5章を読んでP1、M1へ進む。
 - 第6・7章を読んでP2、M2へ進む。
-- 第8章を読んでP3手順1～4を行う。第9章を読んでP3手順5～6を行い、最後にM3へ進む。
+- 第8章を読んでP3手順1～4を行う。第9章を読んでP3手順5を行い、最後にM3へ進む。
 - 第10章を読んでP4、M4へ進む。第11章を読んでP5、M5へ進む。
 - 第12章を読んでP6、M6へ進む。既習の操作を組み合わせてM7へ進む。
 

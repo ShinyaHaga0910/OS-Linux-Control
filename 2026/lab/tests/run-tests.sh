@@ -40,6 +40,7 @@ for path in sys.argv[1:]:
 PY
 printf '%s\n' 'PASS shell and Python syntax'
 python3 "$root_dir/tests/test-availability-zone.py"
+python3 "$root_dir/tests/test-guided-command-comments.py" "$root_dir/../materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md"
 
 (
   cd "$root_dir"
