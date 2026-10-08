@@ -4,6 +4,20 @@
 
 Linux未経験の学生が、コンピューター、OS、Linuxの機能を理由と仕組みから学ぶA4縦の教科書です。章別Markdownを本文の正本とし、説明図20点と歴史写真1点を組み込みました。PPTXは作成していません。現行の演習・課題と実行環境は[Labの案内](../../../lab/README.md)を参照してください。`2026/v1.0.0/`の旧Labとは区別します。
 
+## 学生向けの教材
+
+GitHubで読む場合は、下の章別目次と[練習P0～P6](../../../lab/GUIDED_PRACTICE.md)、[自力課題M1～M7](../../../lab/MISSION_GUIDE.md)、[用語集・コマンド早見表](./docs/ja/reference.md)を開いてください。環境がまだない場合は、[初回セットアップ](../../../lab/setup/README.md)から始めます。
+
+PDFは次の一覧から開けます。
+
+| 言語 | 教科書 | 練習 | 自力課題 | 用語・コマンド早見表 |
+| --- | --- | --- | --- | --- |
+| 日本語（現行） | [PDF](./output/pdf/ubuntu_os_textbook_ja.pdf) | [P0～P6 PDF](./output/pdf/ubuntu_os_guided_practice_ja.pdf) | [M1～M7 PDF](./output/pdf/ubuntu_os_missions_ja.pdf) | [PDF](./output/pdf/ubuntu_os_reference_ja.pdf) |
+| ロシア語（翻訳初稿） | [PDF](./output/pdf/ubuntu_os_textbook_ru.pdf) | [PDF](./output/pdf/ubuntu_os_guided_practice_ru.pdf) | [PDF](./output/pdf/ubuntu_os_missions_ru.pdf) | [PDF](./output/pdf/ubuntu_os_reference_ru.pdf) |
+| ウズベク語（翻訳初稿） | [PDF](./output/pdf/ubuntu_os_textbook_uz.pdf) | [PDF](./output/pdf/ubuntu_os_guided_practice_uz.pdf) | [PDF](./output/pdf/ubuntu_os_missions_uz.pdf) | [PDF](./output/pdf/ubuntu_os_reference_uz.pdf) |
+
+ロシア語・ウズベク語の練習・課題には旧M0の表記と、日本語版に後から追加した問題文の未反映があります。現在のP0～P6・M1～M7の要件は、上の日本語版を使ってください。[翻訳の管理](./localization/README.md)で更新状況を確認できます。
+
 ## 教材と制作元
 
 - 教科書正本: [`docs/ja/textbook/`](./docs/ja/textbook/)
@@ -22,18 +36,20 @@ Linux未経験の学生が、コンピューター、OS、Linuxの機能を理�
 
 ## 章構成
 
-1. コンピューターとオペレーティングシステム
-2. Unixから現在のOSへ
-3. GUI・CLI・ターミナル・シェル
-4. ファイル、ディレクトリ、パス、編集
-5. テキストと入出力
-6. ユーザー、グループ、ログイン
-7. アクセス権と共有ディレクトリ
-8. プログラムとプロセス
-9. パッケージと導入
-10. systemdとサービス
-11. ソケット、HTTP、ログ
-12. SSHによる遠隔操作とファイル転送
+1. [コンピューターとオペレーティングシステム](./docs/ja/textbook/01-os-and-system.md)
+2. [Unixから現在のOSへ](./docs/ja/textbook/02-unix-linux-os-history.md)
+3. [GUI・CLI・ターミナル・シェル](./docs/ja/textbook/03-interfaces-and-shell.md)
+4. [ファイル、ディレクトリ、パス、編集](./docs/ja/textbook/04-files-paths-editor.md)
+5. [テキストと入出力](./docs/ja/textbook/05-text-and-streams.md)
+6. [ユーザー、グループ、ログイン](./docs/ja/textbook/06-users-groups-sessions.md)
+7. [アクセス権と共有ディレクトリ](./docs/ja/textbook/07-permissions-and-sharing.md)
+8. [プログラムとプロセス](./docs/ja/textbook/08-processes-and-signals.md)
+9. [パッケージと導入](./docs/ja/textbook/09-packages-and-apt.md)
+10. [systemdとサービス](./docs/ja/textbook/10-services-and-systemd.md)
+11. [ソケット、HTTP、ログ](./docs/ja/textbook/11-sockets-http-and-logs.md)
+12. [SSHによる遠隔操作とファイル転送](./docs/ja/textbook/12-ssh-and-file-transfer.md)
+
+[巻末まとめ](./docs/ja/textbook/afterword.md)・[練習と課題の対応表](./instructor/coverage.md)も参照できます。
 
 CPU・メモリ・保存領域の役割とOSがそれらを管理する理由は説明します。CPUやディスク内部の詳細は対象外です。
 
