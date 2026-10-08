@@ -57,21 +57,16 @@ P6とM6はUbuntuとCloudShellで別々に`jdu-check`を実行します。Dashboa
 
 ### 既存のUbuntu環境を使い続ける場合
 
-P0への変更とM1所有者判定の削除は、新規構築には自動で入ります。既存環境では、先に教員の進捗サーバーを更新し、その後にUbuntuの配布スクリプト3点を更新します。演習成果物のresetやEC2の再作成は不要です。
-
-教員のCloudShellでは、[教員用の更新手順](teacher/README.md#p0への更新)を実施します。学生のUbuntuでは、`ssm-user`で以下を実行します。
+新規構築には最新版が入ります。既存のUbuntuはGitHubの更新だけでは変わりません。学生は`ssh jdu-ubuntu`でUbuntuへ入った後、`ssm-user`で次を一度実行します。CloudShellでは実行しません。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-labcheck -o /tmp/jdu-labcheck-v1.0.0
-printf '%s  %s\n' 'decd3abb311ce5ff48f10dbdb541581acb7b3f278f25370b23b23f5581fa7d5d' '/tmp/jdu-labcheck-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-labcheck-v1.0.0 /opt/jdu-lab/bin/jdu-labcheck
-curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-fixture -o /tmp/jdu-fixture-v1.0.0
-printf '%s  %s\n' 'a8f822c65ac098bb445a0e69c102d23ce01ec68cedb0462493c593ec54dbb651' '/tmp/jdu-fixture-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-fixture-v1.0.0 /opt/jdu-lab/bin/jdu-fixture
-curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-progress -o /tmp/jdu-progress-v1.0.0
-printf '%s  %s\n' '6f77a05a934c78ab7c19e447930df7e08a5e1ea85cb2338a030f9c1395f37a2b' '/tmp/jdu-progress-v1.0.0' | sha256sum --check && sudo install -o root -g root -m 0755 /tmp/jdu-progress-v1.0.0 /opt/jdu-lab/bin/jdu-progress
-jdu-check list
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/update-existing-ubuntu.sh -o /tmp/jdu-update-existing-ubuntu.sh
+printf '%s  %s\n' '527e5d0ea57488f04408550b68e141664e228281d3b2a17e8747a22e58b0e44c' '/tmp/jdu-update-existing-ubuntu.sh' | sha256sum --check
+bash /tmp/jdu-update-existing-ubuntu.sh
+command -v jdu-my-progress
 ```
 
-一覧の先頭がP0なら更新済みです。旧コマンド`jdu-check M0`は互換入口としてP0へ切り替えます。P0が読む記録先は常に`~/jdu-lab/p0/observation.env`です。旧`m0/observation.env`を採点に流用せず、自動で移動・削除もしません。
+更新は演習成果物、Server ID、token、進捗送信先、SSH鍵をリセットしません。process2だけを停止済みでprocess1/3が稼働中なら、その達成状態を保持します。旧環境でprocess1/3も停止していた場合、課題を終えていたか自動判別できないため勝手に起動しません。更新時に`REVIEW P3`または`REVIEW M3`が出た場合、未完了の課題だけ`jdu-reset P3`または`jdu-reset M3`で初期化してください。再判定が必要な課題は学生が`jdu-check`を実行します。P0が読む記録先は常に`~/jdu-lab/p0/observation.env`です。旧`m0/observation.env`は採点に流用せず、自動で移動・削除もしません。
 
 教員画面ではP0として表示します。新しいP0の結果を優先し、まだP0の提出がない場合は既存M0の結果を表示します。教員側を更新するまではP0の送信が拒否されるため、更新の順序を守ってください。
 
@@ -84,6 +79,8 @@ jdu-check list
 | `scripts/setup-instance.sh` | Ubuntu初期設定と演習の初期化 |
 | `scripts/check-aws-environment.sh` | AWS構成のread-only検査 |
 | `scripts/jdu-fixture` | Ubuntu側の初期化 |
+| `scripts/jdu-process-state` | P3/M3の再起動後の状態と停止記録を管理 |
+| `scripts/update-existing-ubuntu.sh` | 既存Ubuntuの安全な更新 |
 | `scripts/jdu-labcheck` | Ubuntu側の課題判定 |
 | `scripts/jdu-cloudcheck` | CloudShell側P6/M6の判定 |
 | `scripts/jdu-progress` | 匿名server IDと結果のHTTPS送信 |

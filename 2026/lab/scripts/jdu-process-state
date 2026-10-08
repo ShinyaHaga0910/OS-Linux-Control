@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+state_dir="${JDU_PROCESS_STATE_DIR:-/var/lib/jdu-lab/stopped}"
+action="${1:-}"
+mission="${2:-}"
+
+marker_for() {
+  case "$1" in
+    P3|M3) printf '%s/%s-process2' "$state_dir" "$1" ;;
+    *) printf 'ERROR Unknown process mission: %s\n' "$1" >&2; exit 2 ;;
+  esac
+}
+
+install_units() {
+  local group number unit worker_user worker_name description fixture
+  install -d -m 0755 "$state_dir" /opt/jdu-lab/fixtures/p3 /opt/jdu-lab/fixtures/m3
+  for group in P3 M3; do
+    if [[ "$group" == P3 ]]; then
+      worker_user=jdupracticeworker
+      worker_name=guided-process
+      description='JDU P3 guided'
+    else
+      worker_user=jduworker
+      worker_name=process
+      description='JDU M3'
+    fi
+    for number in 1 2 3; do
+      unit="jdu-${group,,}-process${number}.service"
+      fixture="/opt/jdu-lab/fixtures/${group,,}/$unit"
+      {
+        printf '[Unit]\nDescription=%s process%s\n\n[Service]\nType=simple\nUser=%s\n' "$description" "$number" "$worker_user"
+        if [[ "$number" == 2 ]]; then
+          printf 'ExecStartPre=+/opt/jdu-lab/bin/jdu-process-state start %s\n' "$group"
+        fi
+        printf 'ExecStart=/opt/jdu-lab/bin/jdu-worker %s%s\nRestart=no\n' "$worker_name" "$number"
+        if [[ "$number" == 2 ]]; then
+          printf 'ExecStopPost=+/opt/jdu-lab/bin/jdu-process-state stop %s\n' "$group"
+        fi
+      } > "$fixture"
+      chmod 0444 "$fixture"
+      install -o root -g root -m 0644 "$fixture" "/etc/systemd/system/$unit"
+    done
+  done
+  cat > /etc/systemd/system/jdu-process-resume.service <<'UNIT'
+[Unit]
+Description=Resume JDU P3 and M3 practice processes without undoing completed stops
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/jdu-lab/bin/jdu-process-state resume
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+  chmod 0644 /etc/systemd/system/jdu-process-resume.service
+  systemctl daemon-reload
+  systemctl enable jdu-process-resume.service >/dev/null
+}
+
+resume_processes() {
+  local group number unit marker
+  for group in P3 M3; do
+    # An old instance where peers are also stopped cannot reveal whether the
+    # student had completed the task before a reboot. Leave it untouched.
+    [[ -f "$state_dir/$group-needs-review" ]] && continue
+    marker="$(marker_for "$group")"
+    for number in 1 2 3; do
+      unit="jdu-${group,,}-process${number}.service"
+      if [[ "$number" == 2 && -f "$marker" ]]; then
+        continue
+      fi
+      systemctl start "$unit"
+    done
+  done
+}
+
+case "$action" in
+  install-units) install_units ;;
+  upgrade)
+    # Only a stopped process2 alongside two active peers is evidence of a
+    # completed process task. Other stopped states in an old installation are
+    # ambiguous, so an explicit reset is safer than silently changing them.
+    for group in P3 M3; do
+      prefix="jdu-${group,,}-process"
+      if ! systemctl is-active --quiet "${prefix}1.service" ||
+         ! systemctl is-active --quiet "${prefix}3.service"; then
+        install -d -m 0755 "$state_dir"
+        touch "$state_dir/$group-needs-review"
+      elif ! systemctl is-active --quiet "${prefix}2.service"; then
+        install -d -m 0755 "$state_dir"
+        touch "$(marker_for "$group")"
+      fi
+    done
+    install_units
+    resume_processes
+    ;;
+  resume) resume_processes ;;
+  start)
+    rm -f -- "$(marker_for "$mission")"
+    ;;
+  stop)
+    # At OS shutdown systemd reports "stopping". Do not mistake that for a
+    # student's explicit stop. A failed process is not a completed exercise.
+    state="$(systemctl is-system-running 2>/dev/null || true)"
+    if [[ "${SERVICE_RESULT:-success}" == success && ( "$state" == running || "$state" == degraded ) ]]; then
+      install -d -m 0755 "$state_dir"
+      touch "$(marker_for "$mission")"
+    fi
+    ;;
+  *) printf '%s\n' 'Usage: jdu-process-state install-units|upgrade|resume|start P3|M3|stop P3|M3' >&2; exit 2 ;;
+esac

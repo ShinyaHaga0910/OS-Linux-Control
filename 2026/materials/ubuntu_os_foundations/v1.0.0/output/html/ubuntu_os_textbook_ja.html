@@ -517,9 +517,8 @@ ps -p 1234 -o pid,ppid,user,stat,comm,args</code></pre>
 <p>Ubuntuでは、systemdがサービスの起動と状態を管理する。サービスを定義する設定を<strong>ユニット（unit）</strong>と呼び、サービスのユニット名は通常 <code>.service</code> で終わる。設定で指定されたプログラムが実行されると、サービスに対応するプロセスが動く。ユニットという管理対象と、現在動いているプロセスは同じものではない。</p>
 <p><code>systemctl</code> はsystemdが管理するユニットの状態を調べるコマンドである。次の例では、稼働中のサービスを一覧表示し、一つのサービスの状態と主なプロセスを調べる。</p>
 <pre><code>systemctl list-units --type=service
-systemctl status systemd-journald.service --no-pager
-systemctl show --property MainPID --value systemd-journald.service</code></pre>
-<p><code>status</code> の <strong>Main PID</strong> は、そのサービスの主なプロセスのPIDである。<code>show --property MainPID --value</code> はその値だけを表示する。停止中のサービスでは <code>0</code> と表示されることがある。得られたPIDを <code>ps -fp PID</code> で照合すると、サービスの管理情報と実際のプロセスを結び付けられる。<code>ps</code> はプロセスを調べ、<code>systemctl</code> はサービスの管理状態を調べる。サービスの起動方法や自動起動設定は第10章で扱う。</p>
+systemctl status systemd-journald.service --no-pager</code></pre>
+<p><code>status</code> の <strong>Main PID</strong> は、そのサービスの主なプロセスのPIDである。表示された番号をメモし、<code>ps -fp PID</code>の<code>PID</code>をその番号へ置き換えて照合すると、サービスの管理情報と実際のプロセスを結び付けられる。<code>ps</code> はプロセスを調べ、<code>systemctl</code> はサービスの管理状態を調べる。systemdが管理するサービスを停止するには、PIDへ直接シグナルを送る代わりに<code>systemctl stop サービス名</code>を使う。これによりsystemdが停止処理を管理する。サービスの自動起動設定は第10章で扱う。</p>
 <h2>8.4 フォアグラウンドとバックグラウンド</h2>
 <p>ターミナルから通常のコマンドを実行すると、シェルはそのコマンドが<strong>フォアグラウンド（前景）プロセス</strong>として終了するまで待機する。その間、キーボードからの入力は主にそのプロセスへ直接渡される。<code>Ctrl+C</code> は、ターミナルからフォアグラウンドのプロセスグループ全体へ割り込みシグナルを送信する操作である。</p>
 <p>コマンドの末尾に<code>&amp;</code>を付けると、シェルはそのコマンドを<strong>バックグラウンド（背景）</strong>で開始し、次の入力を受け付ける。</p>
@@ -571,22 +570,22 @@ cmatrix</code></pre>
 <p>パッケージがシステムに導入済みであることと、現在そのプロセスがメモリ上で動作していることは全く別の状態である。コマンドを終了させてもパッケージ自体はシステムに残り続ける。その一方で、サーバー系ソフトウェアのパッケージによっては、導入完了時にサービスプロセスを自動起動する設定になっているものもある。思い込みで判断せず、<code>systemctl</code> コマンドを用いて実際の稼働状態を確認することが重要である。</p>
 <h2>9.4 バージョンとファイルの所属を確認する</h2>
 <pre><code>dpkg-query -W -f=&#x27;${Package} ${Version}\n&#x27; cmatrix
-dpkg -S /usr/bin/cmatrix</code></pre>
-<p><code>dpkg-query</code> は、ローカルのパッケージデータベースから現在導入されている正確なバージョン情報を読み出す。<code>dpkg -S PATH</code> は、指定したファイルパスがどのパッケージによって提供・配置されたかを調べる。<code>command -v</code> が「シェルが実行対象として認識しているファイルパス」を答えるのに対し、<code>dpkg -S</code> は「そのファイルを管理しているパッケージの所属関係」を答えるものであり、両者は解決しようとしている問いが根本的に異なる。</p>
+dpkg -S /usr/bin/apt</code></pre>
+<p><code>dpkg-query</code> は、ローカルのパッケージデータベースから現在導入されている正確なバージョン情報を読み出す。<code>dpkg -S PATH</code> は、指定したファイルパスがどのパッケージによって提供・配置されたかを調べる。<code>command -v</code> が「シェルが実行対象として認識しているファイルパス」を答えるのに対し、<code>dpkg -S</code> は「そのファイルを管理しているパッケージの所属関係」を答える。<code>/usr/bin/apt</code>は例である。コマンドの公開パスがシンボリックリンクの場合、そのパス自体はパッケージの管理対象でないことがある。<code>readlink -f</code>で実体のパスを確認してから、その実体を<code>dpkg -S</code>で調べる。</p>
 <h2>9.5 削除とクリーンアップ</h2>
 <p><code>apt remove</code> はパッケージ本体を削除する。<code>apt purge</code> は設定ファイルも含めて削除する。<code>apt autoremove</code> は、ほかのパッケージから必要とされなくなった依存パッケージを削除する。いずれも <code>apt upgrade</code> とは異なり、削除されるものを確認してから実行する。</p>
 <h2>章末問題</h2>
 <h3>問1</h3>
 <p><code>apt update</code>、<code>apt upgrade</code>、<code>apt install</code> の役割の違いを説明せよ。</p>
 <h3>問2</h3>
-<p><code>command -v cmatrix</code> と <code>dpkg -S /usr/bin/cmatrix</code> がそれぞれ何を調べるコマンドであるか、その違いを説明せよ。</p>
+<p><code>command -v cmatrix</code> と <code>dpkg -S /usr/bin/apt</code> がそれぞれ何を調べるコマンドであるか、その違いを説明せよ。</p>
 <h3>問3</h3>
 <p>パッケージが正常に導入されていても、対応するプロセスが動いていない状況を一例挙げよ。</p>
 <h2 class='chapter-answers'>章末解答</h2>
 <h3>問1</h3>
 <p><strong>答え：</strong> <code>apt update</code> は利用可能なパッケージの一覧を更新する。<code>apt upgrade</code> は導入済みパッケージを新しいバージョンへ更新する。<code>apt install</code> は指定したパッケージを導入する。</p>
 <h3>問2</h3>
-<p><strong>答え：</strong> <code>command -v cmatrix</code> はシェルが実行するコマンドのパスを調べる。<code>dpkg -S /usr/bin/cmatrix</code> は、そのファイルを提供するパッケージを調べる。</p>
+<p><strong>答え：</strong> <code>command -v cmatrix</code> はシェルが実行するコマンドのパスを調べる。<code>dpkg -S /usr/bin/apt</code> は、そのファイルを提供するパッケージを調べる。公開パスがシンボリックリンクなら、実体のパスを確認してから所属を調べる。</p>
 <h3>問3</h3>
 <p><strong>答え：</strong> <code>cmatrix</code> を導入したあと、起動せずにいる場合や、起動後に <code>Ctrl+C</code> で終了した場合。パッケージは残るが、<code>cmatrix</code> のプロセスは動いていない。</p>
 <h2>参考資料</h2>

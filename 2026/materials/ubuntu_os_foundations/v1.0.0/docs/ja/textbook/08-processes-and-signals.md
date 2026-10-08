@@ -38,10 +38,9 @@ Ubuntuでは、systemdがサービスの起動と状態を管理する。サー�
 ```bash
 systemctl list-units --type=service
 systemctl status systemd-journald.service --no-pager
-systemctl show --property MainPID --value systemd-journald.service
 ```
 
-`status` の **Main PID** は、そのサービスの主なプロセスのPIDである。`show --property MainPID --value` はその値だけを表示する。停止中のサービスでは `0` と表示されることがある。得られたPIDを `ps -fp PID` で照合すると、サービスの管理情報と実際のプロセスを結び付けられる。`ps` はプロセスを調べ、`systemctl` はサービスの管理状態を調べる。サービスの起動方法や自動起動設定は第10章で扱う。
+`status` の **Main PID** は、そのサービスの主なプロセスのPIDである。表示された番号をメモし、`ps -fp PID`の`PID`をその番号へ置き換えて照合すると、サービスの管理情報と実際のプロセスを結び付けられる。`ps` はプロセスを調べ、`systemctl` はサービスの管理状態を調べる。systemdが管理するサービスを停止するには、PIDへ直接シグナルを送る代わりに`systemctl stop サービス名`を使う。これによりsystemdが停止処理を管理する。サービスの自動起動設定は第10章で扱う。
 
 ## 8.4 フォアグラウンドとバックグラウンド
 

@@ -16,7 +16,11 @@ for script in \
   "$root_dir/scripts/jdu-cloudcheck" \
   "$root_dir/scripts/jdu-cloud-reset" \
   "$root_dir/scripts/jdu-progress" \
+  "$root_dir/scripts/jdu-process-state" \
+  "$root_dir/scripts/update-existing-ubuntu.sh" \
   "$root_dir/scripts/install-my-progress-ubuntu.sh" \
+  "$root_dir/tests/test-package-ownership.sh" \
+  "$root_dir/tests/test-process-persistence.sh" \
   "$root_dir/teacher/install-teacher.sh" \
   "$root_dir/teacher/scripts/jdu-dashboard" \
   "$root_dir/tests/mock-bin/aws" \
@@ -129,6 +133,9 @@ grep -Fxq 'RESULT    1 / 2 checks cleared' <<<"$p3_stopped"
 grep -Fxq 'RESULT    0 / 2 checks cleared' <<<"$p3_wrong"
 rm -rf -- "$p3_test_home"
 printf '%s\n' 'PASS P3 starts at zero and requires the exact guided process outcome'
+
+bash "$root_dir/tests/test-package-ownership.sh" "$root_dir/scripts/jdu-labcheck"
+bash "$root_dir/tests/test-process-persistence.sh" "$root_dir/scripts/jdu-process-state" "$root_dir/scripts/jdu-fixture" "$root_dir/scripts/setup-instance.sh"
 
 m6_cloud_home="$(mktemp -d)"
 m6_cloud_workspace="$m6_cloud_home/jdu-lab/m6"
@@ -288,8 +295,8 @@ assert 'verify_download scripts/jdu-my-progress /opt/jdu-lab/bin/jdu-my-progress
 assert 'install -m 0755 /opt/jdu-lab/bin/jdu-my-progress /usr/local/bin/jdu-my-progress' in setup
 assert 'jdu-fixture reset all' in setup and 'jdu-progress register' in setup
 assert 'required_packages+=(tree)' in setup
-assert '/opt/jdu-lab/fixtures/m3/jdu-m3-process${process_number}.service' in setup
-assert '/opt/jdu-lab/fixtures/p3/jdu-p3-process${process_number}.service' in setup
+assert 'verify_download scripts/jdu-process-state /opt/jdu-lab/bin/jdu-process-state' in setup
+assert '/opt/jdu-lab/bin/jdu-process-state install-units' in setup
 assert 'jdu-practice-status.service' in setup
 assert 'jdu-practice-web.service' in setup
 assert 'jdu-practice-final.service' not in setup

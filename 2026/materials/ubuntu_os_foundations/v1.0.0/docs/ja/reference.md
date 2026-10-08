@@ -67,7 +67,7 @@
 | サービス設定 | `systemctl cat UNIT` | 演習用のユニットファイルを直接編集しない | `User`、`WorkingDirectory`、`ExecStart`の各項目を確認する |
 | サービス状態 | `systemctl status/start/stop` | active（起動中）であることだけで、機能全体が正常に動作していると判断しない | `is-active`、MainPID、curlなどで多角的に確認する |
 | 起動時自動起動 | `systemctl enable/disable UNIT` | 即時起動（`start`/`stop`）と自動起動設定（`enable`/`disable`）は別軸である | `is-enabled` |
-| Main PID取得 | `systemctl show -p MainPID --value UNIT` | Main PIDが0、空、または再起動前の古い値でないか注意する | `ps -p PID` |
+| Main PID確認 | `systemctl status UNIT` | `Main PID:`に表示された番号を現在の値として読む。停止中は表示されない場合がある | `ps -fp PID` |
 | ソケット状態 | `sudo ss -lntp` | アドレス、ポート番号、プロセスPIDをすべて照合する | サービスのMain PIDと比較する |
 | HTTP疎通 | `curl -i URL`、必要時`--max-time` | TCP接続の成功、HTTPステータスコード、応答本文の内容はそれぞれ個別に確認する | ステータスライン、本文、終了ステータスを確認する |
 | ジャーナルログ | `sudo journalctl -u UNIT --no-pager -n N` | 過去の古い起動ログと、現在の実行ログを混同しない | 指定されたリクエストパスが記録されているか確認する |
