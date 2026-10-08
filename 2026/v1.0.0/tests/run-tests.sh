@@ -132,7 +132,7 @@ m6_cloud_home="$(mktemp -d)"
 m6_cloud_workspace="$m6_cloud_home/jdu-lab/m6"
 m6_remote_directory="$m6_cloud_home/remote-m6"
 mkdir -p "$m6_cloud_workspace" "$m6_remote_directory"
-chmod 0755 "$root_dir/tests/mock-m6/ssh"
+chmod 0755 "$root_dir/tests/mock-m6/ssh" "$root_dir/tests/mock-progress/curl"
 set +e
 m6_initial="$(M6_REMOTE_DIR="$m6_remote_directory" JDU_M6_WORKSPACE="$m6_cloud_workspace" PATH="$root_dir/tests/mock-m6:$PATH" HOME="$m6_cloud_home" bash "$root_dir/scripts/jdu-cloudcheck" M6 2>&1)"
 set -e
