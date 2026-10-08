@@ -46,30 +46,70 @@ if [[ ! "$ROLE_NAME" =~ ^[A-Za-z0-9+=,.@_-]+$ ]]; then
 fi
 
 export AWS_PAGER=""
+stack_status=''
+if stack_status="$(aws cloudformation describe-stacks --region "$REGION" --stack-name "$STACK_NAME" --query 'Stacks[0].StackStatus' --output text 2>&1)"; then
+  :
+elif [[ "$stack_status" == *ValidationError* && "$stack_status" == *'does not exist'* ]]; then
+  stack_status='NOT_FOUND'
+else
+  printf 'ERROR Could not inspect the teacher stack before handling keys: %s\n' "$stack_status" >&2
+  exit 2
+fi
+
 umask 077
 install -d -m 0700 "$state_dir"
 admin_key_file="$state_dir/admin.key"
 registration_key_file="$state_dir/registration.key"
 config_file="$state_dir/progress.env"
+pending_key_file="$state_dir/registration.pending.key"
 
+if [[ -s "$config_file" ]]; then
+  if [[ "$stack_status" == NOT_FOUND ]]; then
+    printf '%s\n' 'ERROR Saved teacher configuration exists, but the matching AWS stack does not. Do not recreate it during a routine update.' >&2
+    exit 2
+  fi
+  saved_stack="$(sed -n 's/^JDU_PROGRESS_STACK=//p' "$config_file" | tail -n 1)"
+  if [[ "$saved_stack" != "$STACK_NAME" ]]; then
+    printf '%s\n' 'ERROR This teacher key directory belongs to another stack. Use the original key directory for the requested stack.' >&2
+    exit 2
+  fi
+fi
+if [[ "$stack_status" != NOT_FOUND && ! -s "$config_file" ]]; then
+  printf '%s\n' 'ERROR The existing teacher stack has no saved configuration in this directory. Restore the original teacher key directory before updating.' >&2
+  exit 2
+fi
+if [[ "$stack_status" != NOT_FOUND && ! -s "$admin_key_file" ]]; then
+  printf '%s\n' 'ERROR The existing teacher stack has no saved admin key in this directory. Restore the original key before updating.' >&2
+  exit 2
+fi
+if [[ "$stack_status" != NOT_FOUND && ! -s "$registration_key_file" && "$ROTATE_REGISTRATION_KEY" == false ]]; then
+  printf '%s\n' 'ERROR The existing teacher stack has no saved registration key in this directory. Restore the original key before updating.' >&2
+  exit 2
+fi
 if [[ ! -s "$admin_key_file" ]]; then
   openssl rand -hex 32 > "$admin_key_file"
 fi
-pending_key_file="$state_dir/registration.pending.key"
-registration_key_value="${JDU_PROGRESS_REGISTRATION_KEY:-}"
-if [[ -z "$registration_key_value" && -s "$pending_key_file" && "$ROTATE_REGISTRATION_KEY" == false ]]; then
-  registration_key_value="$(tr -d '\r\n' < "$pending_key_file")"
-fi
-if [[ -z "$registration_key_value" && -s "$registration_key_file" && "$ROTATE_REGISTRATION_KEY" == false ]]; then
+registration_key_value=''
+if [[ "$ROTATE_REGISTRATION_KEY" == false && -s "$registration_key_file" ]]; then
   registration_key_value="$(tr -d '\r\n' < "$registration_key_file")"
+  if [[ -n "${JDU_PROGRESS_REGISTRATION_KEY:-}" && "$JDU_PROGRESS_REGISTRATION_KEY" != "$registration_key_value" ]]; then
+    printf '%s\n' 'ERROR The supplied registration key differs from the saved key. Use --rotate-registration-key only if rotation is intended.' >&2
+    exit 2
+  fi
+  if [[ -s "$pending_key_file" && "$(tr -d '\r\n' < "$pending_key_file")" != "$registration_key_value" ]]; then
+    printf '%s\n' 'ERROR A pending registration key differs from the saved key. Resolve the pending update before continuing.' >&2
+    exit 2
+  fi
+else
+  registration_key_value="${JDU_PROGRESS_REGISTRATION_KEY:-}"
+  if [[ -z "$registration_key_value" && -s "$pending_key_file" && "$ROTATE_REGISTRATION_KEY" == false ]]; then
+    registration_key_value="$(tr -d '\r\n' < "$pending_key_file")"
+  fi
 fi
 candidate_hash="$(printf '%s' "$registration_key_value" | sha256sum | awk '{print $1}')"
 if [[ "$candidate_hash" == "$RETIRED_REGISTRATION_HASH" ]]; then
-  if [[ -n "${JDU_PROGRESS_REGISTRATION_KEY:-}" ]]; then
-    printf '%s\n' 'ERROR The old publicly distributed registration key is retired.' >&2
-    exit 2
-  fi
-  registration_key_value=''
+  printf '%s\n' 'ERROR The saved registration key was publicly distributed and is retired. No automatic rotation is performed; use --rotate-registration-key only after approving a key change.' >&2
+  exit 2
 fi
 if [[ -z "$registration_key_value" ]]; then
   registration_key_value="$(openssl rand -hex 32)"
