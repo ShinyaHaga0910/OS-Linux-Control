@@ -55,10 +55,7 @@ def main():
             isinstance(lifetime, bool) or not isinstance(lifetime, int) or not 0 < lifetime <= 900 or
             any(ord(char) < 32 or ord(char) == 127 for char in url)):
         raise ValueError("Invalid personal progress response.")
-    if sys.stdout.isatty():
-        print(f"\x1b]8;;{url}\x1b\\{url}\x1b]8;;\x1b\\")
-    else:
-        print(url)
+    print(url)
     return 0
 
 
