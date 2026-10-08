@@ -646,11 +646,13 @@ sudo ss -lntp | grep ':8181'
 #### 手順4: Socket PIDとMain PIDを比較する
 
 ```bash
-systemctl show --property MainPID --value jdu-practice-web.service
+# サービスの状態を表示し、Main PIDの数字を読む。
+systemctl status jdu-practice-web.service --no-pager
+# 8181番ポートで待ち受けるプロセスのpid=を読む。
 sudo ss -lntp | grep ':8181'
 ```
 
-2つのPIDが同じであることを確認する。
+`systemctl status`の`Main PID:`と、`ss`の`users:`欄にある`pid=`の数字が同じであることを確認する。同じなら、このサービスの主プロセスが8181番ポートで待ち受けている。
 
 #### 手順5: HTTP responseを確認する
 
@@ -665,14 +667,16 @@ Content directoryへ移動する。
 ```bash
 cd /srv/jdu-practice-web
 pwd
-stat -c '%U:%G %a %n' index.txt
-namei -l /srv/jdu-practice-web/index.txt
+ls -ld /srv /srv/jdu-practice-web
+ls -l index.txt
 id jdupracticeweb
-sudo -u jdupracticeweb -- test -r index.txt
-echo $?
+getent passwd jdupracticeweb
+sudo -u jdupracticeweb -- cat index.txt
 ```
 
-最後の値`0`はread可能を表す。
+`ls -ld`は各directory自身の権限を、`ls -l`は`index.txt`の所有者・group・権限を表示する。ファイルを読むには、ファイルのread権限に加え、そこへ至る各directoryを通過するためのexecute権限も必要である。`id`ではサービス用ユーザーのgroupを、`getent passwd`ではログインシェルを確認する。
+
+`sudo -u jdupracticeweb -- cat index.txt`は、`jdupracticeweb`の権限で`cat index.txt`を**一回だけ**実行する。`--`は`sudo`のオプションの終わりを示す。内容が表示されれば、そのユーザーはファイルを読めている。`jdupracticeweb`のログインシェルは`/usr/sbin/nologin`なので、通常の`su -`で対話ログインするのではなく、この方法で確認する。
 
 #### 手順7: 学生用requestを送る
 
