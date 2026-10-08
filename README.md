@@ -9,6 +9,7 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 - [教員向け：進捗サーバー](./2026/v1.0.0/teacher/README.md)
 - [教員向け：学生手順の試行](./2026/STUDENT_TRIAL.md)
 - [教材制作の方針](./COURSE_POLICY.md)・[AI作業の入口](./AGENTS.md)
+- [変更・公開の手順](./CONTRIBUTING.md)
 
 ## 現行の配置
 
