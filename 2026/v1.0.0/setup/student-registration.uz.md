@@ -57,9 +57,9 @@ CloudShell’da bajaring. `ssh jdu-ubuntu` orqali Ubuntu server’ga kirgandan k
 jdu-my-progress
 ```
 
-Chiqqan HTTPS URL’ni browser’da oching. Bu **sizning shaxsiy progress dashboard’ingiz**. Sahifa o‘qituvchi tizimida taqdim etiladi va unda faqat sizning server’ingiz natijalari ko‘rinadi. Dashboard uchun alohida server yaratish kerak emas.
+Chiqqan link’ni bosing. Agar link bosilmasa, HTTPS URL’ni nusxalab browser’da oching. CloudShell yoki SSH orqali ulangan Ubuntu sizning kompyuteringizdagi browser’ni avtomatik ocha olmaydi. Bu **sizning shaxsiy progress dashboard’ingiz**. Sahifa o‘qituvchi tizimida taqdim etiladi va unda faqat sizning natijalaringiz ko‘rinadi. Dashboard uchun alohida server yaratish kerak emas.
 
-P0–P6 va M1–M7 bo‘yicha progress’ni ko‘rishingiz mumkin. Dastlab natijalar hali yuborilmaganligi sababli bo‘sh kataklar yoki «—» normal holatdir. Email manzili talaba sahifasida ko‘rsatilmaydi.
+P0–P6 va M1–M7 bo‘yicha progress’ni ko‘rishingiz mumkin. Dastlab natijalar hali yuborilmaganligi sababli bo‘sh kataklar yoki «—» normal holatdir. Sarlavhada ro‘yxatdan o‘tgan email va Server ID ko‘rsatiladi; hostname va EC2 instance ID ko‘rsatilmaydi.
 
 URL 15 daqiqa amal qiladi. Muddati tugasa, CloudShell yoki Ubuntu’da `jdu-my-progress`’ni yana bajaring va yangi URL’ni oching. Kompyuteringizga certificate o‘rnatish shart emas.
 

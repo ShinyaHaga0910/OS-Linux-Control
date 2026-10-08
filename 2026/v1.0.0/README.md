@@ -1,8 +1,8 @@
-# OS-Linux-Control Lab 2026 v1.0.0
+# OS-Linux-Control Lab 2026
 
-Status: First distribution candidate / local acceptance tests passed / Learner Lab verification pending
+Status: Git release v1.0.1 / local acceptance tests passed / Learner Lab verification pending
 
-2026年度のAWS Academy Learner Lab用Ubuntu実習環境です。教材とLabをともに`v1.0.0`へ統一しています。
+2026年度のAWS Academy Learner Lab用Ubuntu実習環境です。この`2026/v1.0.0/`は学生に配布したURLを維持するための固定パスです。現行のGitリリース番号は`v1.0.1`です。更新履歴は[CHANGELOG.md](../../CHANGELOG.md)を参照してください。
 
 ## 学生の初回構築
 
@@ -103,11 +103,11 @@ curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/mai
 bash /tmp/jdu-install-teacher.sh --region us-east-1
 ```
 
-教員のCloudShellで`jdu-dashboard`を実行すると、30分有効の閲覧URLが表示されます。
+教員のCloudShellで`jdu-dashboard`を実行すると、30分有効の閲覧URLが表示されます。端末でリンクをクリックできない場合はURLをコピーしてブラウザで開きます。CloudShellから手元のブラウザを自動起動することはできません。
 
 ## 学生が自分の進捗を確認する
 
-学生はCloudShellでも、`ssh jdu-ubuntu`で接続したUbuntu上でも `jdu-my-progress` を実行できます。表示されたHTTPS URLをブラウザで開きます。自分のサーバーのP・Mの最新結果だけを表示する読み取り専用ページです。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
+学生はCloudShellでも、`ssh jdu-ubuntu`で接続したUbuntu上でも `jdu-my-progress` を実行できます。端末でリンクをクリックできない場合は、表示されたHTTPS URLをコピーしてブラウザで開きます。手元のブラウザは自動起動しません。登録メールとServer ID、自分のP・Mの最新結果だけを表示する読み取り専用ページです。ホスト名とEC2インスタンスIDは表示しません。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
 
 最新のinstallerで構築した学生CloudShellとUbuntuには、両方にコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
 

@@ -36,7 +36,7 @@ Linux未経験の大学生が、操作の手順だけでなく、コンピュー
 | 図 | [`assets/figure-sources-v1.2/`](./2026/materials/ubuntu_os_foundations/v1.0.0/assets/figure-sources-v1.2/) | [`figure-register.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/figure-register.md)と本文・PDFを確認 |
 | Lab実装 | [`2026/v1.0.0/`](./2026/v1.0.0/) | CloudFormation、初期設定、採点、教員進捗、テストの整合を確認 |
 
-`output/`のPDF・HTMLは学生が入手できるようGitに含める。ただし修正元はMarkdownと図の生成元である。公開済みのRaw URLを壊さないことを優先し、制作途中の変更は新しい`v1.x`フォルダを増やさずGit履歴で管理する。旧版を独立して配布する必要が生じたときだけ別版を設ける。
+`output/`のPDF・HTMLは学生が入手できるようGitに含める。ただし修正元はMarkdownと図の生成元である。公開済みのRaw URLを壊さないことを優先し、リリースごとに新しい`v1.x`フォルダを増やさない。変更は同じ場所で行い、Gitコミット・タグ・GitHub Releasesと[CHANGELOG.md](./CHANGELOG.md)で管理する。`2026/v1.0.0/`は固定の配布パスであり、リリース番号とは別である。
 
 ## 5. 多言語化
 

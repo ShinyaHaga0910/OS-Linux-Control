@@ -357,7 +357,8 @@ def dashboard(event, personal=False):
     expires_at = int(item.get("expiresAt", {}).get("N", "0")) if item else 0
     if expires_at <= int(time.time()):
         command = "jdu-my-progress" if personal else "jdu-dashboard"
-        return response(401, f"This URL is invalid or expired. Run {command} again in CloudShell.", "text/plain; charset=utf-8")
+        location = "CloudShell or Ubuntu" if personal else "CloudShell"
+        return response(401, f"This URL is invalid or expired. Run {command} again in {location}.", "text/plain; charset=utf-8")
 
     if personal:
         server_id = attr_s(item, "serverId")
@@ -384,13 +385,15 @@ def dashboard(event, personal=False):
             else standard_mission_cell(display_name, mission_score(missions, stored_name))
             for display_name, stored_name in DISPLAY_MISSIONS
         ]
-        rows.append((attr_s(server, "serverId"), f"<tr><th scope=row><strong>{('自分のサーバー' if personal else html.escape(attr_s(server, 'studentEmail')) or 'メール未登録')}</strong><br><small>{html.escape(attr_s(server, 'serverId'))}</small><br><span>{html.escape(attr_s(server, 'hostname'))}</span><br><small>{html.escape(attr_s(server, 'instanceId'))}</small></th>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
+        email_label = html.escape(attr_s(server, "studentEmail")) or "メール未登録"
+        server_label = html.escape(attr_s(server, "serverId"))
+        rows.append((attr_s(server, "serverId"), f"<tr><th scope=row><strong>{email_label}</strong><br><small>{server_label}</small></th>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
     rows.sort(key=lambda pair: pair[0])
     body_rows = "".join(row for _, row in rows) or '<tr><td colspan="16">まだ進捗報告はありません。</td></tr>'
-    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child{{text-align:left;position:sticky;left:0;min-width:220px}}tbody th{{background:white;z-index:1}}thead th:first-child{{z-index:3}}thead th{{background:#edf2f7;position:sticky;top:0;z-index:2}}td span,small{{color:#66788a}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>P0～P6（練習）とM1～M7（課題）の最新結果です。30秒ごとに更新します。</p><div class=wrap role=region aria-label="課題の進捗一覧" tabindex=0><table><thead><tr><th scope=col>学生メール / サーバー</th>{''.join(f'<th scope=col>{name}</th>' for name, _ in DISPLAY_MISSIONS)}<th scope=col>最終送信 (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
+    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child{{text-align:left;position:sticky;left:0;min-width:220px}}tbody th{{background:white;z-index:1}}thead th:first-child{{z-index:3}}thead th{{background:#edf2f7;position:sticky;top:0;z-index:2}}td span,small{{color:#66788a}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>P0～P6（練習）とM1～M7（課題）の最新結果です。30秒ごとに更新します。</p><div class=wrap role=region aria-label="課題の進捗一覧" tabindex=0><table><thead><tr><th scope=col>学生メール / Server ID</th>{''.join(f'<th scope=col>{name}</th>' for name, _ in DISPLAY_MISSIONS)}<th scope=col>最終送信 (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
     if personal:
-        page = page.replace("JDU Linux Lab 進捗", "JDU Linux Lab 自分の進捗").replace("学生メール / サーバー", "自分のサーバー")
-        page = page.replace("<footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer>", "<footer>読み取り専用のページです。閲覧URLは15分以内に失効します。URLを他の人へ共有せず、共有PCでは利用後にページを閉じてください。再発行：CloudShellで jdu-my-progress。</footer>")
+        page = page.replace("JDU Linux Lab 進捗", "JDU Linux Lab 自分の進捗").replace("学生メール / Server ID", "登録メール / Server ID")
+        page = page.replace("<footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer>", "<footer>読み取り専用のページです。閲覧URLは15分以内に失効します。URLを他の人へ共有せず、共有PCでは利用後にページを閉じてください。再発行：CloudShellまたはUbuntuで jdu-my-progress。</footer>")
     return response(200, page, "text/html; charset=utf-8")
 
 

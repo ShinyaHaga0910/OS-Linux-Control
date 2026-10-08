@@ -52,10 +52,14 @@ def main():
     if (parsed.scheme != "https" or parsed.netloc != origin.netloc or parsed.username or parsed.password or
             parsed.path != origin.path + "/student/progress" or parsed.fragment or
             set(parse_qs(parsed.query)) != {"session"} or len(parse_qs(parsed.query)["session"]) != 1 or
-            isinstance(lifetime, bool) or not isinstance(lifetime, int) or not 0 < lifetime <= 900):
+            isinstance(lifetime, bool) or not isinstance(lifetime, int) or not 0 < lifetime <= 900 or
+            any(ord(char) < 32 or ord(char) == 127 for char in url)):
         raise ValueError("Invalid personal progress response.")
-    print("Open this personal read-only URL in your browser:")
+    print("Open your personal read-only dashboard in your browser:")
+    if sys.stdout.isatty():
+        print(f"\x1b]8;;{url}\x1b\\Click here to open your dashboard\x1b]8;;\x1b\\")
     print(url)
+    print("If the link is not clickable, copy the URL above into your browser. A remote shell cannot open your local browser automatically.")
     print(f"Expires in {lifetime // 60} minutes. Run jdu-my-progress again to renew.")
     print("Do not share this URL. Close the page after using a shared computer.")
     return 0

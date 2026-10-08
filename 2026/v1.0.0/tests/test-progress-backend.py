@@ -176,6 +176,10 @@ dashboard = app.handler(event("GET /dashboard", query={"session": session_token}
 assert dashboard["statusCode"] == 200
 assert server_id in dashboard["body"]
 assert "student@jdu.uz" in dashboard["body"]
+assert "学生メール / Server ID" in dashboard["body"]
+assert "自分のサーバー" not in dashboard["body"]
+assert register_body["hostname"] not in dashboard["body"]
+assert register_body["instance_id"] not in dashboard["body"]
 assert "1/2" in dashboard["body"]
 assert "Ubuntu 2/2" in dashboard["body"]
 assert "CloudShell 4/4" in dashboard["body"]
@@ -212,6 +216,11 @@ fake_ddb.scan = forbidden_scan
 personal_view = app.handler(event("GET /student/progress", query={"session": personal_token}), None)
 assert personal_view["statusCode"] == 200
 assert "P1" in personal_view["body"] and "M6 6/6" in personal_view["body"]
+assert "登録メール / Server ID" in personal_view["body"]
+assert "updated@jdu.uz" in personal_view["body"]
+assert "自分のサーバー" not in personal_view["body"]
+assert register_body["hostname"] not in personal_view["body"]
+assert register_body["instance_id"] not in personal_view["body"]
 assert app.re.findall(r'<th scope=col>([PM][0-9])</th>', personal_view["body"]) == expected_headers
 for view in [personal_view, partial_dashboard]:
     assert not app.re.search(r'\bT[0-6]\b', view["body"])

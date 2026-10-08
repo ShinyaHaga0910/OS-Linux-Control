@@ -415,6 +415,13 @@ printf '%s\n' 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 dashboard_output="$(MOCK_CURL_LOG="$progress_test_dir/curl.log" MOCK_CURL_RESPONSE='{"url":"https://example.test/dashboard?session=short","expires_in_seconds":1800}' PATH="$root_dir/tests/mock-progress:$PATH" JDU_TEACHER_CONFIG="$progress_test_dir/teacher.env" JDU_TEACHER_ADMIN_KEY="$progress_test_dir/admin.key" bash "$root_dir/teacher/scripts/jdu-dashboard")"
 grep -Fq 'https://example.test/dashboard?session=short' <<<"$dashboard_output"
 grep -Fq 'X-JDU-Admin-Key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' "$progress_test_dir/curl.log"
+grep -Fq 'Click here to open the teacher dashboard' "$root_dir/teacher/scripts/jdu-dashboard"
+set +e
+invalid_dashboard_output="$(MOCK_CURL_LOG="$progress_test_dir/curl.log" MOCK_CURL_RESPONSE='{"url":"http://example.test/dashboard?session=short"}' PATH="$root_dir/tests/mock-progress:$PATH" JDU_TEACHER_CONFIG="$progress_test_dir/teacher.env" JDU_TEACHER_ADMIN_KEY="$progress_test_dir/admin.key" bash "$root_dir/teacher/scripts/jdu-dashboard" 2>&1)"
+invalid_dashboard_status=$?
+set -e
+[[ "$invalid_dashboard_status" -eq 1 ]]
+grep -Fq 'invalid dashboard URL' <<<"$invalid_dashboard_output"
 rm -rf -- "$progress_test_dir"
 printf '%s\n' 'PASS student HTTPS reporting and teacher short-lived dashboard helper'
 

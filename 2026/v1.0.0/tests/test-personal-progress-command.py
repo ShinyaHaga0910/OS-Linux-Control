@@ -30,7 +30,15 @@ with tempfile.TemporaryDirectory() as temporary:
     assert calls[0].full_url == "https://example.test/student/session"
     assert calls[0].get_header("Authorization") == "Bearer " + secret
     assert json.loads(calls[0].data) == {"server_id": "srv-12345678"}
-    for bad_url in ["https://evil.test/student/progress?session=x", "https://example.test/dashboard?session=x", "http://example.test/student/progress?session=x"]:
+    class TerminalOutput(io.StringIO):
+        def isatty(self):
+            return True
+    terminal_output = TerminalOutput()
+    with contextlib.redirect_stdout(terminal_output):
+        app.main()
+    assert "\x1b]8;;" + payload["url"] in terminal_output.getvalue()
+    assert payload["url"] in terminal_output.getvalue()
+    for bad_url in ["https://evil.test/student/progress?session=x", "https://example.test/dashboard?session=x", "http://example.test/student/progress?session=x", "https://example.test/student/progress?session=x\x1b\\"]:
         payload["url"] = bad_url
         try:
             with contextlib.redirect_stdout(io.StringIO()):
