@@ -11,6 +11,8 @@
 - `jdu-progress`: Ubuntuから教員側へ登録・判定結果を送信する。
 - `jdu-my-progress`: CloudShellまたはUbuntuの保存済み接続先を使い、自分専用の閲覧URLを発行する（最長15分）。表示言語は教員側のページで切り替える。
 - `install-my-progress-ubuntu.sh`: 既存Ubuntu環境へ`jdu-my-progress`を追加する。
+- `update-existing-ubuntu.sh`: 既存Ubuntuの採点・補助コマンドを演習成果を保って更新する。
+- `update-existing-cloudshell.sh`: CloudShellから既存スタックとSSH先を確認し、CloudShell・Ubuntuのコマンドを一度に更新する。CloudFormationは実行しない。
 - `register-student.py`: CloudShellに`jdu-register`として設置する。初回メール登録と`--change-email`による修正を担当する。
 - `jdu-worker`: プロセス観察用プログラム。
 - `jdu-http-service`: サービス、ソケット、HTTP、ログの観察用プログラム。

@@ -12,6 +12,7 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 | 自分でコマンドを選んで取り組む | [自力課題M1～M7](./2026/lab/MISSION_GUIDE.md) |
 | 用語・コマンド・オプションを調べる | [用語集・コマンド早見表](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/reference.md) |
 | 接続方法や進捗確認を調べる | [Labの使い方](./2026/lab/README.md) |
+| すでにある教員・学生Labを更新する | [既存Labの更新（削除・再構築なし）](./2026/lab/UPDATE_EXISTING.md) |
 
 新しく授業に参加する学生は、上の現行リンクを使ってください。教科書には翻訳初稿がありますが、現在の練習・課題の内容は日本語版が基準です。
 

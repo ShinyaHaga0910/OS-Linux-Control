@@ -18,10 +18,12 @@ for script in \
   "$root_dir/scripts/jdu-progress" \
   "$root_dir/scripts/jdu-process-state" \
   "$root_dir/scripts/update-existing-ubuntu.sh" \
+  "$root_dir/scripts/update-existing-cloudshell.sh" \
   "$root_dir/scripts/install-my-progress-ubuntu.sh" \
   "$root_dir/tests/test-package-ownership.sh" \
   "$root_dir/tests/test-process-persistence.sh" \
   "$root_dir/teacher/install-teacher.sh" \
+  "$root_dir/teacher/update-existing-teacher.sh" \
   "$root_dir/teacher/scripts/jdu-dashboard" \
   "$root_dir/tests/mock-bin/aws" \
   "$root_dir/tests/mock-bin/systemctl" \
@@ -40,6 +42,7 @@ for path in sys.argv[1:]:
 PY
 printf '%s\n' 'PASS shell and Python syntax'
 python3 "$root_dir/tests/test-availability-zone.py"
+bash "$root_dir/tests/test-existing-update-safety.sh" "$root_dir"
 python3 "$root_dir/tests/test-guided-command-comments.py" "$root_dir/../materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md"
 
 (

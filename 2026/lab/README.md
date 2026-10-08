@@ -4,6 +4,8 @@
 
 2026年度のAWS Academy Learner Lab用Ubuntu実習環境です。今後の編集対象は`2026/lab/`です。既存学生が使う`2026/v1.0.0/`のRaw URLは互換用スナップショットとして維持します。更新履歴は[CHANGELOG.md](../../CHANGELOG.md)を参照してください。
 
+すでに構築済みの教員・学生環境は、スタックを削除せず[既存Labの更新手順](UPDATE_EXISTING.md)で更新します。以下の初回構築コマンドは再実行しません。
+
 ## 学生の初回構築
 
 操作を順番に確認するには、[初回セットアップ・採点システム登録の手順書（日本語・ロシア語・ウズベク語）](setup/README.md)を開いてください。教員の配布コマンドを実行し、自分専用の進捗ダッシュボードを開くまでを説明しています。
@@ -57,7 +59,7 @@ P6とM6はUbuntuとCloudShellで別々に`jdu-check`を実行します。Dashboa
 
 ### 既存のUbuntu環境を使い続ける場合
 
-新規構築には最新版が入ります。既存のUbuntuはGitHubの更新だけでは変わりません。学生は`ssh jdu-ubuntu`でUbuntuへ入った後、`ssm-user`で次を一度実行します。CloudShellでは実行しません。
+新規構築には最新版が入ります。既存のUbuntuはGitHubの更新だけでは変わりません。通常は[教員・学生を通した更新手順](UPDATE_EXISTING.md)を使用します。CloudShell側の補助コマンドがすでに最新版で、Ubuntuだけを更新する場合に限り、`ssh jdu-ubuntu`でUbuntuへ入った後、`ssm-user`で次を一度実行します。CloudShellでは実行しません。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/update-existing-ubuntu.sh -o /tmp/jdu-update-existing-ubuntu.sh
@@ -81,6 +83,7 @@ command -v jdu-my-progress
 | `scripts/jdu-fixture` | Ubuntu側の初期化 |
 | `scripts/jdu-process-state` | P3/M3の再起動後の状態と停止記録を管理 |
 | `scripts/update-existing-ubuntu.sh` | 既存Ubuntuの安全な更新 |
+| `scripts/update-existing-cloudshell.sh` | CloudShellと既存Ubuntuを一度に更新 |
 | `scripts/jdu-labcheck` | Ubuntu側の課題判定 |
 | `scripts/jdu-cloudcheck` | CloudShell側P6/M6の判定 |
 | `scripts/jdu-progress` | 匿名server IDと結果のHTTPS送信 |
@@ -107,7 +110,7 @@ bash /tmp/jdu-install-teacher.sh --region us-east-1
 
 初期表示は日本語です。言語切替ボタンがない場合は教員側の進捗サービスが旧版です。学生コマンドの差し替えだけでは解決しません。教員は学生の保存済み接続先と対象スタックを照合し、既存のServer ID・トークン・提出結果を保って更新します。別の教員スタックを新設しても、既存学生の接続先は自動では切り替わりません。
 
-最新のinstallerで構築した学生CloudShellとUbuntuには、両方にコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
+最新のinstallerで構築した学生CloudShellとUbuntuには、両方にコマンドが自動で入ります。既存環境全体を更新する場合は[既存Labの更新手順](UPDATE_EXISTING.md)を使用します。進捗コマンドだけがない場合は、サーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/jdu-my-progress -o /tmp/jdu-my-progress
