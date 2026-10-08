@@ -37,5 +37,8 @@ with tempfile.TemporaryDirectory(prefix="jdu-p0-") as home:
     # An initialized/reset P0 must not revive old M0 evidence.
     check("P0", 0)
     record.parent.rmdir()
+    check("P0", 0)
+    record.parent.mkdir()
+    record.write_text(content)
     check("P0", 6)
-print("PASS P0 live observations, incorrect value, M0 alias, reset state and legacy fallback")
+print("PASS P0 live observations, incorrect value, M0 alias, and canonical p0 path")
