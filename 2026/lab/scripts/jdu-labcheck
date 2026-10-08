@@ -98,6 +98,16 @@ service_user() {
   ps -o user= -p "$pid" 2>/dev/null | awk '{$1=$1; print}'
 }
 
+package_command_owned_by() {
+  local package="$1" executable="$2" version resolved ownership
+  version="$(dpkg-query -W -f='${Status}:${Version}' "$package" 2>/dev/null || true)"
+  [[ "$version" == 'install ok installed:'* && -n "${version#*:}" && -x "$executable" ]] || return 1
+  resolved="$(readlink -e -- "$executable" 2>/dev/null || true)"
+  [[ -n "$resolved" && -f "$resolved" && -x "$resolved" ]] || return 1
+  ownership="$(dpkg-query -S -- "$resolved" 2>/dev/null || true)"
+  grep -Eq "^${package}(:[^: ]+)?: " <<<"$ownership"
+}
+
 check_p0() {
   local evidence="$student_home/jdu-lab/p0/observation.env" os_id os_version
   os_id="$(. /etc/os-release && printf '%s' "$ID")"
@@ -152,11 +162,9 @@ check_m2() {
 }
 
 check_m3() {
-  local version
   printf '%s\n' 'Mission M3 (2 tasks)'
   if ! systemctl is-active --quiet jdu-m3-process2.service && systemctl is-active --quiet jdu-m3-process1.service && systemctl is-active --quiet jdu-m3-process3.service; then pass M3-PROC-01 'Only process2 is stopped'; else not_ready M3-PROC-01 'Stop process2 while keeping process1 and process3 active'; fi
-  version="$(dpkg-query -W -f='${Status}:${Version}' cmatrix 2>/dev/null || true)"
-  if [[ "$version" == 'install ok installed:'* && -n "${version#*:}" && -x /usr/bin/cmatrix && "$(dpkg-query -S /usr/bin/cmatrix 2>/dev/null | cut -d: -f1)" == cmatrix ]]; then pass M3-APT-01 'cmatrix is installed with a version and provides its command'; else not_ready M3-APT-01 'Install cmatrix and verify its installed command'; fi
+  if package_command_owned_by cmatrix /usr/bin/cmatrix; then pass M3-APT-01 'cmatrix is installed and owns its resolved command'; else not_ready M3-APT-01 'Install cmatrix and verify its installed command'; fi
 }
 
 check_m4() {
@@ -257,11 +265,9 @@ check_p2() {
 }
 
 check_p3() {
-  local version
   printf '%s\n' 'Guided Practice P3 (2 tasks)'
   if ! systemctl is-active --quiet jdu-p3-process2.service && systemctl is-active --quiet jdu-p3-process1.service && systemctl is-active --quiet jdu-p3-process3.service; then pass P3-PROC-01 'Only guided process2 is stopped'; else not_ready P3-PROC-01 'Stop guided process2 and keep process1 and process3 active'; fi
-  version="$(dpkg-query -W -f='${Status}:${Version}' figlet 2>/dev/null || true)"
-  if [[ "$version" == 'install ok installed:'* && -n "${version#*:}" && -x /usr/bin/figlet && "$(dpkg-query -S /usr/bin/figlet 2>/dev/null | cut -d: -f1)" == figlet ]]; then pass P3-APT-01 'figlet is installed and provides its command'; else not_ready P3-APT-01 'Install figlet and verify its command'; fi
+  if package_command_owned_by figlet /usr/bin/figlet; then pass P3-APT-01 'figlet is installed and owns its resolved command'; else not_ready P3-APT-01 'Install figlet and verify its command'; fi
 }
 
 check_p4() {

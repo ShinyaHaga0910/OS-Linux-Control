@@ -450,21 +450,21 @@ jdu-check P2
 
 ## P3 Processとpackage
 
-第8章を読んだら手順1～4でプロセスを確認・停止する。続いて第9章を読み、手順5～6でパッケージを導入する。両方を終えてから`jdu-check P3`を実行する。
+第8章を読んだら手順1～4でプロセスを確認・停止する。続いて第9章を読み、手順5でパッケージを導入する。
 
 ### 学ぶこと
 
 - systemd serviceとprocessのPIDを対応させる。
-- PIDを指定してTERM signalを送る。
+- Main PIDを`ps`で照合し、対象のserviceを停止する。
 - `apt`でpackageをinstallする。
 
 ### 課題
 
 初期状態で`jdu-p3-process1.service`、`jdu-p3-process2.service`、`jdu-p3-process3.service`が動いている。`figlet`は未インストールである。次のAとBの両方を完了する。
 
-**課題A - process2だけを停止する。** `jdu-p3-process2.service`のMain PIDを調べ、そのPIDのプロセスを`ps`で確かめる。PIDを指定して`TERM`シグナルを送る。`process2`だけが停止し、`process1`と`process3`は動いたままにする。名前の広い条件で複数プロセスを止めたり、`KILL`シグナルを使ったりしない。
+**課題A - process2だけを停止する。** `jdu-p3-process2.service`のMain PIDを調べ、そのPIDのプロセスを`ps`で確かめる。対象のserviceを`systemctl stop`で停止する。`process2`だけが停止し、`process1`と`process3`は動いたままにする。
 
-**課題B - パッケージを導入する。** `figlet`のパッケージ情報を調べ、`apt`でインストールする。コマンドを1回実行し、インストール済みのバージョンと`/usr/bin/figlet`を提供するパッケージを確認する。
+**課題B - パッケージを導入する。** `figlet`のパッケージ情報を調べ、`apt`でインストールする。コマンドを1回実行する。
 
 `jdu-check P3`でAとBを各1項目、計2項目として判定する。調査時のコマンド履歴やメモは提出しない。
 
@@ -476,28 +476,31 @@ jdu-check P2
 cd ~
 systemctl list-units --type=service 'jdu-p3-*'
 systemctl status jdu-p3-process1.service --no-pager
-systemctl status jdu-p3-process2.service --no-pager
 systemctl status jdu-p3-process3.service --no-pager
 ```
 
-#### 手順2: Process2のMain PIDを表示する
+#### 手順2: Process2のMain PIDを読む
 
 ```bash
-systemctl show --property MainPID --value jdu-p3-process2.service
+systemctl status jdu-p3-process2.service
 ```
 
-#### 手順3: PIDをshell変数へ保存する
+`Main PID:`の右に出る番号を手元にメモする。ページャーが開いた場合は`q`で終了する。
+
+#### 手順3: メモしたPIDのprocessを見る
+
+例えば、メモした番号が`1234`なら次のように入力する。`1234`を自分の画面の番号に置き換える。
 
 ```bash
-P3_PID=$(systemctl show --property MainPID --value jdu-p3-process2.service)
-printf '%s\n' "$P3_PID"
-ps -fp "$P3_PID"
+ps -fp 1234
 ```
 
-#### 手順4: Process2だけへTERMを送る
+`PID`、`USER`、`CMD`を確認する。
+
+#### 手順4: Process2のserviceを停止する
 
 ```bash
-sudo kill -TERM "$P3_PID"
+sudo systemctl stop jdu-p3-process2.service
 systemctl is-active jdu-p3-process1.service
 systemctl is-active jdu-p3-process2.service
 systemctl is-active jdu-p3-process3.service
@@ -514,15 +517,10 @@ sudo apt update
 sudo apt install -y figlet
 command -v figlet
 figlet JDU
-```
-
-#### 手順6: Packageとcommandの対応を確認する
-
-```bash
-dpkg-query -W -f='${Status} ${Version}\n' figlet
-dpkg -S /usr/bin/figlet
 jdu-check P3
 ```
+
+`figlet JDU`は文字を表示した後、自動で終了してプロンプトへ戻る。`jdu-check P3`は課題A・Bを各1件として判定する。
 
 全2件がPASSになったら、M3へ進む。
 

@@ -163,7 +163,7 @@ jdu-check M2
 
 ### 目的
 
-Serviceとprocessを対応させる。PIDを指定してsignalを送る。Ubuntu packageを調査し、installする。
+Serviceとprocessを対応させ、対象のserviceを停止する。Ubuntu packageを調査し、installする。
 
 ### 初期状態
 
@@ -176,19 +176,18 @@ systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3
 
 ### 課題A: process2だけを停止する
 
-1. `jdu-m3-process2.service`のMain PIDを調べる。
+1. `jdu-m3-process2.service`のMain PIDを調べ、手元にメモする。
 2. `ps`で同じPIDのprocessを確認する。
-3. そのPIDだけへ`TERM`を送る。
+3. 対象のserviceを停止する。
 4. `process2`が停止し、`process1`と`process3`が動いていることを確認する。
 
-広い条件の`pkill`、`killall`、signal `KILL`は使わない。
+メモしたPIDを直接停止するのではなく、systemdが管理するserviceを停止する。
 
 ### 課題B: cmatrixをinstallする
 
 1. Package情報を確認する。
 2. `apt`で`cmatrix`をinstallする。
 3. Commandを実行する。終了は`Ctrl+C`とする。
-4. Packageのversionと、`/usr/bin/cmatrix`を提供するpackageを確認する。
 
 ### 判定
 
@@ -198,7 +197,7 @@ systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3
 jdu-check M3
 ```
 
-確認候補: `systemctl status`, `systemctl show`, `ps`, `kill`, `apt show`, `apt install`, `dpkg-query`, `command -v`, `dpkg -S`
+確認候補: `systemctl status`, `systemctl stop`, `systemctl is-active`, `ps`, `apt show`, `apt install`, `command -v`
 
 ## M4 systemd service
 

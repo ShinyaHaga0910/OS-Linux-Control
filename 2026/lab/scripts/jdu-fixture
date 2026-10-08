@@ -103,6 +103,7 @@ reset_m3() {
     DEBIAN_FRONTEND=noninteractive apt-get remove -y -qq cmatrix >/dev/null
   fi
   stop_m3_workers
+  rm -f -- /var/lib/jdu-lab/stopped/M3-process2 /var/lib/jdu-lab/stopped/M3-needs-review
   rm -rf -- /run/jdu-lab/m3
   for process_number in 1 2 3; do
     unit="jdu-m3-process${process_number}.service"
@@ -221,6 +222,7 @@ reset_p3() {
     DEBIAN_FRONTEND=noninteractive apt-get remove -y -qq figlet >/dev/null
   fi
   stop_p3_workers
+  rm -f -- /var/lib/jdu-lab/stopped/P3-process2 /var/lib/jdu-lab/stopped/P3-needs-review
   for process_number in 1 2 3; do
     unit="jdu-p3-process${process_number}.service"
     rm -rf -- "/etc/systemd/system/${unit}.d"

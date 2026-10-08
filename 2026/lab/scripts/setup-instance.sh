@@ -22,6 +22,7 @@ curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-worker" -o /opt/jdu-
 curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-http-service" -o /opt/jdu-lab/bin/jdu-http-service
 curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-progress" -o /opt/jdu-lab/bin/jdu-progress
 curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-my-progress" -o /opt/jdu-lab/bin/jdu-my-progress
+curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-process-state" -o /opt/jdu-lab/bin/jdu-process-state
 
 verify_download() {
   local published_path="$1" local_path="$2" expected
@@ -36,9 +37,10 @@ verify_download scripts/jdu-worker /opt/jdu-lab/bin/jdu-worker
 verify_download scripts/jdu-http-service /opt/jdu-lab/bin/jdu-http-service
 verify_download scripts/jdu-progress /opt/jdu-lab/bin/jdu-progress
 verify_download scripts/jdu-my-progress /opt/jdu-lab/bin/jdu-my-progress
+verify_download scripts/jdu-process-state /opt/jdu-lab/bin/jdu-process-state
 rm -f -- /tmp/jdu-SHA256SUMS
 
-chmod 0755 /opt/jdu-lab/bin/jdu-labcheck /opt/jdu-lab/bin/jdu-fixture /opt/jdu-lab/bin/jdu-prepare-student-home /opt/jdu-lab/bin/jdu-worker /opt/jdu-lab/bin/jdu-http-service /opt/jdu-lab/bin/jdu-progress /opt/jdu-lab/bin/jdu-my-progress
+chmod 0755 /opt/jdu-lab/bin/jdu-labcheck /opt/jdu-lab/bin/jdu-fixture /opt/jdu-lab/bin/jdu-prepare-student-home /opt/jdu-lab/bin/jdu-worker /opt/jdu-lab/bin/jdu-http-service /opt/jdu-lab/bin/jdu-progress /opt/jdu-lab/bin/jdu-my-progress /opt/jdu-lab/bin/jdu-process-state
 ln -sfn /opt/jdu-lab/bin/jdu-labcheck /usr/local/bin/jdu-labcheck
 ln -sfn /opt/jdu-lab/bin/jdu-fixture /usr/local/bin/jdu-fixture
 ln -sfn /opt/jdu-lab/bin/jdu-labcheck /usr/local/bin/jdu-check
@@ -95,33 +97,7 @@ printf 'JDU-PRACTICE-WEB-%s\n' "$marker_seed" > /etc/jdu-lab/practice-web-marker
 chmod 0644 /etc/jdu-lab/status-marker /etc/jdu-lab/web-marker /etc/jdu-lab/final-marker \
   /etc/jdu-lab/practice-status-marker /etc/jdu-lab/practice-web-marker
 
-for process_number in 1 2 3; do
-  cat > "/opt/jdu-lab/fixtures/m3/jdu-m3-process${process_number}.service" <<UNIT
-[Unit]
-Description=JDU M3 process${process_number} for process and signal practice
-
-[Service]
-Type=simple
-User=jduworker
-ExecStart=/opt/jdu-lab/bin/jdu-worker process${process_number}
-Restart=no
-UNIT
-  chmod 0444 "/opt/jdu-lab/fixtures/m3/jdu-m3-process${process_number}.service"
-done
-
-for process_number in 1 2 3; do
-  cat > "/opt/jdu-lab/fixtures/p3/jdu-p3-process${process_number}.service" <<UNIT
-[Unit]
-Description=JDU P3 guided process${process_number}
-
-[Service]
-Type=simple
-User=jdupracticeworker
-ExecStart=/opt/jdu-lab/bin/jdu-worker guided-process${process_number}
-Restart=no
-UNIT
-  chmod 0444 "/opt/jdu-lab/fixtures/p3/jdu-p3-process${process_number}.service"
-done
+/opt/jdu-lab/bin/jdu-process-state install-units
 
 install -d -o root -g root -m 0755 /srv/jdu-status
 cp /etc/jdu-lab/status-marker /srv/jdu-status/index.txt

@@ -240,29 +240,29 @@ id -un
 jdu-check P2</code></pre>
 <p>全6件がPASSになったら、M2へ進む。</p>
 <h2>P3 Processとpackage</h2>
-<p>第8章を読んだら手順1～4でプロセスを確認・停止する。続いて第9章を読み、手順5～6でパッケージを導入する。両方を終えてから<code>jdu-check P3</code>を実行する。</p>
+<p>第8章を読んだら手順1～4でプロセスを確認・停止する。続いて第9章を読み、手順5でパッケージを導入する。</p>
 <h3>学ぶこと</h3>
-<ul><li>systemd serviceとprocessのPIDを対応させる。</li><li>PIDを指定してTERM signalを送る。</li><li><code>apt</code>でpackageをinstallする。</li></ul>
+<ul><li>systemd serviceとprocessのPIDを対応させる。</li><li>Main PIDを<code>ps</code>で照合し、対象のserviceを停止する。</li><li><code>apt</code>でpackageをinstallする。</li></ul>
 <h3>課題</h3>
 <p>初期状態で<code>jdu-p3-process1.service</code>、<code>jdu-p3-process2.service</code>、<code>jdu-p3-process3.service</code>が動いている。<code>figlet</code>は未インストールである。次のAとBの両方を完了する。</p>
-<p><strong>課題A - process2だけを停止する。</strong> <code>jdu-p3-process2.service</code>のMain PIDを調べ、そのPIDのプロセスを<code>ps</code>で確かめる。PIDを指定して<code>TERM</code>シグナルを送る。<code>process2</code>だけが停止し、<code>process1</code>と<code>process3</code>は動いたままにする。名前の広い条件で複数プロセスを止めたり、<code>KILL</code>シグナルを使ったりしない。</p>
-<p><strong>課題B - パッケージを導入する。</strong> <code>figlet</code>のパッケージ情報を調べ、<code>apt</code>でインストールする。コマンドを1回実行し、インストール済みのバージョンと<code>/usr/bin/figlet</code>を提供するパッケージを確認する。</p>
+<p><strong>課題A - process2だけを停止する。</strong> <code>jdu-p3-process2.service</code>のMain PIDを調べ、そのPIDのプロセスを<code>ps</code>で確かめる。対象のserviceを<code>systemctl stop</code>で停止する。<code>process2</code>だけが停止し、<code>process1</code>と<code>process3</code>は動いたままにする。</p>
+<p><strong>課題B - パッケージを導入する。</strong> <code>figlet</code>のパッケージ情報を調べ、<code>apt</code>でインストールする。コマンドを1回実行する。</p>
 <p><code>jdu-check P3</code>でAとBを各1項目、計2項目として判定する。調査時のコマンド履歴やメモは提出しない。</p>
 <h3>解答例（操作手順）</h3>
 <h4>手順1: 3 serviceを確認する</h4>
 <pre><code>cd ~
 systemctl list-units --type=service &#x27;jdu-p3-*&#x27;
 systemctl status jdu-p3-process1.service --no-pager
-systemctl status jdu-p3-process2.service --no-pager
 systemctl status jdu-p3-process3.service --no-pager</code></pre>
-<h4>手順2: Process2のMain PIDを表示する</h4>
-<pre><code>systemctl show --property MainPID --value jdu-p3-process2.service</code></pre>
-<h4>手順3: PIDをshell変数へ保存する</h4>
-<pre><code>P3_PID=$(systemctl show --property MainPID --value jdu-p3-process2.service)
-printf &#x27;%s\n&#x27; &quot;$P3_PID&quot;
-ps -fp &quot;$P3_PID&quot;</code></pre>
-<h4>手順4: Process2だけへTERMを送る</h4>
-<pre><code>sudo kill -TERM &quot;$P3_PID&quot;
+<h4>手順2: Process2のMain PIDを読む</h4>
+<pre><code>systemctl status jdu-p3-process2.service</code></pre>
+<p><code>Main PID:</code>の右に出る番号を手元にメモする。ページャーが開いた場合は<code>q</code>で終了する。</p>
+<h4>手順3: メモしたPIDのprocessを見る</h4>
+<p>例えば、メモした番号が<code>1234</code>なら次のように入力する。<code>1234</code>を自分の画面の番号に置き換える。</p>
+<pre><code>ps -fp 1234</code></pre>
+<p><code>PID</code>、<code>USER</code>、<code>CMD</code>を確認する。</p>
+<h4>手順4: Process2のserviceを停止する</h4>
+<pre><code>sudo systemctl stop jdu-p3-process2.service
 systemctl is-active jdu-p3-process1.service
 systemctl is-active jdu-p3-process2.service
 systemctl is-active jdu-p3-process3.service</code></pre>
@@ -273,11 +273,9 @@ apt show figlet
 sudo apt update
 sudo apt install -y figlet
 command -v figlet
-figlet JDU</code></pre>
-<h4>手順6: Packageとcommandの対応を確認する</h4>
-<pre><code>dpkg-query -W -f=&#x27;${Status} ${Version}\n&#x27; figlet
-dpkg -S /usr/bin/figlet
+figlet JDU
 jdu-check P3</code></pre>
+<p><code>figlet JDU</code>は文字を表示した後、自動で終了してプロンプトへ戻る。<code>jdu-check P3</code>は課題A・Bを各1件として判定する。</p>
 <p>全2件がPASSになったら、M3へ進む。</p>
 <h2>P4 systemd service</h2>
 <h3>学ぶこと</h3>

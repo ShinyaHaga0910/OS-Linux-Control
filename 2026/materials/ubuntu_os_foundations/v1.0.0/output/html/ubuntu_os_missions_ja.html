@@ -87,20 +87,20 @@ id -un</code></pre>
 <h2>M3 Process and package</h2>
 <p>第8・9章と練習P3の両部分を終えてから取り組む。第10章では、サービスの起動と自動起動を詳しく学ぶ。</p>
 <h3>目的</h3>
-<p>Serviceとprocessを対応させる。PIDを指定してsignalを送る。Ubuntu packageを調査し、installする。</p>
+<p>Serviceとprocessを対応させ、対象のserviceを停止する。Ubuntu packageを調査し、installする。</p>
 <h3>初期状態</h3>
 <p><code>jdu-m3-process1.service</code>、<code>jdu-m3-process2.service</code>、<code>jdu-m3-process3.service</code>が通常のsystemd unitとして動いている。<code>cmatrix</code>は未installである。初期状態を確認するには、次を使う。</p>
 <pre><code>systemctl list-units --type=service &#x27;jdu-m3-*&#x27;
 systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3.service</code></pre>
 <h3>課題A: process2だけを停止する</h3>
-<ol><li><code>jdu-m3-process2.service</code>のMain PIDを調べる。</li><li><code>ps</code>で同じPIDのprocessを確認する。</li><li>そのPIDだけへ<code>TERM</code>を送る。</li><li><code>process2</code>が停止し、<code>process1</code>と<code>process3</code>が動いていることを確認する。</li></ol>
-<p>広い条件の<code>pkill</code>、<code>killall</code>、signal <code>KILL</code>は使わない。</p>
+<ol><li><code>jdu-m3-process2.service</code>のMain PIDを調べ、手元にメモする。</li><li><code>ps</code>で同じPIDのprocessを確認する。</li><li>対象のserviceを停止する。</li><li><code>process2</code>が停止し、<code>process1</code>と<code>process3</code>が動いていることを確認する。</li></ol>
+<p>メモしたPIDを直接停止するのではなく、systemdが管理するserviceを停止する。</p>
 <h3>課題B: cmatrixをinstallする</h3>
-<ol><li>Package情報を確認する。</li><li><code>apt</code>で<code>cmatrix</code>をinstallする。</li><li>Commandを実行する。終了は<code>Ctrl+C</code>とする。</li><li>Packageのversionと、<code>/usr/bin/cmatrix</code>を提供するpackageを確認する。</li></ol>
+<ol><li>Package情報を確認する。</li><li><code>apt</code>で<code>cmatrix</code>をinstallする。</li><li>Commandを実行する。終了は<code>Ctrl+C</code>とする。</li></ol>
 <h3>判定</h3>
 <p>2課題を判定する。課題A全体で1件、課題B全体で1件である。提出fileはない。</p>
 <pre><code>jdu-check M3</code></pre>
-<p>確認候補: <code>systemctl status</code>, <code>systemctl show</code>, <code>ps</code>, <code>kill</code>, <code>apt show</code>, <code>apt install</code>, <code>dpkg-query</code>, <code>command -v</code>, <code>dpkg -S</code></p>
+<p>確認候補: <code>systemctl status</code>, <code>systemctl stop</code>, <code>systemctl is-active</code>, <code>ps</code>, <code>apt show</code>, <code>apt install</code>, <code>command -v</code></p>
 <h2>M4 systemd service</h2>
 <h3>目的</h3>
 <p>Unit fileの設定を読み、serviceのactiveとenabledを区別する。</p>
