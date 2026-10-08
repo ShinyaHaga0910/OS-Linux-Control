@@ -18,13 +18,22 @@ Google Classroomで教員が配布した、このセミスター用の構築コ�
 
 メールは教員の進捗確認用DynamoDBと自分のCloudShellの非公開ファイルへ保存します。CloudFormation、EC2、公開GitHubにはメールを保存しません。入力・確認中はCloudShellの画面にメールが表示されるため、その画面を撮影・共有しないでください。完了条件はUbuntu初期設定の完了と、教員側に同じEC2・Server IDが登録され、メールが紐づいたことの確認です。通信・登録に失敗した場合は完了と表示しません。
 
-メールの修正はCloudShellで `jdu-register --change-email`、登録通信の再確認は `jdu-register` を実行します。古い登録ツールを使っている学生には、[メールだけ再登録する手順](setup/student-registration.ja.md#メールだけ再登録する)を配布します。初回の構築コマンドは再実行せず、課題もresetしません。教員用スタックを先に更新していないと、新しい登録確認APIは使えません。
-
 Ubuntuへ接続します。
 
 ```bash
 ssh jdu-ubuntu
 ```
+
+### メールだけ再登録する
+
+メールを入れ忘れた、間違えた、または以前の登録ツールで入力できなかった場合は、**初回構築コマンドを再実行しません**。初回に使ったCloudShellで次の2行を実行してください。最新版の登録ツールを取得し、メールだけ入力し直します。演習用サーバーと課題の進捗はリセットされません。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
+bash /tmp/jdu-recover-email.sh
+```
+
+`@jdu.uz`のアドレスを入力し、表示された内容を確認して`Yes`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が出れば完了です。詳細は[メール再登録の学生向け手順](setup/student-registration.ja.md#メールだけ再登録する)を参照してください。登録通信の再確認だけなら`jdu-register`を実行します。教員用スタックを先に更新していないと、新しい登録確認APIは使えません。
 
 ## 演習と確認
 
