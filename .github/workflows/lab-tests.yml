@@ -1,0 +1,17 @@
+name: Lab tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lab-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Lab tests
+        run: bash 2026/v1.0.0/tests/run-tests.sh
