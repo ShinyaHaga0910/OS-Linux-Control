@@ -68,12 +68,11 @@ systemctl show --property MainPID --value jdu-status.service
 
 第8章ではMain PIDからプロセスを特定した。ここではさらに、ユニットの`User=`、`ExecStart=`、`WorkingDirectory=`と実際のプロセスを照合する。`systemctl status`はユニットのロード状態、稼働状態（active）、Main PID、直近の関連ログを表示する。出力行数が多い場合はページャーが起動するため、`q`キーで終了する。`systemctl show`は指定したプロパティの値だけを取得できる。
 
-Main PID を取得したら、稼働中の実プロセスとユニット設定が合致しているかを照合する。
+Main PIDを取得したら、その番号のプロセスとユニット設定が合致しているかを照合できる。次の`1234`は説明用の番号であり、実際には表示されたMain PIDへ置き換える。
 
 ```bash
-M4_PID="$(systemctl show --property MainPID --value jdu-status.service)"
-ps -p "$M4_PID" -o pid,user,comm,args
-sudo readlink -f "/proc/$M4_PID/cwd"
+ps -p 1234 -o pid,user,comm,args
+sudo readlink -f /proc/1234/cwd
 ```
 
 確認する対応は次のとおりである。

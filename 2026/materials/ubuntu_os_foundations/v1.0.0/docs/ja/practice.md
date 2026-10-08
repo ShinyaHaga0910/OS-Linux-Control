@@ -532,7 +532,7 @@ jdu-check P3
 
 - Unit fileを読む。
 - Activeとenabledを別々に設定する。
-- Main PIDと実processを対応させる。
+- `User`、`WorkingDirectory`、`ExecStart`をunitの設定として読む。
 
 ### 課題
 
@@ -541,9 +541,7 @@ jdu-check P3
 1. ユニットファイルの`User`、`WorkingDirectory`、`ExecStart`を調べる。
 2. サービスを起動し、現在の状態が`active`であることを確認する。
 3. 起動時の自動実行を有効にし、`enabled`であることを確認する。`active`と`enabled`は別の状態として調べる。
-4. Main PIDのプロセスについて、実行ユーザー、コマンドライン、作業ディレクトリがユニットファイルと一致することを確かめる。
-
-`jdu-check P4`は、稼働状態、自動起動、変更されていないユニットと実プロセスの対応を計3項目で判定する。観察結果を別ファイルへ提出する必要はない。
+`jdu-check P4`は、変更されていないユニットの稼働状態と自動起動を計2項目で判定する。観察結果を別ファイルへ提出する必要はない。
 
 ### 解答例（操作手順）
 
@@ -577,25 +575,14 @@ sudo systemctl enable jdu-practice-status.service
 systemctl is-enabled jdu-practice-status.service
 ```
 
-#### 手順5: Main PIDとprocessを確認する
-
-```bash
-P4_PID=$(systemctl show --property MainPID --value jdu-practice-status.service)
-printf '%s\n' "$P4_PID"
-ps -fp "$P4_PID"
-sudo cat "/proc/$P4_PID/cmdline" | tr '\0' ' '
-printf '\n'
-sudo readlink -f "/proc/$P4_PID/cwd"
-```
-
-#### 手順6: 採点する
+#### 手順5: 採点する
 
 ```bash
 cd ~
 jdu-check P4
 ```
 
-全3件がPASSになったら、M4へ進む。
+全2件がPASSになったら、M4へ進む。
 
 ## P5 Port、socket、HTTP、journal
 

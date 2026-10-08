@@ -621,10 +621,9 @@ sudo systemctl enable jdu-status.service</code></pre>
 <pre><code>systemctl status jdu-status.service
 systemctl show --property MainPID --value jdu-status.service</code></pre>
 <p>第8章ではMain PIDからプロセスを特定した。ここではさらに、ユニットの<code>User=</code>、<code>ExecStart=</code>、<code>WorkingDirectory=</code>と実際のプロセスを照合する。<code>systemctl status</code>はユニットのロード状態、稼働状態（active）、Main PID、直近の関連ログを表示する。出力行数が多い場合はページャーが起動するため、<code>q</code>キーで終了する。<code>systemctl show</code>は指定したプロパティの値だけを取得できる。</p>
-<p>Main PID を取得したら、稼働中の実プロセスとユニット設定が合致しているかを照合する。</p>
-<pre><code>M4_PID=&quot;$(systemctl show --property MainPID --value jdu-status.service)&quot;
-ps -p &quot;$M4_PID&quot; -o pid,user,comm,args
-sudo readlink -f &quot;/proc/$M4_PID/cwd&quot;</code></pre>
+<p>Main PIDを取得したら、その番号のプロセスとユニット設定が合致しているかを照合できる。次の<code>1234</code>は説明用の番号であり、実際には表示されたMain PIDへ置き換える。</p>
+<pre><code>ps -p 1234 -o pid,user,comm,args
+sudo readlink -f /proc/1234/cwd</code></pre>
 <p>確認する対応は次のとおりである。</p>
 <table>
 <tr><th>ユニットの設定</th><th>実プロセスで確認する場所</th></tr>

@@ -103,15 +103,15 @@ systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3
 <p>確認候補: <code>systemctl status</code>, <code>systemctl show</code>, <code>ps</code>, <code>kill</code>, <code>apt show</code>, <code>apt install</code>, <code>dpkg-query</code>, <code>command -v</code>, <code>dpkg -S</code></p>
 <h2>M4 systemd service</h2>
 <h3>目的</h3>
-<p>Unit file、service、processの関係を確認する。Activeとenabledを区別する。</p>
+<p>Unit fileの設定を読み、serviceのactiveとenabledを区別する。</p>
 <h3>初期状態</h3>
 <p>教師が用意した<code>jdu-status.service</code>はloaded、inactive、disabledである。Unit fileは完成済みである。</p>
 <h3>課題</h3>
-<ol><li><code>systemctl cat jdu-status.service</code>で<code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>を読む。</li><li>Unit fileを変更せず、serviceをstartする。</li><li>Boot時にstartするようenableする。</li><li>Activeとenabledを別々に確認する。</li><li>Main PIDを調べ、実際のprocessと対応させる。</li><li>Processのuser、command line、working directoryがunitの指定と一致することを確認する。</li></ol>
+<ol><li><code>systemctl cat jdu-status.service</code>で<code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>を読む。</li><li>Unit fileを変更せず、serviceをstartする。</li><li>Boot時にstartするようenableする。</li><li>Activeとenabledを別々に確認する。</li></ol>
 <h3>判定</h3>
-<p>3課題を判定する。Active、enabled、変更されていないunitと実processの対応がそれぞれ課題になる。提出fileはない。</p>
+<p>2課題を判定する。変更されていないunitのactiveとenabledを別々に確認する。提出fileはない。</p>
 <pre><code>jdu-check M4</code></pre>
-<p>確認候補: <code>systemctl cat</code>, <code>systemctl start</code>, <code>systemctl enable</code>, <code>systemctl is-active</code>, <code>systemctl is-enabled</code>, <code>systemctl show</code>, <code>ps</code>, <code>/proc/PID/cmdline</code>, <code>/proc/PID/cwd</code></p>
+<p>確認候補: <code>systemctl cat</code>, <code>systemctl start</code>, <code>systemctl enable</code>, <code>systemctl is-active</code>, <code>systemctl is-enabled</code></p>
 <h2>M5 Port, socket, and log</h2>
 <h3>目的</h3>
 <p>Service、process、socket、IP address、port、HTTP、journalを一つの実行状態として関連付ける。</p>
