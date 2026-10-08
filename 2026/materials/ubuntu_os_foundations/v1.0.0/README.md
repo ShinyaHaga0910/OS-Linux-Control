@@ -1,8 +1,8 @@
 # オペレーティングシステムとLinuxの基本操作
 
-版: **v1.0.0**。更新: 2026-09-25。日本語版の原稿、図、PDFを静的に検証済みです。AWS Academy Learner Lab実機での全演習通し試験と学生試読は未実施です。
+公開パス: **v1.0.0**。このディレクトリは更新のたびに増やさず、原稿と配布物を同じ場所で管理します。日本語版の原稿、図、PDFは静的に検証しています。個別の更新履歴は[検証記録](./instructor/validation.md)を参照してください。AWS Academy Learner Lab実機での全演習通し試験と学生試読は未実施です。
 
-Linux未経験の学生が、コンピューター、OS、Linuxの機能を理由と仕組みから学ぶA4縦の教科書です。章別Markdownを本文の正本とし、説明図20点と歴史写真1点を組み込みました。PPTXは作成していません。対応する[公開Lab v1.0.0](../../../v1.0.0/README.md)の学生向け演習・課題文と整合します。
+Linux未経験の学生が、コンピューター、OS、Linuxの機能を理由と仕組みから学ぶA4縦の教科書です。章別Markdownを本文の正本とし、説明図20点と歴史写真1点を組み込みました。PPTXは作成していません。現行の演習・課題と実行環境は[Labの案内](../../../lab/README.md)を参照してください。`2026/v1.0.0/`の旧Labとは区別します。
 
 ## 教材と制作元
 
@@ -12,8 +12,8 @@ Linux未経験の学生が、コンピューター、OS、Linuxの機能を理�
 - 用語集・コマンド早見表: [`docs/ja/reference.md`](./docs/ja/reference.md)
 - 説明図と歴史写真: [`assets/`](./assets/)
 - 図の生成元: [`assets/figure-sources-v1.2/`](./assets/figure-sources-v1.2/)
-- HTML 4冊: [`output/html/`](./output/html/)
-- A4 PDF 4冊: [`output/pdf/`](./output/pdf/)
+- HTML: [`output/html/`](./output/html/)（日本語4冊）
+- A4 PDF: [`output/pdf/`](./output/pdf/)（各言語4冊）
 - PDFと図の生成プログラム: [`build/`](./build/)
 - 再生成手順: [`BUILD.md`](./BUILD.md)
 - 多言語化の管理: [`localization/`](./localization/)
