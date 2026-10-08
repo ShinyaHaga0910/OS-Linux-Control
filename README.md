@@ -2,13 +2,24 @@
 
 Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境です。2026年度は[Introduction-CyberSecurity](https://github.com/ShinyaHaga0910/Introduction-CyberSecurity)という統合科目の前半で使用し、2027年度以降は独立した科目の教材として使えるように管理します。担当教員の個人GitHubアカウントで管理します。
 
-## 2026年度の入口
+## 学生向け：2026年度の入口
 
-- [学生向け：初回セットアップ（日本語・ロシア語・ウズベク語）](./2026/lab/setup/README.md)
-- [学生向け：Labの演習と課題](./2026/lab/README.md)
-- [学生向け：教科書とPDF（日本語・翻訳初稿）](./2026/materials/ubuntu_os_foundations/v1.0.0/README.md)
-- [教員向け：進捗サーバー](./2026/lab/teacher/README.md)
-- [教員向け：学生手順の試行](./2026/STUDENT_TRIAL.md)
+| 使う場面 | 開く資料 |
+| --- | --- |
+| 初めて環境を準備する | [初回セットアップ・採点システム登録（日本語・ロシア語・ウズベク語）](./2026/lab/setup/README.md) |
+| OS・Linuxの仕組みを学ぶ | [教科書の章別目次・3言語のPDF一覧](./2026/materials/ubuntu_os_foundations/v1.0.0/README.md) |
+| 手順を見ながら練習する | [練習P0～P6](./2026/lab/GUIDED_PRACTICE.md) |
+| 自分でコマンドを選んで取り組む | [自力課題M1～M7](./2026/lab/MISSION_GUIDE.md) |
+| 用語・コマンド・オプションを調べる | [用語集・コマンド早見表](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/reference.md) |
+| 接続方法や進捗確認を調べる | [Labの使い方](./2026/lab/README.md) |
+
+新しく授業に参加する学生は、上の現行リンクを使ってください。教科書には翻訳初稿がありますが、現在の練習・課題の内容は日本語版が基準です。
+
+## 教員・制作担当者向け
+
+- [進捗サーバーの構築・更新](./2026/lab/teacher/README.md)
+- [学生手順の試行](./2026/STUDENT_TRIAL.md)
+- [教科書・演習・採点の対応表](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/coverage.md)
 - [教材制作の方針](./COURSE_POLICY.md)・[AI作業の入口](./AGENTS.md)
 - [変更・公開の手順](./CONTRIBUTING.md)
 
