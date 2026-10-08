@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""Issue a personal read-only URL from CloudShell or the course Ubuntu host."""
+import base64
+import binascii
+import json
+import os
+from pathlib import Path
+import sys
+from urllib.parse import urlsplit, parse_qs
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
+
+
+def load_config():
+    state = Path(os.environ.get("JDU_STUDENT_STATE_DIR", str(Path.home() / ".jdu-student")))
+    cloud_config = state / "progress.env"
+    if cloud_config.is_file():
+        return dict(line.split("=", 1) for line in cloud_config.read_text().splitlines() if "=" in line)
+    ubuntu_config = Path(os.environ.get("JDU_UBUNTU_PROGRESS_CONFIG", "/etc/jdu-lab/progress.env"))
+    if not ubuntu_config.is_file():
+        raise ValueError("No lab progress registration was found in CloudShell or Ubuntu.")
+    saved = dict(line.split("=", 1) for line in ubuntu_config.read_text().splitlines() if "=" in line)
+    def decode(key):
+        return base64.b64decode(saved[key], validate=True).decode("utf-8")
+    return {
+        "JDU_PROGRESS_ENDPOINT": decode("JDU_PROGRESS_ENDPOINT_B64"),
+        "JDU_PROGRESS_SERVER_ID": saved["JDU_PROGRESS_SERVER_ID"],
+        "JDU_PROGRESS_SERVER_TOKEN": decode("JDU_PROGRESS_SERVER_TOKEN_B64"),
+    }
+
+
+def main():
+    if len(sys.argv) != 1:
+        raise ValueError("Run jdu-my-progress without arguments.")
+    config = load_config()
+    endpoint = config.get("JDU_PROGRESS_ENDPOINT", "").rstrip("/")
+    if not endpoint:
+        print("ERROR This lab has no progress endpoint saved. Ask your teacher to check the existing registration without changing your server ID or token.", file=sys.stderr)
+        return 1
+    server_id = config["JDU_PROGRESS_SERVER_ID"]
+    token = config["JDU_PROGRESS_SERVER_TOKEN"]
+    origin = urlsplit(endpoint)
+    if origin.scheme != "https" or not origin.netloc or origin.username or origin.password or origin.query or origin.fragment or len(token) < 32:
+        raise ValueError("Invalid progress configuration.")
+    request = Request(endpoint + "/student/session", data=json.dumps({"server_id": server_id}).encode(),
+                      headers={"Content-Type": "application/json", "Authorization": "Bearer " + token}, method="POST")
+    with urlopen(request, timeout=20) as result:
+        payload = json.load(result)
+    url = payload["url"]
+    parsed = urlsplit(url)
+    lifetime = payload["expires_in_seconds"]
+    if (parsed.scheme != "https" or parsed.netloc != origin.netloc or parsed.username or parsed.password or
+            parsed.path != origin.path + "/student/progress" or parsed.fragment or
+            set(parse_qs(parsed.query)) != {"session"} or len(parse_qs(parsed.query)["session"]) != 1 or
+            isinstance(lifetime, bool) or not isinstance(lifetime, int) or not 0 < lifetime <= 900 or
+            any(ord(char) < 32 or ord(char) == 127 for char in url)):
+        raise ValueError("Invalid personal progress response.")
+    if sys.stdout.isatty():
+        print(f"\x1b]8;;{url}\x1b\\{url}\x1b]8;;\x1b\\")
+    else:
+        print(url)
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except HTTPError as exc:
+        print(f"ERROR Progress service returned HTTP {exc.code}. Ask your teacher to check the progress stack.", file=sys.stderr)
+        sys.exit(1)
+    except (URLError, OSError, ValueError, KeyError, TypeError, binascii.Error, UnicodeDecodeError) as exc:
+        print(f"ERROR Could not open personal progress ({type(exc).__name__}). Check your lab registration or ask your teacher.", file=sys.stderr)
+        sys.exit(1)

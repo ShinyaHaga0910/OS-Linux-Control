@@ -1,0 +1,213 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "JDU Introduction CyberSecurity Ubuntu lab accessed with AWS Systems Manager Session Manager",
+  "Parameters": {
+    "LatestAmiId": {
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+      "Default": "/aws/service/canonical/ubuntu/server/noble/stable/current/amd64/hvm/ebs-gp3/ami-id",
+      "Description": "Canonical Ubuntu Server 24.04 LTS AMI"
+    },
+    "InstanceType": {
+      "Type": "String",
+      "Default": "t3.micro",
+      "AllowedPattern": "t[1-9][0-9]*[a-z]*\\.micro",
+      "Description": "Choose a type allowed by the Learner Lab policy"
+    },
+    "LabAvailabilityZone": {
+      "Type": "String",
+      "Default": "",
+      "Description": "Availability Zone supporting the selected instance type, selected by install.sh"
+    },
+    "InstanceProfileName": {
+      "Type": "String",
+      "Default": "LabInstanceProfile",
+      "AllowedPattern": "[A-Za-z0-9+=,.@_-]+",
+      "Description": "Existing Learner Lab instance profile with AmazonSSMManagedInstanceCore-equivalent permissions"
+    },
+    "LabVersion": {
+      "Type": "String",
+      "Default": "v1.0.0",
+      "AllowedValues": ["v1.0.0"]
+    },
+    "StudentSshPublicKeyBase64": {
+      "Type": "String",
+      "AllowedPattern": "[A-Za-z0-9+/=]+",
+      "MinLength": 40,
+      "MaxLength": 1024,
+      "Description": "Base64-encoded public SSH key generated in the student's CloudShell"
+    },
+    "ProgressEndpointBase64": {
+      "Type": "String",
+      "Default": "",
+      "AllowedPattern": "[A-Za-z0-9+/=]*",
+      "MaxLength": 2048,
+      "Description": "Optional base64-encoded teacher HTTPS endpoint"
+    },
+    "ProgressRegistrationKeyBase64": {
+      "Type": "String",
+      "Default": "",
+      "NoEcho": true,
+      "AllowedPattern": "[A-Za-z0-9+/=]*",
+      "MaxLength": 1024
+    },
+    "ProgressServerId": {
+      "Type": "String",
+      "Default": "",
+      "AllowedPattern": "^$|^[A-Za-z0-9_-]{8,64}$"
+    },
+    "ProgressServerTokenBase64": {
+      "Type": "String",
+      "Default": "",
+      "NoEcho": true,
+      "AllowedPattern": "[A-Za-z0-9+/=]*",
+      "MaxLength": 1024
+    }
+  },
+  "Conditions": {
+    "HasLabAvailabilityZone": {"Fn::Not": [{"Fn::Equals": [{"Ref": "LabAvailabilityZone"}, ""]}]}
+  },
+  "Resources": {
+    "LabVpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.20.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-vpc"}},
+          {"Key": "JDUCourse", "Value": "Introduction_CyberSecurity"},
+          {"Key": "JDULabVersion", "Value": {"Ref": "LabVersion"}}
+        ]
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-igw"}},
+          {"Key": "JDUCourse", "Value": "Introduction_CyberSecurity"}
+        ]
+      }
+    },
+    "GatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "InternetGatewayId": {"Ref": "InternetGateway"},
+        "VpcId": {"Ref": "LabVpc"}
+      }
+    },
+    "PublicSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {"Ref": "LabVpc"},
+        "CidrBlock": "10.20.10.0/24",
+        "AvailabilityZone": {"Fn::If": ["HasLabAvailabilityZone", {"Ref": "LabAvailabilityZone"}, {"Ref": "AWS::NoValue"}]},
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-public-subnet"}},
+          {"Key": "JDUCourse", "Value": "Introduction_CyberSecurity"}
+        ]
+      }
+    },
+    "PublicRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {"Ref": "LabVpc"},
+        "Tags": [
+          {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-public-rt"}},
+          {"Key": "JDUCourse", "Value": "Introduction_CyberSecurity"}
+        ]
+      }
+    },
+    "DefaultRoute": {
+      "Type": "AWS::EC2::Route",
+      "DependsOn": "GatewayAttachment",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {"Ref": "InternetGateway"},
+        "RouteTableId": {"Ref": "PublicRouteTable"}
+      }
+    },
+    "PublicSubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {"Ref": "PublicRouteTable"},
+        "SubnetId": {"Ref": "PublicSubnet"}
+      }
+    },
+    "LabSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "No inbound access; Session Manager uses outbound HTTPS",
+        "VpcId": {"Ref": "LabVpc"},
+        "SecurityGroupIngress": [],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Outbound access for SSM Agent, package repositories, and course downloads"
+          }
+        ],
+        "Tags": [
+          {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-instance-sg"}},
+          {"Key": "JDUCourse", "Value": "Introduction_CyberSecurity"}
+        ]
+      }
+    },
+    "UbuntuLabInstance": {
+      "Type": "AWS::EC2::Instance",
+      "DependsOn": "DefaultRoute",
+      "Properties": {
+        "ImageId": {"Ref": "LatestAmiId"},
+        "InstanceType": {"Ref": "InstanceType"},
+        "IamInstanceProfile": {"Ref": "InstanceProfileName"},
+        "MetadataOptions": {
+          "HttpEndpoint": "enabled",
+          "HttpTokens": "required"
+        },
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": true,
+            "DeleteOnTermination": true,
+            "DeviceIndex": "0",
+            "GroupSet": [{"Ref": "LabSecurityGroup"}],
+            "SubnetId": {"Ref": "PublicSubnet"}
+          }
+        ],
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "DeleteOnTermination": true,
+              "Encrypted": true,
+              "VolumeSize": 12,
+              "VolumeType": "gp3"
+            }
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": "#!/bin/bash\nset -eu\ninstall -d -m 0755 /etc/jdu-lab\nprintf '%s' '${StudentSshPublicKeyBase64}' | base64 --decode > /etc/jdu-lab/student-ssh-key.pub\nprintf 'JDU_PROGRESS_ENDPOINT_B64=%s\\nJDU_PROGRESS_SERVER_ID=%s\\nJDU_PROGRESS_SERVER_TOKEN_B64=%s\\n' '${ProgressEndpointBase64}' '${ProgressServerId}' '${ProgressServerTokenBase64}' > /etc/jdu-lab/progress.env\nprintf '%s' '${ProgressRegistrationKeyBase64}' > /etc/jdu-lab/progress-registration-key.b64\nchmod 0644 /etc/jdu-lab/student-ssh-key.pub\nchmod 0600 /etc/jdu-lab/progress.env /etc/jdu-lab/progress-registration-key.b64\ncurl -fsSL --retry 5 --retry-delay 5 https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/lab/scripts/setup-instance.sh -o /tmp/jdu-setup-instance.sh\nprintf '%s  %s\\n' 'c4ee52c196aec49124096393733f93347230b867546dcd1eda331561a7b1f9a7' '/tmp/jdu-setup-instance.sh' | sha256sum --check --status\nchmod 0755 /tmp/jdu-setup-instance.sh\n/tmp/jdu-setup-instance.sh ${LabVersion}\n"
+          }
+        },
+        "Tags": [
+          {"Key": "Name", "Value": {"Fn::Sub": "${AWS::StackName}-ubuntu"}},
+          {"Key": "JDUCourse", "Value": "Introduction_CyberSecurity"},
+          {"Key": "JDULabVersion", "Value": {"Ref": "LabVersion"}},
+          {"Key": "JDUManagedBy", "Value": "CloudFormation"}
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "InstanceId": {"Description": "Ubuntu lab instance", "Value": {"Ref": "UbuntuLabInstance"}},
+    "VpcId": {"Description": "Lab VPC", "Value": {"Ref": "LabVpc"}},
+    "PublicSubnetId": {"Description": "Public subnet", "Value": {"Ref": "PublicSubnet"}},
+    "RouteTableId": {"Description": "Public route table", "Value": {"Ref": "PublicRouteTable"}},
+    "SecurityGroupId": {"Description": "Instance security group", "Value": {"Ref": "LabSecurityGroup"}},
+    "InstanceProfileName": {"Description": "Existing instance profile", "Value": {"Ref": "InstanceProfileName"}},
+    "ConnectionMethod": {"Description": "Student connection method", "Value": "SSH over AWS Systems Manager Session Manager"},
+    "StudentSshUser": {"Description": "Ubuntu SSH user", "Value": "ssm-user"}
+  }
+}

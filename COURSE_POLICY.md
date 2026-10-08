@@ -30,13 +30,13 @@ Linux未経験の大学生が、操作の手順だけでなく、コンピュー
 | 内容 | 編集する正本 | 関連する配布物・確認先 |
 | --- | --- | --- |
 | 教科書本文 | [`docs/ja/textbook/`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/textbook/) | `output/html/`と`output/pdf/`を再生成 |
-| 練習P0～P6 | [`docs/ja/practice.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md) | [`LabのGUIDED_PRACTICE.md`](./2026/v1.0.0/GUIDED_PRACTICE.md)と`docs/ja/GUIDED_PRACTICE.md`を同内容に保つ |
-| 自力課題M1～M7 | [`docs/ja/missions.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/missions.md) | [`LabのMISSION_GUIDE.md`](./2026/v1.0.0/MISSION_GUIDE.md)を同内容に保つ |
+| 練習P0～P6 | [`docs/ja/practice.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md) | [`LabのGUIDED_PRACTICE.md`](./2026/lab/GUIDED_PRACTICE.md)と`docs/ja/GUIDED_PRACTICE.md`を同内容に保つ |
+| 自力課題M1～M7 | [`docs/ja/missions.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/missions.md) | [`LabのMISSION_GUIDE.md`](./2026/lab/MISSION_GUIDE.md)を同内容に保つ |
 | 用語・コマンド早見表 | [`docs/ja/reference.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/reference.md) | 用語の技術的意味を本文と一致させる |
 | 図 | [`assets/figure-sources-v1.2/`](./2026/materials/ubuntu_os_foundations/v1.0.0/assets/figure-sources-v1.2/) | [`figure-register.md`](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/figure-register.md)と本文・PDFを確認 |
-| Lab実装 | [`2026/v1.0.0/`](./2026/v1.0.0/) | CloudFormation、初期設定、採点、教員進捗、テストの整合を確認 |
+| Lab実装 | [`2026/lab/`](./2026/lab/) | CloudFormation、初期設定、採点、教員進捗、テストの整合を確認 |
 
-`output/`のPDF・HTMLは学生が入手できるようGitに含める。ただし修正元はMarkdownと図の生成元である。公開済みのRaw URLを壊さないことを優先し、リリースごとに新しい`v1.x`フォルダを増やさない。変更は同じ場所で行い、Gitコミット・タグ・GitHub Releasesと[CHANGELOG.md](./CHANGELOG.md)で管理する。`2026/v1.0.0/`は固定の配布パスであり、リリース番号とは別である。
+`output/`のPDF・HTMLは学生が入手できるようGitに含める。ただし修正元はMarkdownと図の生成元である。公開済みのRaw URLを壊さないことを優先し、リリースごとに新しい`v1.x`フォルダを増やさない。Labの今後の変更は`2026/lab/`で行い、Gitコミット・タグ・GitHub Releasesと[CHANGELOG.md](./CHANGELOG.md)で管理する。`2026/v1.0.0/`は既存URLのために残す互換用スナップショットであり、編集しない。
 
 ## 5. 多言語化
 

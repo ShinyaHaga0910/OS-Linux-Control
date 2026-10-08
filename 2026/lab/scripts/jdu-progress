@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+config_file="${JDU_PROGRESS_CONFIG:-/etc/jdu-lab/progress.env}"
+
+read_config() {
+  [[ -r "$config_file" ]] || return 3
+  endpoint_b64="$(sed -n 's/^JDU_PROGRESS_ENDPOINT_B64=//p' "$config_file" | tail -n 1)"
+  server_id="$(sed -n 's/^JDU_PROGRESS_SERVER_ID=//p' "$config_file" | tail -n 1)"
+  server_token_b64="$(sed -n 's/^JDU_PROGRESS_SERVER_TOKEN_B64=//p' "$config_file" | tail -n 1)"
+  [[ -n "$endpoint_b64" && -n "$server_id" && -n "$server_token_b64" ]] || return 3
+  endpoint="$(printf '%s' "$endpoint_b64" | base64 --decode 2>/dev/null)"
+  server_token="$(printf '%s' "$server_token_b64" | base64 --decode 2>/dev/null)"
+  [[ "$endpoint" =~ ^https://[^[:space:]]+$ && "$server_id" =~ ^[A-Za-z0-9_-]{8,64}$ && ${#server_token} -ge 32 ]] || return 3
+  endpoint="${endpoint%/}"
+}
+
+load_metadata() {
+  host_name="${JDU_PROGRESS_HOSTNAME:-$(hostname)}"
+  account_id="${JDU_PROGRESS_ACCOUNT_ID:-}"
+  instance_id="${JDU_PROGRESS_INSTANCE_ID:-}"
+  lab_version="$(cat /etc/jdu-lab/version 2>/dev/null || printf 'unknown')"
+  if [[ -z "$account_id" || -z "$instance_id" ]]; then
+    local imds_token identity
+    imds_token="$(curl -fsS --max-time 2 -X PUT -H 'X-aws-ec2-metadata-token-ttl-seconds: 60' http://169.254.169.254/latest/api/token 2>/dev/null || true)"
+    if [[ -n "$imds_token" ]]; then
+      identity="$(curl -fsS --max-time 2 -H "X-aws-ec2-metadata-token: $imds_token" http://169.254.169.254/latest/dynamic/instance-identity/document 2>/dev/null || true)"
+      if [[ -n "$identity" ]]; then
+        account_id="${account_id:-$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("accountId", ""))' <<<"$identity" 2>/dev/null || true)}"
+        instance_id="${instance_id:-$(python3 -c 'import json,sys; print(json.load(sys.stdin).get("instanceId", ""))' <<<"$identity" 2>/dev/null || true)}"
+      fi
+    fi
+  fi
+}
+
+make_json() {
+  SERVER_ID="$server_id" HOST_NAME="$host_name" ACCOUNT_ID="$account_id" INSTANCE_ID="$instance_id" LAB_VERSION="$lab_version" \
+  MISSION="${mission:-}" PASSED="${passed:-}" TOTAL="${total:-}" SERVER_TOKEN="${server_token:-}" \
+  python3 - <<'PY'
+import json, os
+body = {
+    "server_id": os.environ["SERVER_ID"],
+    "hostname": os.environ["HOST_NAME"],
+    "account_id": os.environ["ACCOUNT_ID"],
+    "instance_id": os.environ["INSTANCE_ID"],
+    "lab_version": os.environ["LAB_VERSION"],
+}
+if os.environ.get("SERVER_TOKEN"):
+    body["server_token"] = os.environ["SERVER_TOKEN"]
+if os.environ.get("MISSION"):
+    body["mission"] = os.environ["MISSION"]
+    body["passed"] = int(os.environ["PASSED"])
+    body["total"] = int(os.environ["TOTAL"])
+print(json.dumps(body, separators=(",", ":")))
+PY
+}
+
+command_name="${1:-}"
+case "$command_name" in
+  id)
+    if read_config; then
+      printf '%s\n' "$server_id"
+    else
+      printf '%s\n' 'Progress reporting is not configured.' >&2
+      exit 3
+    fi
+    ;;
+  register)
+    registration_key_file="${2:-/etc/jdu-lab/progress-registration-key.b64}"
+    read_config
+    [[ -r "$registration_key_file" ]] || {
+      printf '%s\n' 'ERROR Registration key is missing.' >&2
+      exit 2
+    }
+    registration_key="$(tr -d '\r\n' < "$registration_key_file" | base64 --decode 2>/dev/null)"
+    [[ -n "$registration_key" ]] || {
+      printf '%s\n' 'ERROR Registration key is invalid.' >&2
+      exit 2
+    }
+    load_metadata
+    body="$(make_json)"
+    curl -fsS --retry 3 --max-time 15 \
+      -X POST \
+      -H "X-JDU-Registration-Key: $registration_key" \
+      -H 'Content-Type: application/json' \
+      --data-binary "$body" \
+      "$endpoint/register" >/dev/null
+    printf 'Registered progress server: %s\n' "$server_id"
+    ;;
+  submit)
+    mission="${2:-}"; passed="${3:-}"; total="${4:-}"
+    mission="${mission^^}"
+    [[ "$mission" == M0 ]] && mission=P0
+    [[ "$mission" =~ ^(M[0-7]|M6U|M6C|P[0-6]|P6U|P6C)$ && "$passed" =~ ^[0-9]+$ && "$total" =~ ^[1-9][0-9]*$ ]] || {
+      printf '%s\n' 'Usage: jdu-progress submit P0|...|P6|P6U|P6C|M1|...|M7|M6U|M6C PASSED TOTAL' >&2
+      exit 2
+    }
+    ((passed <= total && total <= 50)) || {
+      printf '%s\n' 'ERROR Invalid progress score.' >&2
+      exit 2
+    }
+    read_config
+    load_metadata
+    body="$(make_json)"
+    curl -fsS --retry 2 --max-time 15 \
+      -X POST \
+      -H "Authorization: Bearer $server_token" \
+      -H 'Content-Type: application/json' \
+      --data-binary "$body" \
+      "$endpoint/submit" >/dev/null
+    ;;
+  *)
+    printf '%s\n' 'Usage: jdu-progress id | register [REGISTRATION_KEY_FILE] | submit MISSION PASSED TOTAL' >&2
+    exit 2
+    ;;
+esac

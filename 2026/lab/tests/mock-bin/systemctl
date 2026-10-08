@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -u
+
+if [[ "${1:-}" == is-active && "${2:-}" == --quiet ]]; then
+  case "${3:-}" in
+    jdu-m3-process1.service) [[ "${MOCK_PROCESS1_STOPPED:-0}" != 1 ]] ;;
+    jdu-m3-process2.service) [[ "${MOCK_PROCESS2_STOPPED:-0}" != 1 ]] ;;
+    jdu-m3-process3.service) [[ "${MOCK_PROCESS3_STOPPED:-0}" != 1 ]] ;;
+    jdu-p3-process1.service) [[ "${MOCK_P3_PROCESS1_STOPPED:-0}" != 1 ]] ;;
+    jdu-p3-process2.service) [[ "${MOCK_P3_PROCESS2_STOPPED:-0}" != 1 ]] ;;
+    jdu-p3-process3.service) [[ "${MOCK_P3_PROCESS3_STOPPED:-0}" != 1 ]] ;;
+    *) exit 3 ;;
+  esac
+  exit $?
+fi
+
+exit 3

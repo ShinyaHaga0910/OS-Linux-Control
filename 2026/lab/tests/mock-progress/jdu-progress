@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+case "${1:-}" in
+  id)
+    printf '%s\n' 'srv-0123456789abcdef'
+    ;;
+  submit)
+    printf '%s\n' "$*" >> "${MOCK_PROGRESS_LOG:?MOCK_PROGRESS_LOG is required}"
+    ;;
+  *)
+    exit 2
+    ;;
+esac

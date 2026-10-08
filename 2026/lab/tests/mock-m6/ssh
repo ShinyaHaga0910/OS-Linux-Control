@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -u
+
+if [[ "${1:-}" == -G ]]; then
+  printf '%s\n' \
+    'hostname i-m6test' \
+    'user ssm-user' \
+    'proxycommand aws ssm start-session --region us-east-1 --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p'
+  exit 0
+fi
+
+if [[ "${1:-}" == -F ]]; then
+  exit 255
+fi
+
+remote_command="${!#}"
+case "$remote_command" in
+  *REMOTE_USER*)
+    printf '%s\n' 'REMOTE_USER=ssm-user' 'REMOTE_HOST=mock-host' 'REMOTE_PATH=/home/ssm-user'
+    ;;
+  *'sha256sum ~/jdu-lab/m6/upload.txt'*)
+    sha256sum "${M6_REMOTE_DIR:?}/upload.txt"
+    ;;
+  *'sha256sum ~/jdu-lab/m6/remote-result.txt'*)
+    sha256sum "${M6_REMOTE_DIR:?}/remote-result.txt"
+    ;;
+  *'cat ~/jdu-lab/m6/remote-result.txt'*)
+    cat "${M6_REMOTE_DIR:?}/remote-result.txt"
+    ;;
+  *'sha256sum ~/jdu-lab/p6/practice-upload.txt'*)
+    sha256sum "${P6_REMOTE_DIR:?}/practice-upload.txt"
+    ;;
+  *'sha256sum ~/jdu-lab/p6/practice-remote-result.txt'*)
+    sha256sum "${P6_REMOTE_DIR:?}/practice-remote-result.txt"
+    ;;
+  *'cat ~/jdu-lab/p6/practice-remote-result.txt'*)
+    cat "${P6_REMOTE_DIR:?}/practice-remote-result.txt"
+    ;;
+  *'test ! -e '*|*'rm -f '*)
+    exit 0
+    ;;
+  *)
+    exit 1
+    ;;
+esac

@@ -1,0 +1,359 @@
+#!/usr/bin/env bash
+set -u
+export LC_ALL=C
+
+PASS_COUNT=0
+NOT_READY_COUNT=0
+FAIL_COUNT=0
+ERROR_COUNT=0
+SUBMIT_PROGRESS=true
+mission=''
+progress_command="${JDU_PROGRESS_COMMAND:-/opt/jdu-lab/bin/jdu-progress}"
+student_user="${JDU_STUDENT_USER:-ssm-user}"
+student_home="$HOME"
+
+if [[ "$(id -un)" != "$student_user" ]]; then
+  printf 'ERROR jdu-check must be run as %s, not %s. Run exit until id -un prints %s.\n' "$student_user" "$(id -un)" "$student_user" >&2
+  exit 2
+fi
+
+pass() { PASS_COUNT=$((PASS_COUNT + 1)); printf 'PASS      %-14s %s\n' "$1" "$2"; }
+not_ready() { NOT_READY_COUNT=$((NOT_READY_COUNT + 1)); printf 'FAIL      %-14s %s\n' "$1" "$2"; }
+fail() { FAIL_COUNT=$((FAIL_COUNT + 1)); printf 'FAIL      %-14s %s\n' "$1" "$2"; }
+error() { ERROR_COUNT=$((ERROR_COUNT + 1)); printf 'FAIL      %-14s %s\n' "$1" "$2"; }
+finish() {
+  local failed_total total result_status=0 report_mission="$mission"
+  failed_total=$((NOT_READY_COUNT + FAIL_COUNT + ERROR_COUNT))
+  total=$((PASS_COUNT + failed_total))
+  printf '\nRESULT    %d / %d checks cleared\n' "$PASS_COUNT" "$total"
+  printf 'PASS      %d\n' "$PASS_COUNT"
+  printf 'FAIL      %d\n' "$failed_total"
+  if ((ERROR_COUNT > 0)); then
+    result_status=2
+  elif ((NOT_READY_COUNT > 0 || FAIL_COUNT > 0)); then
+    result_status=1
+  fi
+  [[ "$mission" == M6 ]] && report_mission=M6U
+  [[ "$mission" == P6 ]] && report_mission=P6U
+  if $SUBMIT_PROGRESS && server_id="$($progress_command id 2>/dev/null)"; then
+    if "$progress_command" submit "$report_mission" "$PASS_COUNT" "$total"; then
+      printf 'REPORT    PASS (server %s)\n' "$server_id"
+    else
+      printf '%s\n' 'REPORT    FAIL (the local check result was not changed)' >&2
+    fi
+  fi
+  exit "$result_status"
+}
+
+check_env_field() {
+  local check_id="$1" file="$2" key="$3" expected="$4" description="$5" actual
+  if [[ ! -f "$file" ]]; then
+    fail "$check_id" "$key is not recorded"
+    return
+  fi
+  actual="$(read_env_value "$file" "$key" 2>/dev/null || true)"
+  if [[ -z "$actual" ]]; then
+    fail "$check_id" "$key is not recorded"
+  elif [[ "$actual" == "$expected" ]]; then
+    pass "$check_id" "$description"
+  else
+    fail "$check_id" "$key does not match the live state"
+  fi
+}
+
+read_env_value() {
+  local file="$1" key="$2"
+  [[ -f "$file" ]] || return 1
+  sed -n "s/^${key}=//p" "$file" | tail -n 1
+}
+
+env_matches() {
+  local file="$1"; shift
+  local item key expected actual
+  [[ -f "$file" ]] || return 2
+  for item in "$@"; do
+    key="${item%%:*}"
+    expected="${item#*:}"
+    actual="$(read_env_value "$file" "$key" 2>/dev/null || true)"
+    [[ -n "$actual" ]] || return 2
+    [[ "$actual" == "$expected" ]] || return 1
+  done
+  return 0
+}
+
+check_env_result() {
+  local check_id="$1" file="$2" description="$3"; shift 3
+  env_matches "$file" "$@"
+  case $? in
+    0) pass "$check_id" "$description" ;;
+    1) fail "$check_id" 'Evidence does not match the live state' ;;
+    2) not_ready "$check_id" "Create $file with every required field" ;;
+  esac
+}
+
+service_pid() { systemctl show -p MainPID --value "$1" 2>/dev/null || true; }
+service_user() {
+  local pid="$1"
+  [[ "$pid" =~ ^[1-9][0-9]*$ ]] || return 1
+  ps -o user= -p "$pid" 2>/dev/null | awk '{$1=$1; print}'
+}
+
+check_p0() {
+  local evidence="$student_home/jdu-lab/p0/observation.env" os_id os_version
+  # Read old evidence without moving or deleting existing student work.
+  [[ -d "$student_home/jdu-lab/p0" ]] || evidence="$student_home/jdu-lab/m0/observation.env"
+  os_id="$(. /etc/os-release && printf '%s' "$ID")"
+  os_version="$(. /etc/os-release && printf '%s' "$VERSION_ID")"
+  printf '%s\n' 'Guided Practice P0 (6 observations)'
+  check_env_field P0-OBS-01 "$evidence" OS_ID "$os_id" 'OS_ID matches the live system'
+  check_env_field P0-OBS-02 "$evidence" OS_VERSION_ID "$os_version" 'OS_VERSION_ID matches the live system'
+  check_env_field P0-OBS-03 "$evidence" KERNEL_RELEASE "$(uname -r)" 'KERNEL_RELEASE matches the live system'
+  check_env_field P0-OBS-04 "$evidence" PID1_COMM "$(cat /proc/1/comm)" 'PID1_COMM matches the live system'
+  check_env_field P0-OBS-05 "$evidence" USER_NAME "$student_user" 'USER_NAME matches the live system'
+  check_env_field P0-OBS-06 "$evidence" HOST_NAME "$(hostname)" 'HOST_NAME matches the live system'
+}
+
+check_m1() {
+  local base="$student_home/jdu-lab/m1/case01" source=/opt/jdu-lab/fixtures/m1/source evidence tree_ready=false files_ready=false
+  printf '%s\n' 'Mission M1 (5 tasks)'
+  [[ -d "$base/config" && -d "$base/logs" && -d "$base/notes" ]] && pass M1-FS-01 'Required directories exist' || not_ready M1-FS-01 'Build the required case01 tree'
+  if [[ -d "$base/config" && -d "$base/logs" && -d "$base/notes" ]]; then tree_ready=true; fi
+  if [[ -f "$base/config/app.conf" && -f "$base/logs/incident.log" ]] && cmp -s "$source/config/app.conf" "$base/config/app.conf" && cmp -s "$source/logs/incident.log" "$base/logs/incident.log"; then files_ready=true; pass M1-FS-02 'Required source files are copied without changes'; else not_ready M1-FS-02 'Copy the required source files without changing their contents'; fi
+  if $tree_ready && $files_ready && ! find "$base" -maxdepth 2 -type f -name '*.tmp' 2>/dev/null | grep -q .; then pass M1-FS-03 'Temporary files are removed from case01'; else not_ready M1-FS-03 'Complete case01 and remove its .tmp files'; fi
+  evidence="$base/notes/errors.txt"
+  if [[ ! -f "$evidence" ]]; then
+    not_ready M1-TXT-01 'Create notes/errors.txt with the complete ERROR lines'
+  elif diff -u <(grep 'ERROR' "$source/logs/incident.log") "$evidence" >/dev/null 2>&1; then
+    pass M1-TXT-01 'ERROR lines are correct'
+  else
+    fail M1-TXT-01 'errors.txt must contain only the complete ERROR lines without source line numbers'
+  fi
+  evidence="$base/notes/recent.txt"
+  if [[ ! -f "$evidence" ]]; then
+    not_ready M1-TXT-02 'Create notes/recent.txt with the latest five lines'
+  elif diff -u <(tail -n 5 "$source/logs/incident.log") "$evidence" >/dev/null 2>&1; then
+    pass M1-TXT-02 'The latest five lines are correct'
+  else
+    fail M1-TXT-02 'recent.txt does not match the latest five log lines'
+  fi
+}
+
+check_m2() {
+  local directory=/srv/jdu-share positive denied positive_ok=false
+  printf '%s\n' 'Mission M2 (6 tasks)'
+  if id -nG jduops | tr ' ' '\n' | grep -Fxq ops && ! id -nG jduviewer | tr ' ' '\n' | grep -Fxq ops; then pass M2-ID-01 'Only the authorized user is an ops member'; else not_ready M2-ID-01 'Complete the required group membership'; fi
+  if [[ "$(stat -c '%U:%G' "$directory" 2>/dev/null || true)" == root:ops ]]; then pass M2-PERM-01 'Shared directory owner and group are correct'; else not_ready M2-PERM-01 'Set the required owner and group'; fi
+  if [[ "$(stat -c '%a' "$directory" 2>/dev/null || true)" == 2775 ]]; then pass M2-PERM-02 'Shared directory mode is setgid and not world-writable'; else not_ready M2-PERM-02 'Set the required group collaboration mode'; fi
+  if [[ "$(stat -c '%U:%G:%a' "$directory/README.txt" 2>/dev/null || true)" == root:ops:664 ]]; then pass M2-PERM-03 'Shared sample has the required owner, group, and mode'; else not_ready M2-PERM-03 'Set the shared sample owner, group, and mode'; fi
+  positive="$directory/.jdu-check-ops-$$"
+  if sudo -n -u jduops -- touch "$positive" 2>/dev/null && [[ "$(stat -c '%G' "$positive" 2>/dev/null || true)" == ops ]]; then positive_ok=true; pass M2-PERM-04 'Authorized user can create a file that inherits the ops group'; else not_ready M2-PERM-04 'Authorized creation and group inheritance must both succeed'; fi
+  sudo -n rm -f -- "$positive" >/dev/null 2>&1 || true
+  denied="$directory/.jdu-check-viewer-$$"
+  if $positive_ok && sudo -n -u jduviewer -- test -r "$directory/README.txt" && ! sudo -n -u jduviewer -- touch "$denied" 2>/dev/null && [[ ! -e "$denied" ]]; then pass M2-PERM-05 'Viewer can read but cannot create a file'; else not_ready M2-PERM-05 'Preserve viewer read access while denying creation'; fi
+  sudo -n rm -f -- "$denied" >/dev/null 2>&1 || true
+}
+
+check_m3() {
+  local version
+  printf '%s\n' 'Mission M3 (2 tasks)'
+  if ! systemctl is-active --quiet jdu-m3-process2.service && systemctl is-active --quiet jdu-m3-process1.service && systemctl is-active --quiet jdu-m3-process3.service; then pass M3-PROC-01 'Only process2 is stopped'; else not_ready M3-PROC-01 'Stop process2 while keeping process1 and process3 active'; fi
+  version="$(dpkg-query -W -f='${Status}:${Version}' cmatrix 2>/dev/null || true)"
+  if [[ "$version" == 'install ok installed:'* && -n "${version#*:}" && -x /usr/bin/cmatrix && "$(dpkg-query -S /usr/bin/cmatrix 2>/dev/null | cut -d: -f1)" == cmatrix ]]; then pass M3-APT-01 'cmatrix is installed with a version and provides its command'; else not_ready M3-APT-01 'Install cmatrix and verify its installed command'; fi
+}
+
+check_m4() {
+  local pid active enabled user base_hash actual_hash properties command_line working_directory
+  printf '%s\n' 'Mission M4 (3 tasks)'
+  base_hash="$(cat /opt/jdu-lab/fixtures/m4/jdu-status.service.sha256 2>/dev/null || true)"; actual_hash="$(sha256sum /etc/systemd/system/jdu-status.service 2>/dev/null | awk '{print $1}')"
+  properties="$(systemctl show jdu-status.service -p User -p ExecStart -p WorkingDirectory 2>/dev/null || true)"
+  active="$(systemctl is-active jdu-status.service 2>/dev/null || true)"; enabled="$(systemctl is-enabled jdu-status.service 2>/dev/null || true)"; pid="$(service_pid jdu-status.service)"; user="$(service_user "$pid" 2>/dev/null || true)"
+  [[ "$active" == active ]] && pass M4-SVC-01 'Service is active' || not_ready M4-SVC-01 'Start the course service'
+  [[ "$enabled" == enabled ]] && pass M4-SVC-02 'Service is enabled for boot' || not_ready M4-SVC-02 'Set the required boot state'
+  command_line=''; working_directory=''
+  if [[ "$pid" =~ ^[1-9][0-9]*$ ]]; then
+    command_line="$(sudo -n cat "/proc/$pid/cmdline" 2>/dev/null | tr '\0' ' ' || true)"
+    working_directory="$(sudo -n readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
+  fi
+  if [[ -n "$base_hash" && "$actual_hash" == "$base_hash" && "$pid" =~ ^[1-9][0-9]*$ && "$user" == jduapp && "$command_line" == *'/opt/jdu-lab/bin/jdu-http-service'* && "$working_directory" == /srv/jdu-status ]] && grep -Fxq 'User=jduapp' <<<"$properties" && grep -Fxq 'WorkingDirectory=/srv/jdu-status' <<<"$properties"; then pass M4-SVC-03 'Live process matches the unchanged teacher unit'; else not_ready M4-SVC-03 'Start the unchanged unit and relate its MainPID, user, command, and working directory'; fi
+}
+
+check_m5() {
+  local pid socket_line socket_pid marker body status invocation_id journal closed_exit base_hash unit_hash
+  printf '%s\n' 'Mission M5 (4 tasks)'
+  pid="$(service_pid jdu-web.service)"; marker="$(cat /etc/jdu-lab/web-marker 2>/dev/null || true)"
+  socket_line="$(sudo -n ss -H -lntp 2>/dev/null | awk '$4 ~ /127[.]0[.]0[.]1:8081$/ {print; exit}')"
+  socket_pid="$(sed -n 's/.*pid=\([0-9][0-9]*\).*/\1/p' <<<"$socket_line")"
+  base_hash="$(cat /opt/jdu-lab/fixtures/m5/jdu-web.service.sha256 2>/dev/null || true)"; unit_hash="$(sha256sum /etc/systemd/system/jdu-web.service 2>/dev/null | awk '{print $1}')"
+  if systemctl is-active --quiet jdu-web.service && [[ -n "$base_hash" && "$unit_hash" == "$base_hash" && -n "$socket_line" && "$socket_pid" == "$pid" ]] && ! sudo -n ss -H -lnt 2>/dev/null | awk '{print $4}' | grep -Eq '(^0[.]0[.]0[.]0|^\[::\]|^\*):8081$'; then pass M5-SOCK-01 'Student-started service owns loopback TCP 8081'; else not_ready M5-SOCK-01 'Start the unchanged service and relate its loopback listener to MainPID'; fi
+  body="$(mktemp)"
+  status="$(curl -sS --max-time 3 -o "$body" -w '%{http_code}' http://127.0.0.1:8081/ 2>/dev/null || true)"
+  if [[ "$status" == 200 ]] && grep -Fqx "$marker" "$body" && sudo -n -u jduweb -- test -r /srv/jdu-web/index.txt; then pass M5-HTTP-01 'Local HTTP response and service-user content access are correct'; else not_ready M5-HTTP-01 'Verify the local response and the service user content access'; fi
+  invocation_id="$(systemctl show jdu-web.service -p InvocationID --value 2>/dev/null || true)"
+  journal=''
+  if [[ -n "$invocation_id" ]]; then
+    journal="$(sudo -n journalctl -u jdu-web.service "_SYSTEMD_INVOCATION_ID=$invocation_id" --no-pager -o cat 2>/dev/null | grep -Fx 'REQUEST path=/m5-check' | tail -n 1)"
+  fi
+  [[ -n "$journal" ]] && pass M5-LOG-01 'The current service invocation logged the student request to /m5-check' || not_ready M5-LOG-01 'Request /m5-check and find its journal entry'
+  closed_exit=0
+  curl -fsS --max-time 2 http://127.0.0.1:18081/ >/dev/null 2>&1 || closed_exit=$?
+  if [[ "$status" == 200 && -n "$socket_line" ]] && ((closed_exit != 0)) && ! sudo -n ss -H -lnt 2>/dev/null | awk '{print $4}' | grep -Eq '(^|:)18081$'; then pass M5-NEG-01 'Open TCP 8081 and closed TCP 18081 produce different results'; else not_ready M5-NEG-01 'Compare the working service port with the unused port'; fi
+  rm -f -- "$body"
+}
+
+check_m6() {
+  local upload="$student_home/jdu-lab/m6/upload.txt" result="$student_home/jdu-lab/m6/remote-result.txt" expected_result
+  printf '%s\n' 'Mission M6 Ubuntu side (2 tasks)'
+  if [[ -f "$upload" ]] && grep -Fqx 'JDU SSH transfer test' "$upload" && [[ "$(wc -l < "$upload")" -eq 1 && "$(stat -c '%U:%a' "$upload" 2>/dev/null || true)" == "$student_user:644" ]]; then pass M6-XFER-01 'The uploaded file has the required content, owner, and mode'; else not_ready M6-XFER-01 'Transfer local-source.txt to upload.txt and verify its result'; fi
+  expected_result="$(printf 'REMOTE_USER=%s\nREMOTE_HOST=%s\nREMOTE_PATH=%s\n' "$student_user" "$(hostname)" "$student_home")"
+  if [[ -f "$result" && "$(cat "$result" 2>/dev/null || true)" == "$expected_result" ]]; then pass M6-REMOTE-01 'The SSH remote command recorded the live remote identity'; else not_ready M6-REMOTE-01 'Create remote-result.txt with an SSH remote command'; fi
+}
+
+check_m7() {
+  local pid active enabled user socket_line socket_pid marker body status invocation_id journal base_hash fixture_hash unit_hash
+  printf '%s\n' 'Mission M7 (6 tasks)'
+  base_hash="$(cat /opt/jdu-lab/fixtures/m7/jdu-final.service.sha256 2>/dev/null || true)"
+  fixture_hash="$(sha256sum /opt/jdu-lab/fixtures/m7/jdu-final.service 2>/dev/null | awk '{print $1}')"
+  unit_hash="$(sha256sum /etc/systemd/system/jdu-final.service 2>/dev/null | awk '{print $1}')"
+  active="$(systemctl is-active jdu-final.service 2>/dev/null || true)"; enabled="$(systemctl is-enabled jdu-final.service 2>/dev/null || true)"; pid="$(service_pid jdu-final.service)"; user="$(service_user "$pid" 2>/dev/null || true)"
+  marker="$(cat /etc/jdu-lab/final-marker 2>/dev/null || true)"
+  if [[ "$(stat -c '%U:%G:%a' /srv/jdu-final/index.txt 2>/dev/null || true)" == root:finalops:664 && "$(stat -c '%U:%G:%a' /srv/jdu-final 2>/dev/null || true)" == root:finalops:2775 ]] && grep -Fqx "$marker" /srv/jdu-final/index.txt 2>/dev/null; then pass M7-FILE-01 'Final directory and content have the required state'; else not_ready M7-FILE-01 'Complete the final directory, content, ownership, group, modes, and marker'; fi
+  if [[ -f /srv/jdu-final/index.txt ]] && id -nG jduwriter 2>/dev/null | tr ' ' '\n' | grep -Fxq finalops && ! id -nG jduviewer 2>/dev/null | tr ' ' '\n' | grep -Fxq finalops && sudo -n -u jduwriter -- test -w /srv/jdu-final/index.txt && ! sudo -n -u jduviewer -- test -w /srv/jdu-final/index.txt; then pass M7-PERM-01 'Writer can update the content and viewer cannot'; else not_ready M7-PERM-01 'Complete the writer and viewer access policy'; fi
+  if [[ -n "$base_hash" && "$fixture_hash" == "$base_hash" && "$unit_hash" == "$base_hash" && "$active" == active && "$enabled" == enabled && "$pid" =~ ^[1-9][0-9]*$ && "$user" == jdufinal ]]; then pass M7-SVC-01 'Unchanged final unit is active, enabled, and runs as jdufinal'; else not_ready M7-SVC-01 'Start and enable the unchanged final unit with its required user'; fi
+  socket_line="$(sudo -n ss -H -lntp 2>/dev/null | awk '$4 ~ /127[.]0[.]0[.]1:8090$/ {print; exit}')"; socket_pid="$(sed -n 's/.*pid=\([0-9][0-9]*\).*/\1/p' <<<"$socket_line")"
+  if [[ -n "$socket_line" && "$socket_pid" == "$pid" ]] && ! sudo -n ss -H -lnt 2>/dev/null | awk '{print $4}' | grep -Eq '(^0[.]0[.]0[.]0|^\[::\]|^\*):8090$'; then pass M7-SOCK-01 'Final service alone listens on loopback TCP 8090'; else not_ready M7-SOCK-01 'Check protocol, address, port, and owning process'; fi
+  body="$(mktemp)"
+  status="$(curl -sS --max-time 3 -o "$body" -w '%{http_code}' http://127.0.0.1:8090/ 2>/dev/null || true)"
+  [[ "$status" == 200 ]] && grep -Fqx "$marker" "$body" && pass M7-HTTP-01 'Final HTTP response returns 200 and the assigned marker' || not_ready M7-HTTP-01 'Verify the final local response'
+  invocation_id="$(systemctl show jdu-final.service -p InvocationID --value 2>/dev/null || true)"
+  journal=''
+  if [[ -n "$invocation_id" ]]; then
+    journal="$(sudo -n journalctl -u jdu-final.service "_SYSTEMD_INVOCATION_ID=$invocation_id" --no-pager -o cat 2>/dev/null | grep -Fx 'REQUEST path=/m7-check' | tail -n 1)"
+  fi
+  [[ -n "$journal" ]] && pass M7-LOG-01 'The current final service invocation logged the student request to /m7-check' || not_ready M7-LOG-01 'Request /m7-check and find its journal entry'
+  rm -f -- "$body"
+}
+
+check_p1() {
+  local base="$student_home/jdu-lab/p1" target="$student_home/jdu-lab/p1/practice01" expected_warnings expected_recent
+  printf '%s\n' 'Guided Practice P1 (6 tasks)'
+  if [[ -d "$target/config" && -d "$target/logs" && -d "$target/notes" ]]; then pass P1-FS-01 'Required guided directories exist'; else not_ready P1-FS-01 'Create practice01/config, logs, and notes'; fi
+  if [[ -f "$target/config/training.conf" && -f "$target/logs/practice.log" ]] && cmp -s "$base/inbox/config/training.conf" "$target/config/training.conf" && cmp -s "$base/inbox/logs/practice.log" "$target/logs/practice.log"; then pass P1-FS-02 'Source files were copied without changes'; else not_ready P1-FS-02 'Copy both guided source files'; fi
+  if [[ -d "$target" ]] && ! find "$target" -type f -name '*.tmp' -print -quit 2>/dev/null | grep -q .; then pass P1-FS-03 'Temporary files are absent'; else not_ready P1-FS-03 'Remove .tmp files from practice01'; fi
+  if [[ -d "$target/config" && -d "$target/logs" && -d "$target/notes" && -f "$target/config/training.conf" && -f "$target/logs/practice.log" && -f "$target/notes/warnings.txt" && -f "$target/notes/recent.txt" ]] && ! find "$target" ! -user "$student_user" -print -quit 2>/dev/null | grep -q .; then pass P1-FS-04 'Completed guided tree belongs to the Ubuntu management user'; else not_ready P1-FS-04 'Complete the guided tree and set its owner to the Ubuntu management user'; fi
+  expected_warnings="$(grep 'WARN' "$base/inbox/logs/practice.log" 2>/dev/null || true)"
+  if [[ -f "$target/notes/warnings.txt" && "$(cat "$target/notes/warnings.txt")" == "$expected_warnings" ]]; then pass P1-TXT-01 'Warning lines are exact'; else not_ready P1-TXT-01 'Extract complete WARN lines without line numbers'; fi
+  expected_recent="$(tail -n 4 "$base/inbox/logs/practice.log" 2>/dev/null || true)"
+  if [[ -f "$target/notes/recent.txt" && "$(cat "$target/notes/recent.txt")" == "$expected_recent" ]]; then pass P1-TXT-02 'Recent lines are exact and ordered'; else not_ready P1-TXT-02 'Save the final four log lines in order'; fi
+}
+
+check_p2() {
+  local directory=/srv/jdu-practice-share positive denied positive_ok=false
+  printf '%s\n' 'Guided Practice P2 (6 tasks)'
+  if id -nG jdupracticewriter | tr ' ' '\n' | grep -Fxq practiceops && ! id -nG jdupracticeviewer | tr ' ' '\n' | grep -Fxq practiceops; then pass P2-ID-01 'Only the guided writer is a practiceops member'; else not_ready P2-ID-01 'Correct the guided group membership'; fi
+  if [[ "$(stat -c '%U:%G' "$directory" 2>/dev/null || true)" == root:practiceops ]]; then pass P2-PERM-01 'Guided shared directory owner and group are correct'; else not_ready P2-PERM-01 'Set the guided directory owner and group'; fi
+  if [[ "$(stat -c '%a' "$directory" 2>/dev/null || true)" == 2775 ]]; then pass P2-PERM-02 'Guided directory uses setgid mode 2775'; else not_ready P2-PERM-02 'Set guided group collaboration mode 2775'; fi
+  if [[ "$(stat -c '%U:%G:%a' "$directory/GUIDE.txt" 2>/dev/null || true)" == root:practiceops:664 ]]; then pass P2-PERM-03 'GUIDE.txt owner, group, and mode are correct'; else not_ready P2-PERM-03 'Set GUIDE.txt to root:practiceops and 664'; fi
+  positive="$directory/.jdu-check-guided-writer-$$"
+  if sudo -n -u jdupracticewriter -- touch "$positive" 2>/dev/null && [[ "$(stat -c '%G' "$positive" 2>/dev/null || true)" == practiceops ]]; then positive_ok=true; pass P2-PERM-04 'Guided writer creates files that inherit practiceops'; else not_ready P2-PERM-04 'Verify writer creation and group inheritance'; fi
+  sudo -n rm -f -- "$positive" >/dev/null 2>&1 || true
+  denied="$directory/.jdu-check-guided-viewer-$$"
+  if $positive_ok && sudo -n -u jdupracticeviewer -- test -r "$directory/GUIDE.txt" && ! sudo -n -u jdupracticeviewer -- touch "$denied" 2>/dev/null && [[ ! -e "$denied" ]]; then pass P2-PERM-05 'Guided viewer reads but cannot create'; else not_ready P2-PERM-05 'Keep viewer read access and deny creation'; fi
+  sudo -n rm -f -- "$denied" >/dev/null 2>&1 || true
+}
+
+check_p3() {
+  local version
+  printf '%s\n' 'Guided Practice P3 (2 tasks)'
+  if ! systemctl is-active --quiet jdu-p3-process2.service && systemctl is-active --quiet jdu-p3-process1.service && systemctl is-active --quiet jdu-p3-process3.service; then pass P3-PROC-01 'Only guided process2 is stopped'; else not_ready P3-PROC-01 'Stop guided process2 and keep process1 and process3 active'; fi
+  version="$(dpkg-query -W -f='${Status}:${Version}' figlet 2>/dev/null || true)"
+  if [[ "$version" == 'install ok installed:'* && -n "${version#*:}" && -x /usr/bin/figlet && "$(dpkg-query -S /usr/bin/figlet 2>/dev/null | cut -d: -f1)" == figlet ]]; then pass P3-APT-01 'figlet is installed and provides its command'; else not_ready P3-APT-01 'Install figlet and verify its command'; fi
+}
+
+check_p4() {
+  local pid active enabled user base_hash actual_hash properties command_line working_directory
+  printf '%s\n' 'Guided Practice P4 (3 tasks)'
+  base_hash="$(cat /opt/jdu-lab/fixtures/p4/jdu-practice-status.service.sha256 2>/dev/null || true)"; actual_hash="$(sha256sum /etc/systemd/system/jdu-practice-status.service 2>/dev/null | awk '{print $1}')"
+  properties="$(systemctl show jdu-practice-status.service -p User -p ExecStart -p WorkingDirectory 2>/dev/null || true)"
+  active="$(systemctl is-active jdu-practice-status.service 2>/dev/null || true)"; enabled="$(systemctl is-enabled jdu-practice-status.service 2>/dev/null || true)"; pid="$(service_pid jdu-practice-status.service)"; user="$(service_user "$pid" 2>/dev/null || true)"
+  [[ "$active" == active ]] && pass P4-SVC-01 'Guided service is active' || not_ready P4-SVC-01 'Start the guided service'
+  [[ "$enabled" == enabled ]] && pass P4-SVC-02 'Guided service is enabled' || not_ready P4-SVC-02 'Enable the guided service'
+  command_line=''; working_directory=''
+  if [[ "$pid" =~ ^[1-9][0-9]*$ ]]; then
+    command_line="$(sudo -n cat "/proc/$pid/cmdline" 2>/dev/null | tr '\0' ' ' || true)"
+    working_directory="$(sudo -n readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
+  fi
+  if [[ -n "$base_hash" && "$actual_hash" == "$base_hash" && "$pid" =~ ^[1-9][0-9]*$ && "$user" == jdupracticeapp && "$command_line" == *'/opt/jdu-lab/bin/jdu-http-service'* && "$working_directory" == /srv/jdu-practice-status ]] && grep -Fxq 'User=jdupracticeapp' <<<"$properties"; then pass P4-SVC-03 'Guided process matches the unchanged unit'; else not_ready P4-SVC-03 'Relate the guided unit to its live process'; fi
+}
+
+check_p5() {
+  local pid socket_line socket_pid marker body status invocation_id journal closed_exit base_hash unit_hash
+  printf '%s\n' 'Guided Practice P5 (4 tasks)'
+  pid="$(service_pid jdu-practice-web.service)"; marker="$(cat /etc/jdu-lab/practice-web-marker 2>/dev/null || true)"
+  socket_line="$(sudo -n ss -H -lntp 2>/dev/null | awk '$4 ~ /127[.]0[.]0[.]1:8181$/ {print; exit}')"
+  socket_pid="$(sed -n 's/.*pid=\([0-9][0-9]*\).*/\1/p' <<<"$socket_line")"
+  base_hash="$(cat /opt/jdu-lab/fixtures/p5/jdu-practice-web.service.sha256 2>/dev/null || true)"; unit_hash="$(sha256sum /etc/systemd/system/jdu-practice-web.service 2>/dev/null | awk '{print $1}')"
+  if systemctl is-active --quiet jdu-practice-web.service && [[ -n "$base_hash" && "$unit_hash" == "$base_hash" && -n "$socket_line" && "$socket_pid" == "$pid" ]] && ! sudo -n ss -H -lnt 2>/dev/null | awk '{print $4}' | grep -Eq '(^0[.]0[.]0[.]0|^\[::\]|^\*):8181$'; then pass P5-SOCK-01 'Guided service owns loopback TCP 8181'; else not_ready P5-SOCK-01 'Start the guided service and match listener PID'; fi
+  body="$(mktemp)"
+  status="$(curl -sS --max-time 3 -o "$body" -w '%{http_code}' http://127.0.0.1:8181/ 2>/dev/null || true)"
+  if [[ "$status" == 200 ]] && grep -Fqx "$marker" "$body" && sudo -n -u jdupracticeweb -- test -r /srv/jdu-practice-web/index.txt; then pass P5-HTTP-01 'Guided HTTP response and content access are correct'; else not_ready P5-HTTP-01 'Verify guided HTTP and service-user read access'; fi
+  invocation_id="$(systemctl show jdu-practice-web.service -p InvocationID --value 2>/dev/null || true)"
+  journal=''
+  if [[ -n "$invocation_id" ]]; then journal="$(sudo -n journalctl -u jdu-practice-web.service "_SYSTEMD_INVOCATION_ID=$invocation_id" --no-pager -o cat 2>/dev/null | grep -Fx 'REQUEST path=/p5-check' | tail -n 1)"; fi
+  [[ -n "$journal" ]] && pass P5-LOG-01 'Current guided service logged /p5-check' || not_ready P5-LOG-01 'Request /p5-check and inspect the journal'
+  closed_exit=0; curl -fsS --max-time 2 http://127.0.0.1:18181/ >/dev/null 2>&1 || closed_exit=$?
+  if [[ "$status" == 200 && -n "$socket_line" ]] && ((closed_exit != 0)) && ! sudo -n ss -H -lnt 2>/dev/null | awk '{print $4}' | grep -Eq '(^|:)18181$'; then pass P5-NEG-01 'Guided open and closed ports differ'; else not_ready P5-NEG-01 'Compare TCP 8181 with closed TCP 18181'; fi
+  rm -f -- "$body"
+}
+
+check_p6() {
+  local upload="$student_home/jdu-lab/p6/practice-upload.txt" result="$student_home/jdu-lab/p6/practice-remote-result.txt" expected_result
+  printf '%s\n' 'Guided Practice P6 Ubuntu side (2 tasks)'
+  if [[ -f "$upload" ]] && grep -Fqx 'JDU SSH guided transfer' "$upload" && [[ "$(wc -l < "$upload")" -eq 1 && "$(stat -c '%U:%a' "$upload" 2>/dev/null || true)" == "$student_user:644" ]]; then pass P6-XFER-01 'Guided upload content, owner, and mode are correct'; else not_ready P6-XFER-01 'Transfer practice-source.txt to practice-upload.txt'; fi
+  expected_result="$(printf 'REMOTE_USER=%s\nREMOTE_HOST=%s\nREMOTE_PATH=%s\n' "$student_user" "$(hostname)" "$student_home")"
+  if [[ -f "$result" && "$(cat "$result" 2>/dev/null || true)" == "$expected_result" ]]; then pass P6-REMOTE-01 'Guided remote result matches the live identity'; else not_ready P6-REMOTE-01 'Create practice-remote-result.txt through SSH'; fi
+}
+
+if [[ "${1:-}" == list ]]; then
+  printf '%s\n' 'P0 Environment and OS' 'P1 Guided shell, path, file, and text' 'P2 Guided user, group, and permission' 'P3 Guided process and package' 'P4 Guided systemd service' 'P5 Guided port, socket, and log' 'P6 Guided SSH and remote operation' 'M1 Shell, path, file, and text' 'M2 User, group, permission, and sudo' 'M3 Process and package' 'M4 systemd service' 'M5 Port, socket, and log' 'M6 SSH and remote operation' 'M7 Integrated Ubuntu check'
+  exit 0
+fi
+
+if [[ "${1:-}" == final ]]; then
+  mission=M7
+  shift
+elif [[ "${1:-}" == mission ]]; then
+  mission="${2:-}"
+  shift 2
+else
+  mission="${1:-}"
+  shift || true
+fi
+while (($#)); do
+  case "$1" in
+    --submit) SUBMIT_PROGRESS=true ;;
+    --no-submit) SUBMIT_PROGRESS=false ;;
+    *) printf 'ERROR Unknown option: %s\n' "$1" >&2; printf '%s\n' 'Usage: jdu-check P0|...|P6|M1|...|M7 [--no-submit]' >&2; exit 2 ;;
+  esac
+  shift
+done
+mission="${mission^^}"
+# Compatibility with previously distributed commands.
+[[ "$mission" == M0 ]] && mission=P0
+case "$mission" in
+  P1) check_p1 ;;
+  P2) check_p2 ;;
+  P3) check_p3 ;;
+  P4) check_p4 ;;
+  P5) check_p5 ;;
+  P6) check_p6 ;;
+  P0) check_p0 ;;
+  M1) check_m1 ;;
+  M2) check_m2 ;;
+  M3) check_m3 ;;
+  M4) check_m4 ;;
+  M5) check_m5 ;;
+  M6) check_m6 ;;
+  M7) check_m7 ;;
+  *) printf '%s\n' 'Usage: jdu-check P0|...|P6|M1|...|M7 [--no-submit]' >&2; exit 2 ;;
+esac
+finish

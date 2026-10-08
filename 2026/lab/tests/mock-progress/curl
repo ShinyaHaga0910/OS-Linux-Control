@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+log_file="${MOCK_CURL_LOG:?MOCK_CURL_LOG is required}"
+headers=()
+body=''
+url=''
+while (($#)); do
+  case "$1" in
+    -H) headers+=("$2"); shift 2 ;;
+    --data|--data-binary) body="$2"; shift 2 ;;
+    -X|--max-time|--retry) shift 2 ;;
+    -*) shift ;;
+    *) url="$1"; shift ;;
+  esac
+done
+{
+  printf 'URL=%s\n' "$url"
+  printf 'HEADER=%s\n' "${headers[@]}"
+  printf 'BODY=%s\n' "$body"
+} >> "$log_file"
+if [[ -n "${MOCK_CURL_RESPONSE:-}" ]]; then
+  printf '%s\n' "$MOCK_CURL_RESPONSE"
+else
+  printf '%s\n' '{"ok":true}'
+fi
