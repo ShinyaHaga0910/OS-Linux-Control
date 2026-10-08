@@ -57,9 +57,12 @@ CloudShell’da bajaring. `ssh jdu-ubuntu` orqali Ubuntu server’ga kirgandan k
 jdu-my-progress
 ```
 
+
 Chiqqan link’ni bosing. Agar link bosilmasa, HTTPS URL’ni nusxalab browser’da oching. CloudShell yoki SSH orqali ulangan Ubuntu sizning kompyuteringizdagi browser’ni avtomatik ocha olmaydi. Bu **sizning shaxsiy progress dashboard’ingiz**. Sahifa o‘qituvchi tizimida taqdim etiladi va unda faqat sizning natijalaringiz ko‘rinadi. Dashboard uchun alohida server yaratish kerak emas.
 
 P0–P6 va M1–M7 bo‘yicha progress’ni ko‘rishingiz mumkin. Dastlab natijalar hali yuborilmaganligi sababli bo‘sh kataklar yoki «—» normal holatdir. Sarlavhada ro‘yxatdan o‘tgan email va Server ID ko‘rsatiladi. Sahifaning yuqori qismidagi tugmalar orqali yapon, o‘zbek yoki rus tilini tanlashingiz mumkin. Hostname va EC2 instance ID ko‘rsatilmaydi.
+
+Agar til tugmalari ko‘rinmasa, o‘qituvchi progress servisi eski versiyada ishlayapti. Student command’ini qayta o‘rnatish buni tuzatmaydi; o‘qituvchiga xabar bering.
 
 URL 15 daqiqa amal qiladi. Muddati tugasa, CloudShell yoki Ubuntu’da `jdu-my-progress`’ni yana bajaring va yangi URL’ni oching. Kompyuteringizga certificate o‘rnatish shart emas.
 
