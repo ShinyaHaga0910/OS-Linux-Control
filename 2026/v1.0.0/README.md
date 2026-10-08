@@ -14,7 +14,7 @@ Google Classroomで教員が配布した、このセミスター用の構築コ�
 
 `install.sh`は、CloudFormationの構築、CloudShell専用SSH鍵、Session Manager tunnel、Ubuntu初期設定、P0～P6とM1～M7の初期化、教員進捗サーバーへの登録を実行します。進捗送信先と登録キーは教員の配布コマンドに含まれ、学生による手入力は不要です。Security Groupのinbound ruleは0件で、TCP 22をインターネットへ公開しません。
 
-初回構築時に、**Google Classroomで使うメールアドレスを入力**してください。入力は画面に表示されます。空欄は受け付けず、表示されたアドレスを確認して`YES`で確定します。形式が正しければ、そのメールとServer IDを教員の進捗画面で紐づけます。メールの所有者を認証する仕組みではありません。Server IDをClassroomへ手入力して提出する必要はありません。
+初回構築時に、**Google Classroomで使う`@jdu.uz`のメールアドレスを入力**してください。入力は画面に表示されます。空欄や`@jdu.uz`以外のアドレスは受け付けず、表示されたアドレスを確認して`Yes`で確定します。条件を満たせば、そのメールとServer IDを教員の進捗画面で紐づけます。メールの所有者を認証する仕組みではありません。Server IDをClassroomへ手入力して提出する必要はありません。
 
 メールは教員の進捗確認用DynamoDBと自分のCloudShellの非公開ファイルへ保存します。CloudFormation、EC2、公開GitHubにはメールを保存しません。入力・確認中はCloudShellの画面にメールが表示されるため、その画面を撮影・共有しないでください。完了条件はUbuntu初期設定の完了と、教員側に同じEC2・Server IDが登録され、メールが紐づいたことの確認です。通信・登録に失敗した場合は完了と表示しません。
 

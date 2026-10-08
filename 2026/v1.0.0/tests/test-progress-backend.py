@@ -91,18 +91,21 @@ assert app.handler(event("POST /status", {"server_id": server_id}), None)["statu
 status = app.handler(event("POST /status", {"server_id": server_id}, auth), None)
 assert json.loads(status["body"])["email_linked"] is False
 assert "tokenHash" not in status["body"] and server_token not in status["body"]
-assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "student@example.test"}), None)["statusCode"] == 401
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "student@jdu.uz"}), None)["statusCode"] == 401
 assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "bad\naddress"}, auth), None)["statusCode"] == 400
-assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": " Student@Example.test "}, auth), None)["statusCode"] == 200
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": ""}, auth), None)["statusCode"] == 400
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "student@example.test"}, auth), None)["statusCode"] == 400
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "student@jdu.uz.evil"}, auth), None)["statusCode"] == 400
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": " Student@JDU.UZ "}, auth), None)["statusCode"] == 200
 status = app.handler(event("POST /status", {"server_id": server_id}, auth), None)
 assert json.loads(status["body"])["instance_id"] == register_body["instance_id"]
 assert json.loads(status["body"])["email_linked"] is True
-assert "student@example.test" not in status["body"]
-assert fake_ddb.items[f"SERVER#{server_id}"]["studentEmail"]["S"] == "student@example.test"
+assert "student@jdu.uz" not in status["body"]
+assert fake_ddb.items[f"SERVER#{server_id}"]["studentEmail"]["S"] == "student@jdu.uz"
 # Anonymous instance bootstrap cannot erase/change the authenticated email link.
 assert app.handler(event("POST /register", register_body, {"X-JDU-Registration-Key": registration_key}), None)["statusCode"] == 200
-assert fake_ddb.items[f"SERVER#{server_id}"]["studentEmail"]["S"] == "student@example.test"
-assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "other@example.test"}, {"Authorization": "Bearer wrong"}), None)["statusCode"] == 401
+assert fake_ddb.items[f"SERVER#{server_id}"]["studentEmail"]["S"] == "student@jdu.uz"
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "other@jdu.uz"}, {"Authorization": "Bearer wrong"}), None)["statusCode"] == 401
 assert app.handler(
     event("POST /submit", {"server_id": server_id, "mission": "P7", "passed": 1, "total": 1}, {"Authorization": f"Bearer {server_token}"}),
     None,
@@ -172,7 +175,7 @@ assert app.handler(event("POST /submit", practice_p6_cloud, {"Authorization": f"
 dashboard = app.handler(event("GET /dashboard", query={"session": session_token}), None)
 assert dashboard["statusCode"] == 200
 assert server_id in dashboard["body"]
-assert "student@example.test" in dashboard["body"]
+assert "student@jdu.uz" in dashboard["body"]
 assert "1/2" in dashboard["body"]
 assert "Ubuntu 2/2" in dashboard["body"]
 assert "CloudShell 4/4" in dashboard["body"]
@@ -182,12 +185,12 @@ assert '<td class="missing">P2<br>—</td>' in dashboard["body"]
 assert "入力したメールの本人確認は行っていません" in dashboard["body"]
 assert app.handler(event("GET /health"), None)["statusCode"] == 200
 previous_m3_score = stored_server["missions"]["M"]["M3"].copy()
-assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "updated@example.test"}, auth), None)["statusCode"] == 200
-assert stored_server["studentEmail"]["S"] == "updated@example.test"
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "updated@jdu.uz"}, auth), None)["statusCode"] == 200
+assert stored_server["studentEmail"]["S"] == "updated@jdu.uz"
 assert stored_server["missions"]["M"]["M3"] == previous_m3_score
 updated_dashboard = app.handler(event("GET /dashboard", query={"session": session_token}), None)
-assert "updated@example.test" in updated_dashboard["body"]
-assert "student@example.test" not in updated_dashboard["body"]
+assert "updated@jdu.uz" in updated_dashboard["body"]
+assert "student@jdu.uz" not in updated_dashboard["body"]
 print("PASS progress backend registration, authentication, submission, session, and dashboard")
 
 # Student links are server-bound and must never become teacher credentials.
@@ -215,14 +218,14 @@ for view in [personal_view, partial_dashboard]:
     assert not app.re.search(r'\bM0\b', view["body"])
 
 assert "other@example.test" not in personal_view["body"] and "srv-other1234" not in personal_view["body"]
-assert "student@example.test" not in personal_view["body"]
+assert "student@jdu.uz" not in personal_view["body"]
 assert "tokenHash" not in personal_view["body"] and server_token not in personal_view["body"]
 assert app.handler(event("GET /student/progress", query={"session": personal_token, "server_id": "srv-other1234"}), None)["statusCode"] == 403
 assert app.handler(event("GET /dashboard", query={"session": personal_token}), None)["statusCode"] == 401
 assert app.handler(event("GET /student/progress", query={"session": session_token}), None)["statusCode"] == 401
 assert app.handler(event("GET /student/progress"), None)["statusCode"] == 401
 assert app.handler(event("POST /submit", submit_body, {"Authorization": "Bearer " + personal_token}), None)["statusCode"] == 401
-assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "evil@example.test"}, {"Authorization": "Bearer " + personal_token}), None)["statusCode"] == 401
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "evil@jdu.uz"}, {"Authorization": "Bearer " + personal_token}), None)["statusCode"] == 401
 assert app.handler(event("POST /admin/session", {}, {"X-JDU-Admin-Key": personal_token}), None)["statusCode"] == 401
 session_record = fake_ddb.items["STUDENT_SESSION#" + app.digest(personal_token)]
 session_record["expiresAt"] = {"N": str(int(app.time.time()) - 1)}

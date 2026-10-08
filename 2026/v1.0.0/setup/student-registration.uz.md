@@ -34,7 +34,7 @@ Jarayon davomida quyidagi so‘rov chiqadi:
 Classroom email (visible):
 ```
 
-**Google Classroom’da ishlatadigan shaxsiy email manzilingizni** kiriting va Enter tugmasini bosing. Manzil ekranda ko‘rinadi; bo‘sh Enter bilan davom etib bo‘lmaydi. Ko‘rsatilgan manzilni tekshiring, so‘ng `YES` deb yozib Enter bosing. Xato bo‘lsa, faqat Enter bosib, manzilni qayta kiriting. Parol kerak emas. Email ko‘ringan ekran rasmini ulashmang.
+**Google Classroom’da ishlatadigan `@jdu.uz` bilan tugaydigan shaxsiy email manzilingizni** kiriting va Enter tugmasini bosing. Manzil ekranda ko‘rinadi; bo‘sh kiritish yoki boshqa domain bilan davom etib bo‘lmaydi. Ko‘rsatilgan manzilni tekshiring, so‘ng `Yes` deb yozib Enter bosing. Xato bo‘lsa, faqat Enter bosib, manzilni qayta kiriting. Parol kerak emas. Email ko‘ringan ekran rasmini ulashmang.
 
 O‘qituvchi shu email orqali server’ingiz va topshiriqlardagi progress’ingizni siz bilan bog‘laydi. Server ID’ni Google Classroom’ga alohida topshirish shart emas. Bu amal email egasini tasdiqlamaydi, shuning uchun manzilni xatosiz kiriting.
 
@@ -90,7 +90,7 @@ curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/mai
 bash /tmp/jdu-recover-email.sh
 ```
 
-Email’ni kiriting va `YES` bilan tasdiqlang. `PASS Teacher registration, EC2 identity, and email link confirmed.` chiqsa, ish tugadi. Registration ma’lumotlari topilmasa, to‘g‘ri CloudShell’ni tekshiring va o‘qituvchiga murojaat qiling. Yangi tool allaqachon o‘rnatilgan bo‘lsa, `jdu-register --change-email` ham ishlaydi.
+`@jdu.uz` bilan tugaydigan email’ni kiriting va `Yes` bilan tasdiqlang. `PASS Teacher registration, EC2 identity, and email link confirmed.` chiqsa, ish tugadi. Registration ma’lumotlari topilmasa, to‘g‘ri CloudShell’ni tekshiring va o‘qituvchiga murojaat qiling. Yangi tool allaqachon o‘rnatilgan bo‘lsa, `jdu-register --change-email` ham ishlaydi.
 
 ## O‘qituvchining oldindan tayyorgarligi
 

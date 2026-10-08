@@ -30,5 +30,5 @@ printf '%s  %s\n' "$expected_hash" "$download_dir/register-student.py" | sha256s
 
 install -d -m 0755 "$HOME/.local/bin"
 install -m 0755 "$download_dir/register-student.py" "$HOME/.local/bin/jdu-register"
-printf '%s\n' 'Registration tool updated. Enter your Google Classroom email below.'
+printf '%s\n' 'Registration tool updated. Enter your @jdu.uz Google Classroom email below; it will be visible.'
 JDU_STUDENT_STATE_DIR="$state_dir" python3 "$HOME/.local/bin/jdu-register" --change-email

@@ -156,7 +156,9 @@ def link_email(event):
         body = parse_body(event)
         server_id = text_field(body, "server_id", 64)
         email = text_field(body, "student_email", 254).strip().lower()
-        if not SERVER_ID_RE.fullmatch(server_id) or not re.fullmatch(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+", email):
+        if (not SERVER_ID_RE.fullmatch(server_id) or
+                not re.fullmatch(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+", email) or
+                not email.endswith("@jdu.uz")):
             raise ValueError("invalid registration")
     except (ValueError, json.JSONDecodeError, UnicodeDecodeError):
         return response(400, {"error": "invalid request"})

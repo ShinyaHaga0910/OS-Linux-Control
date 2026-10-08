@@ -34,7 +34,7 @@ Google Classroomで、**今セミスター用のセットアップコマンド**
 Classroom email (visible):
 ```
 
-**Google Classroomで使用する自分のメールアドレス**を入力してEnterを押します。入力した文字は画面に表示されます。空欄のままEnterを押しても先へ進みません。画面に表示されたアドレスを確認し、正しければ`YES`と入力してEnterを押します。間違っていればEnterだけを押して入力し直します。パスワードは入力しません。アドレスが見える画面を撮影・共有しないでください。
+**Google Classroomで使用する自分の`@jdu.uz`メールアドレス**を入力してEnterを押します。入力した文字は画面に表示されます。空欄や`@jdu.uz`以外では先へ進みません。画面に表示されたアドレスを確認し、正しければ`Yes`と入力してEnterを押します。間違っていればEnterだけを押して入力し直します。パスワードは入力しません。アドレスが見える画面を撮影・共有しないでください。
 
 このメールアドレスを、教員があなたのサーバーと課題の進捗を確認するときに使います。Server IDをGoogle Classroomへ別途提出する必要はありません。メールアドレスの所有者を認証する操作ではないため、入力間違いがないよう確認してください。
 
@@ -90,7 +90,7 @@ curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/mai
 bash /tmp/jdu-recover-email.sh
 ```
 
-メールを入力して`YES`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が表示されれば完了です。登録情報が見つからない場合は、別のCloudShellで操作していないか確認し、教員へ連絡してください。すでに最新版の登録ツールがある場合は`jdu-register --change-email`でも修正できます。
+`@jdu.uz`のメールを入力して`Yes`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が表示されれば完了です。登録情報が見つからない場合は、別のCloudShellで操作していないか確認し、教員へ連絡してください。すでに最新版の登録ツールがある場合は`jdu-register --change-email`でも修正できます。
 
 ## 教員の事前準備
 

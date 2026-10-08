@@ -9,6 +9,11 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+")
+REQUIRED_DOMAIN = "@jdu.uz"
+
+
+def valid_email(email):
+    return len(email) <= 254 and bool(EMAIL_RE.fullmatch(email)) and email.endswith(REQUIRED_DOMAIN)
 
 
 def request(endpoint, route, body, headers):
@@ -21,7 +26,7 @@ def request(endpoint, route, body, headers):
 def prompt_email():
     if not sys.stdin.isatty():
         raise ValueError("Run this command interactively in CloudShell to enter your email.")
-    print("Enter the email address you use for Google Classroom.")
+    print("Enter your Google Classroom email address ending in @jdu.uz.")
     print("It links your lab progress to you; it is not email verification.")
     print("Your teacher uses this address to identify your lab progress. Do not share a screenshot of this screen.")
     print("Your typing is visible. Pressing Enter without an address does not skip registration.")
@@ -30,11 +35,11 @@ def prompt_email():
         if not email:
             print("An email address is required. Please type it before pressing Enter.")
             continue
-        if len(email) > 254 or not EMAIL_RE.fullmatch(email):
-            print("The email format is invalid. Please try again.")
+        if not valid_email(email):
+            print("Enter a valid email address ending in @jdu.uz. Please try again.")
             continue
         print(f"You entered: {email}")
-        if input("Type YES to confirm this address (Enter alone means re-enter): ").strip().upper() == "YES":
+        if input("Type Yes to confirm this address (Enter alone means re-enter): ").strip().casefold() == "yes":
             return email
         print("Not confirmed. Please enter the address again.")
 
@@ -59,10 +64,13 @@ def main():
         raise ValueError("The teacher record does not match this EC2 instance.")
     email_file = state / "student-email.txt"
     email = email_file.read_text().strip() if email_file.exists() and "--change-email" not in sys.argv else ""
+    if email and not valid_email(email):
+        print("The saved email does not end in @jdu.uz. Please enter your JDU email address.")
+        email = ""
     if not email:
         email = prompt_email()
-    if len(email) > 254 or not EMAIL_RE.fullmatch(email):
-        raise ValueError("The saved email is invalid. Run jdu-register --change-email.")
+    if not valid_email(email):
+        raise ValueError("A valid @jdu.uz email address is required.")
     result = request(endpoint, "/link-email", {"server_id": server_id, "student_email": email}, auth)
     if not result.get("ok"):
         raise ValueError("Email linking failed.")
