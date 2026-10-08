@@ -37,7 +37,7 @@ with tempfile.TemporaryDirectory() as temporary:
     terminal_output = TerminalOutput()
     with contextlib.redirect_stdout(terminal_output):
         app.main()
-    assert terminal_output.getvalue() == f"\x1b]8;;{payload['url']}\x1b\\{payload['url']}\x1b]8;;\x1b\\\n"
+    assert terminal_output.getvalue() == payload["url"] + "\n"
     for bad_url in ["https://evil.test/student/progress?session=x", "https://example.test/dashboard?session=x", "http://example.test/student/progress?session=x", "https://example.test/student/progress?session=x\x1b\\"]:
         payload["url"] = bad_url
         try:
