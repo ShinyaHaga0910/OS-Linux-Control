@@ -244,26 +244,10 @@ Service、process、socket、IP address、port、HTTP、journalを一つの実�
 1. Unit fileの`User`、`ExecStart`、address、port、content pathを読む。
 2. Unit fileを変更せず、`jdu-web.service`をstartする。
 3. `127.0.0.1:8081`で通信を待ち受けているsocketを確認する。この状態をlistener（待受socket）という。
-
-```bash
-sudo ss -lntp | grep ':8081'
-```
-
-4. `ss`の`users:`欄にあるPIDと、serviceのMain PIDを比較する。
-
-```bash
-systemctl show --property MainPID --value jdu-web.service
-```
+4. 待受socketを所有するprocessのPIDと、serviceのMain PIDを比較する。
 5. `0.0.0.0:8081`や`[::]:8081`でlistenしていないことを確認する。
 6. `http://127.0.0.1:8081/`へrequestを送り、HTTP responseを確認する。
-7. Service user `jduweb`がcontent fileを読めることを確認する。`jduweb`はlogin用userではないため、`su - jduweb`は使わない。実際のread可否は次で確認する。`0`はread可能、`1`はread不可を表す。
-
-```bash
-sudo -u jduweb -- test -r /srv/jdu-web/index.txt
-echo $?
-```
-
-Userとgroupは`getent passwd jduweb`と`id jduweb`で確認する。Fileと親directoryのpermissionは`stat`と`namei -l /srv/jdu-web/index.txt`で確認する。
+7. Service user `jduweb`がcontent fileを読めることを確認する。ファイルと親directoryのpermissionも確認する。
 8. `http://127.0.0.1:8081/m5-check`へrequestを送る。
 9. 現在のservice起動に対応するjournalで`REQUEST path=/m5-check`を確認する。
 10. TCP 18081にlistenerがなく、HTTP requestが失敗することを確認する。
@@ -275,8 +259,6 @@ Userとgroupは`getent passwd jduweb`と`id jduweb`で確認する。Fileと親d
 ```bash
 jdu-check M5
 ```
-
-確認候補: `systemctl cat`, `systemctl start`, `systemctl show`, `sudo ss -lntp`, `curl`, `sudo -u`, `sudo journalctl`
 
 ## M6 SSH and remote operation
 

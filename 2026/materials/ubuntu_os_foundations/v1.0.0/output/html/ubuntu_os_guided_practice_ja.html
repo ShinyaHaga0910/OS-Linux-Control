@@ -330,21 +330,24 @@ systemctl is-active jdu-practice-web.service</code></pre>
 <pre><code>sudo ss -lntp | grep &#x27;:8181&#x27;</code></pre>
 <p><code>127.0.0.1:8181</code>を確認する。同じ出力で<code>0.0.0.0:8181</code>や<code>[::]:8181</code>の待受がないことも確認する。前者はこのホスト内からの接続だけを受け付ける。後者は全アドレスでの待受を表す。</p>
 <h4>手順4: Socket PIDとMain PIDを比較する</h4>
-<pre><code>systemctl show --property MainPID --value jdu-practice-web.service
+<pre><code># サービスの状態を表示し、Main PIDの数字を読む。
+systemctl status jdu-practice-web.service --no-pager
+# 8181番ポートで待ち受けるプロセスのpid=を読む。
 sudo ss -lntp | grep &#x27;:8181&#x27;</code></pre>
-<p>2つのPIDが同じであることを確認する。</p>
+<p><code>systemctl status</code>の<code>Main PID:</code>と、<code>ss</code>の<code>users:</code>欄にある<code>pid=</code>の数字が同じであることを確認する。同じなら、このサービスの主プロセスが8181番ポートで待ち受けている。</p>
 <h4>手順5: HTTP responseを確認する</h4>
 <pre><code>curl -i http://127.0.0.1:8181/</code></pre>
 <h4>手順6: Service userのread権限を確認する</h4>
 <p>Content directoryへ移動する。</p>
 <pre><code>cd /srv/jdu-practice-web
 pwd
-stat -c &#x27;%U:%G %a %n&#x27; index.txt
-namei -l /srv/jdu-practice-web/index.txt
+ls -ld /srv /srv/jdu-practice-web
+ls -l index.txt
 id jdupracticeweb
-sudo -u jdupracticeweb -- test -r index.txt
-echo $?</code></pre>
-<p>最後の値<code>0</code>はread可能を表す。</p>
+getent passwd jdupracticeweb
+sudo -u jdupracticeweb -- cat index.txt</code></pre>
+<p><code>ls -ld</code>は各directory自身の権限を、<code>ls -l</code>は<code>index.txt</code>の所有者・group・権限を表示する。ファイルを読むには、ファイルのread権限に加え、そこへ至る各directoryを通過するためのexecute権限も必要である。<code>id</code>ではサービス用ユーザーのgroupを、<code>getent passwd</code>ではログインシェルを確認する。</p>
+<p><code>sudo -u jdupracticeweb -- cat index.txt</code>は、<code>jdupracticeweb</code>の権限で<code>cat index.txt</code>を<strong>一回だけ</strong>実行する。<code>--</code>は<code>sudo</code>のオプションの終わりを示す。内容が表示されれば、そのユーザーはファイルを読めている。<code>jdupracticeweb</code>のログインシェルは<code>/usr/sbin/nologin</code>なので、通常の<code>su -</code>で対話ログインするのではなく、この方法で確認する。</p>
 <h4>手順7: 学生用requestを送る</h4>
 <pre><code>curl -i http://127.0.0.1:8181/p5-check
 sudo journalctl -u jdu-practice-web.service --no-pager -n 20</code></pre>

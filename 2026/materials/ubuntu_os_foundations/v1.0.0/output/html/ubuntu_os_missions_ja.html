@@ -118,19 +118,10 @@ systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3
 <h3>初期状態</h3>
 <p>教師が用意した<code>jdu-web.service</code>はloaded、inactive、disabledである。Unit fileとcontent fileは完成済みである。TCP 8081にはlistenerがない。</p>
 <h3>課題</h3>
-<ol><li>Unit fileの<code>User</code>、<code>ExecStart</code>、address、port、content pathを読む。</li><li>Unit fileを変更せず、<code>jdu-web.service</code>をstartする。</li><li><code>127.0.0.1:8081</code>で通信を待ち受けているsocketを確認する。この状態をlistener（待受socket）という。</li></ol>
-<pre><code>sudo ss -lntp | grep &#x27;:8081&#x27;</code></pre>
-<ol><li><code>ss</code>の<code>users:</code>欄にあるPIDと、serviceのMain PIDを比較する。</li></ol>
-<pre><code>systemctl show --property MainPID --value jdu-web.service</code></pre>
-<ol><li><code>0.0.0.0:8081</code>や<code>[::]:8081</code>でlistenしていないことを確認する。</li><li><code>http://127.0.0.1:8081/</code>へrequestを送り、HTTP responseを確認する。</li><li>Service user <code>jduweb</code>がcontent fileを読めることを確認する。<code>jduweb</code>はlogin用userではないため、<code>su - jduweb</code>は使わない。実際のread可否は次で確認する。<code>0</code>はread可能、<code>1</code>はread不可を表す。</li></ol>
-<pre><code>sudo -u jduweb -- test -r /srv/jdu-web/index.txt
-echo $?</code></pre>
-<p>Userとgroupは<code>getent passwd jduweb</code>と<code>id jduweb</code>で確認する。Fileと親directoryのpermissionは<code>stat</code>と<code>namei -l /srv/jdu-web/index.txt</code>で確認する。</p>
-<ol><li><code>http://127.0.0.1:8081/m5-check</code>へrequestを送る。</li><li>現在のservice起動に対応するjournalで<code>REQUEST path=/m5-check</code>を確認する。</li><li>TCP 18081にlistenerがなく、HTTP requestが失敗することを確認する。</li></ol>
+<ol><li>Unit fileの<code>User</code>、<code>ExecStart</code>、address、port、content pathを読む。</li><li>Unit fileを変更せず、<code>jdu-web.service</code>をstartする。</li><li><code>127.0.0.1:8081</code>で通信を待ち受けているsocketを確認する。この状態をlistener（待受socket）という。</li><li>待受socketを所有するprocessのPIDと、serviceのMain PIDを比較する。</li><li><code>0.0.0.0:8081</code>や<code>[::]:8081</code>でlistenしていないことを確認する。</li><li><code>http://127.0.0.1:8081/</code>へrequestを送り、HTTP responseを確認する。</li><li>Service user <code>jduweb</code>がcontent fileを読めることを確認する。ファイルと親directoryのpermissionも確認する。</li><li><code>http://127.0.0.1:8081/m5-check</code>へrequestを送る。</li><li>現在のservice起動に対応するjournalで<code>REQUEST path=/m5-check</code>を確認する。</li><li>TCP 18081にlistenerがなく、HTTP requestが失敗することを確認する。</li></ol>
 <h3>判定</h3>
 <p>4課題を判定する。ListenerとPID、HTTPとfile access、学生が送ったrequestのlog、open portとclosed portの比較が対応する。LabCheckが送る<code>/</code> requestは、学生の<code>/m5-check</code>を代行しない。</p>
 <pre><code>jdu-check M5</code></pre>
-<p>確認候補: <code>systemctl cat</code>, <code>systemctl start</code>, <code>systemctl show</code>, <code>sudo ss -lntp</code>, <code>curl</code>, <code>sudo -u</code>, <code>sudo journalctl</code></p>
 <h2>M6 SSH and remote operation</h2>
 <h3>目的</h3>
 <p>CloudShellをlocal、Ubuntuをremoteとして区別する。SSH remote commandと<code>scp</code>のupload、downloadを使う。</p>
