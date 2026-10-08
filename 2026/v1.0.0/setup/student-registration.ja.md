@@ -59,7 +59,7 @@ jdu-my-progress
 
 表示されたリンクをクリックしてください。クリックできない場合は、表示されたHTTPSのURLをコピーしてブラウザで開きます。CloudShellやSSH先のUbuntuから、手元のブラウザを自動起動することはできません。これが**自分専用の進捗ダッシュボード**です。教員側のシステムが提供するページで、自分の結果だけが表示されます。自分でダッシュボード用サーバーを作る必要はありません。
 
-P0～P6、M1～M7の進捗を確認できます。最初は未提出のため、結果が空欄や「—」でも正常です。見出しには登録メールアドレスとServer IDを表示します。ホスト名とEC2インスタンスIDは表示しません。
+P0～P6、M1～M7の進捗を確認できます。最初は未提出のため、結果が空欄や「—」でも正常です。見出しには登録メールアドレスとServer IDを表示します。画面上部のボタンで日本語・ウズベク語・ロシア語を切り替えられます。ホスト名とEC2インスタンスIDは表示しません。
 
 URLの有効期限は15分です。期限切れの場合は、CloudShellまたはUbuntuで`jdu-my-progress`をもう一度実行して新しいURLを開きます。学生PCへの証明書のインストールは不要です。
 
@@ -84,7 +84,7 @@ jdu-my-progress
 
 | 状況 | CloudShellで行うこと |
 | --- | --- |
-| メールを入れ忘れた、または間違えた | 下のメール再登録コマンドを、初回に使ったCloudShellで実行する |
+| メールを入れ忘れた、または間違えた | `jdu-register --change-email`を初回に使ったCloudShellで実行する |
 | 登録状態をもう一度確認したい | `jdu-register`を実行する |
 | ダッシュボードのURLが期限切れ | `jdu-my-progress`を実行する |
 | セットアップや登録に失敗した | 止まった手順とエラーを教員に伝える。自己判断でスタックを削除しない |
@@ -93,14 +93,23 @@ jdu-my-progress
 
 ### メールだけ再登録する
 
-初回の構築コマンドは再実行しません。次の2行を**初回に使ったCloudShell**で実行します。最新版の登録ツールを取得し、メールだけを入力し直します。演習用サーバーや課題は作り直しません。
+初回の構築コマンドは再実行しません。**初回に使ったCloudShell**で次を実行し、メールだけを入力し直します。演習用サーバーや課題は作り直しません。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
-bash /tmp/jdu-recover-email.sh
+jdu-register --change-email
 ```
 
-`@jdu.uz`のメールを入力して`Yes`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が表示されれば完了です。登録情報が見つからない場合は、別のCloudShellで操作していないか確認し、教員へ連絡してください。すでに最新版の登録ツールがある場合は`jdu-register --change-email`でも修正できます。
+`@jdu.uz`のメールを入力して`Yes`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が表示されれば完了です。登録情報が見つからない場合は、別のCloudShellで操作していないか確認し、教員へ連絡してください。
+
+古い環境で`jdu-register: command not found`または`--change-email`が使えない場合だけ、同じCloudShellで次を実行します。取得した本体のSHA-256を確認してから更新し、メール入力へ進みます。照合に失敗した場合は更新しません。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/register-student.py -o /tmp/jdu-register-new && \
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/SHA256SUMS -o /tmp/jdu-register-checksums && \
+awk '$2 == "scripts/register-student.py" {print $1 "  /tmp/jdu-register-new"}' /tmp/jdu-register-checksums | sha256sum --check --status && \
+install -D -m 0755 /tmp/jdu-register-new "$HOME/.local/bin/jdu-register" && \
+"$HOME/.local/bin/jdu-register" --change-email
+```
 
 ## 教員の事前準備
 

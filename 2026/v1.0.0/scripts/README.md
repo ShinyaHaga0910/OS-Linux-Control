@@ -8,6 +8,7 @@
 - `jdu-labcheck`: Ubuntu内でP0～P6とM1～M7の状態を確認する。
 - `jdu-cloudcheck`: CloudShell側のP6またはM6成果物4件を確認し、結果を自動送信する。
 - `jdu-my-progress`: CloudShellの登録情報を使用して、自分専用の読み取り用URLを発行する（最長15分）。
+- `register-student.py`: CloudShellに`jdu-register`として設置する。初回メール登録と`--change-email`による修正を担当する。
 - `jdu-worker`: M3のprocess観察用program。
 - `jdu-http-service`: M4、M5、M7のservice、socket、HTTP、journal観察用program。
 - `jdu-prepare-student-home`: Session Managerが作成した`ssm-user`の課題directoryを初期化する。

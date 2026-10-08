@@ -30,10 +30,13 @@ with tempfile.TemporaryDirectory() as temporary:
     with patch.dict(os.environ, JDU_STUDENT_STATE_DIR=temporary, JDU_INSTANCE_ID="i-test"), patch.object(app, "request", request), patch.object(sys, "argv", ["jdu-register"]), patch.object(sys.stdin, "isatty", return_value=True), patch("builtins.input", side_effect=["", "bad", "student@example.test", "student@jdu.uz.evil", "Student@JDU.UZ", "", "Student@JDU.UZ", "Yes"]) as prompt, patch("sys.stdout", new_callable=io.StringIO) as output:
         app.main()
         assert prompt.call_count == 8
-        assert "An email address is required" in output.getvalue()
-        assert "ending in @jdu.uz" in output.getvalue()
+        assert "Email is required." in output.getvalue()
+        assert "Use your @jdu.uz email." in output.getvalue()
         assert "Not confirmed" in output.getvalue()
         assert "PASS Teacher registration" in output.getvalue()
+        assert "Enter your Google Classroom email" not in output.getvalue()
+        assert prompt.call_args_list[0].args == ("Enter your university email (visible): ",)
+        assert prompt.call_args_list[-1].args == ("Confirm student@jdu.uz? Type Yes: ",)
         assert (state / "student-email.txt").read_text().strip() == "student@jdu.uz"
         assert linked_email == "student@jdu.uz"
         assert [route for route, _ in requests].count("/link-email") == 1

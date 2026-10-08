@@ -155,7 +155,7 @@ assert '<td class="done">P1<br>6/6</td>' in partial_dashboard["body"]
 assert '<td class="partial"><strong>P6 5/6</strong>' in partial_dashboard["body"]
 assert "Guided P1" not in partial_dashboard["body"] and "Challenge" not in partial_dashboard["body"]
 expected_headers = ["P0", "P1", "M1", "P2", "M2", "P3", "M3", "P4", "M4", "P5", "M5", "P6", "M6", "M7"]
-actual_headers = app.re.findall(r'<th scope=col>([PM][0-9])</th>', partial_dashboard["body"])
+actual_headers = app.re.findall(r'<th scope="col">([PM][0-9])</th>', partial_dashboard["body"])
 assert actual_headers == expected_headers
 assert '<td class="done">P0<br>6/6</td>' in partial_dashboard["body"]
 # Existing stored M0 reports remain visible under P0 until a new submission.
@@ -187,6 +187,26 @@ assert "M6 6/6" in dashboard["body"]
 assert '<td class="done"><strong>P6 6/6</strong>' in dashboard["body"]
 assert '<td class="missing">P2<br>—</td>' in dashboard["body"]
 assert "入力したメールの本人確認は行っていません" in dashboard["body"]
+assert dashboard["headers"]["Content-Language"] == "ja"
+assert "form-action 'self'" in dashboard["headers"]["Content-Security-Policy"]
+assert '<html lang="ja">' in dashboard["body"]
+assert '<input type="hidden" name="session" value="' + session_token + '">' in dashboard["body"]
+for language, heading, intro in [
+    ("uz", "Talaba emaili / Server ID", "Sahifa har 30 soniyada yangilanadi."),
+    ("ru", "Email студента / Server ID", "Страница обновляется каждые 30 секунд."),
+]:
+    translated = app.handler(event("GET /dashboard", query={"session": session_token, "lang": language}), None)
+    assert translated["statusCode"] == 200
+    assert translated["headers"]["Content-Language"] == language
+    assert f'<html lang="{language}">' in translated["body"]
+    assert heading in translated["body"] and intro in translated["body"]
+    assert f'name="lang" value="{language}" lang="{language}" aria-pressed="true"' in translated["body"]
+    assert "student@jdu.uz" in translated["body"]
+    assert register_body["hostname"] not in translated["body"]
+    assert register_body["instance_id"] not in translated["body"]
+fallback = app.handler(event("GET /dashboard", query={"session": session_token, "lang": "<script>"}), None)
+assert fallback["headers"]["Content-Language"] == "ja"
+assert "<script>" not in fallback["body"]
 assert app.handler(event("GET /health"), None)["statusCode"] == 200
 previous_m3_score = stored_server["missions"]["M"]["M3"].copy()
 assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "updated@jdu.uz"}, auth), None)["statusCode"] == 200
@@ -221,7 +241,18 @@ assert "updated@jdu.uz" in personal_view["body"]
 assert "自分のサーバー" not in personal_view["body"]
 assert register_body["hostname"] not in personal_view["body"]
 assert register_body["instance_id"] not in personal_view["body"]
-assert app.re.findall(r'<th scope=col>([PM][0-9])</th>', personal_view["body"]) == expected_headers
+assert app.re.findall(r'<th scope="col">([PM][0-9])</th>', personal_view["body"]) == expected_headers
+for language, heading, title in [
+    ("uz", "Ro‘yxatdan o‘tgan email / Server ID", "Mening natijalarim"),
+    ("ru", "Зарегистрированный email / Server ID", "Мои результаты"),
+]:
+    translated = app.handler(event("GET /student/progress", query={"session": personal_token, "lang": language}), None)
+    assert translated["statusCode"] == 200
+    assert translated["headers"]["Content-Language"] == language
+    assert heading in translated["body"] and title in translated["body"]
+    assert "updated@jdu.uz" in translated["body"]
+    assert "other@example.test" not in translated["body"]
+    assert f'<input type="hidden" name="session" value="{personal_token}">' in translated["body"]
 for view in [personal_view, partial_dashboard]:
     assert not app.re.search(r'\bT[0-6]\b', view["body"])
     assert not app.re.search(r'\bM0\b', view["body"])

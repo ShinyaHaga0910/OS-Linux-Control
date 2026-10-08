@@ -36,10 +36,8 @@ if [[ ! "$url" =~ ^https://[^[:space:][:cntrl:]]+$ ]]; then
   exit 1
 fi
 
-printf '%s\n' 'Open your short-lived dashboard in your browser:'
 if [[ -t 1 ]]; then
-  printf '\033]8;;%s\033\\Click here to open the teacher dashboard\033]8;;\033\\\n' "$url"
+  printf '\033]8;;%s\033\\%s\033]8;;\033\\\n' "$url" "$url"
+else
+  printf '%s\n' "$url"
 fi
-printf '%s\n' "$url"
-printf '%s\n' 'If the link is not clickable, copy the URL above into your browser. CloudShell cannot open your local browser automatically.'
-printf '%s\n' 'The URL expires in 30 minutes. Run jdu-dashboard again to create a new URL.'

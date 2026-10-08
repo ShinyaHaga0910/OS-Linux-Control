@@ -26,22 +26,17 @@ def request(endpoint, route, body, headers):
 def prompt_email():
     if not sys.stdin.isatty():
         raise ValueError("Run this command interactively in CloudShell to enter your email.")
-    print("Enter your Google Classroom email address ending in @jdu.uz.")
-    print("It links your lab progress to you; it is not email verification.")
-    print("Your teacher uses this address to identify your lab progress. Do not share a screenshot of this screen.")
-    print("Your typing is visible. Pressing Enter without an address does not skip registration.")
     while True:
-        email = input("Classroom email (visible): ").strip().lower()
+        email = input("Enter your university email (visible): ").strip().lower()
         if not email:
-            print("An email address is required. Please type it before pressing Enter.")
+            print("Email is required.")
             continue
         if not valid_email(email):
-            print("Enter a valid email address ending in @jdu.uz. Please try again.")
+            print("Use your @jdu.uz email.")
             continue
-        print(f"You entered: {email}")
-        if input("Type Yes to confirm this address (Enter alone means re-enter): ").strip().casefold() == "yes":
+        if input(f"Confirm {email}? Type Yes: ").strip() == "Yes":
             return email
-        print("Not confirmed. Please enter the address again.")
+        print("Not confirmed. Enter the email again.")
 
 
 def main():

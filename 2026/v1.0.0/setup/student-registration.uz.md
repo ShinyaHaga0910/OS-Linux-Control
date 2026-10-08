@@ -59,7 +59,7 @@ jdu-my-progress
 
 Chiqqan link’ni bosing. Agar link bosilmasa, HTTPS URL’ni nusxalab browser’da oching. CloudShell yoki SSH orqali ulangan Ubuntu sizning kompyuteringizdagi browser’ni avtomatik ocha olmaydi. Bu **sizning shaxsiy progress dashboard’ingiz**. Sahifa o‘qituvchi tizimida taqdim etiladi va unda faqat sizning natijalaringiz ko‘rinadi. Dashboard uchun alohida server yaratish kerak emas.
 
-P0–P6 va M1–M7 bo‘yicha progress’ni ko‘rishingiz mumkin. Dastlab natijalar hali yuborilmaganligi sababli bo‘sh kataklar yoki «—» normal holatdir. Sarlavhada ro‘yxatdan o‘tgan email va Server ID ko‘rsatiladi; hostname va EC2 instance ID ko‘rsatilmaydi.
+P0–P6 va M1–M7 bo‘yicha progress’ni ko‘rishingiz mumkin. Dastlab natijalar hali yuborilmaganligi sababli bo‘sh kataklar yoki «—» normal holatdir. Sarlavhada ro‘yxatdan o‘tgan email va Server ID ko‘rsatiladi. Sahifaning yuqori qismidagi tugmalar orqali yapon, o‘zbek yoki rus tilini tanlashingiz mumkin. Hostname va EC2 instance ID ko‘rsatilmaydi.
 
 URL 15 daqiqa amal qiladi. Muddati tugasa, CloudShell yoki Ubuntu’da `jdu-my-progress`’ni yana bajaring va yangi URL’ni oching. Kompyuteringizga certificate o‘rnatish shart emas.
 
@@ -93,14 +93,23 @@ Command ichidagi registration key, private key, authentication token va shaxsiy 
 
 ### Faqat email’ni qayta ro‘yxatdan o‘tkazish
 
-Dastlabki setup command’ini qayta ishga tushirmang. Quyidagi ikki qatorni **dastlabki sozlashda ishlatilgan CloudShell**’da bajaring. Bu registration tool’ni yangilaydi va faqat email’ni qayta kiritadi. Mashq server’i va topshiriqlar qayta tiklanmaydi.
+Dastlabki setup command’ini qayta ishga tushirmang. Quyidagi command’ni **dastlabki sozlashda ishlatilgan CloudShell**’da bajaring. Bu faqat email’ni o‘zgartiradi. Mashq server’i va topshiriqlar qayta tiklanmaydi.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
-bash /tmp/jdu-recover-email.sh
+jdu-register --change-email
 ```
 
-`@jdu.uz` bilan tugaydigan email’ni kiriting va `Yes` bilan tasdiqlang. `PASS Teacher registration, EC2 identity, and email link confirmed.` chiqsa, ish tugadi. Registration ma’lumotlari topilmasa, to‘g‘ri CloudShell’ni tekshiring va o‘qituvchiga murojaat qiling. Yangi tool allaqachon o‘rnatilgan bo‘lsa, `jdu-register --change-email` ham ishlaydi.
+`@jdu.uz` bilan tugaydigan email’ni kiriting va `Yes` bilan tasdiqlang. `PASS Teacher registration, EC2 identity, and email link confirmed.` chiqsa, ish tugadi. Registration ma’lumotlari topilmasa, to‘g‘ri CloudShell’ni tekshiring va o‘qituvchiga murojaat qiling.
+
+Eski muhitda `jdu-register` topilmasa yoki `--change-email` qo‘llab-quvvatlanmasa, o‘sha CloudShell’da quyidagi command’larni bajaring. Yangi versiya o‘rnatilishidan oldin SHA-256 tekshiriladi. Tekshiruv muvaffaqiyatsiz bo‘lsa, eski tool almashtirilmaydi.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/register-student.py -o /tmp/jdu-register-new && \
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/SHA256SUMS -o /tmp/jdu-register-checksums && \
+awk '$2 == "scripts/register-student.py" {print $1 "  /tmp/jdu-register-new"}' /tmp/jdu-register-checksums | sha256sum --check --status && \
+install -D -m 0755 /tmp/jdu-register-new "$HOME/.local/bin/jdu-register" && \
+"$HOME/.local/bin/jdu-register" --change-email
+```
 
 ## O‘qituvchining oldindan tayyorgarligi
 

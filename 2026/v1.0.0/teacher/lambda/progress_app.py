@@ -33,6 +33,7 @@ def digest(value):
 def response(status, body, content_type="application/json; charset=utf-8"):
     if not isinstance(body, str):
         body = json.dumps(body, ensure_ascii=False, separators=(",", ":"))
+    is_html = content_type.startswith("text/html")
     return {
         "statusCode": status,
         "headers": {
@@ -40,7 +41,7 @@ def response(status, body, content_type="application/json; charset=utf-8"):
             "Cache-Control": "no-store",
             "Referrer-Policy": "no-referrer",
             "X-Content-Type-Options": "nosniff",
-            "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+            "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'" if is_html else "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
         },
         "body": body,
     }
@@ -325,6 +326,52 @@ for number in range(1, 7):
 DISPLAY_MISSIONS.append(("M7", "M7"))
 
 
+DASHBOARD_TEXT = {
+    "ja": {
+        "title": "JDU Linux Lab 進捗",
+        "personal_title": "JDU Linux Lab 自分の進捗",
+        "intro": "P0～P6（練習）とM1～M7（課題）の最新結果です。30秒ごとに更新します。",
+        "language": "表示言語",
+        "teacher_email": "学生メール / Server ID",
+        "personal_email": "登録メール / Server ID",
+        "updated": "最終送信 (UTC)",
+        "empty": "まだ進捗報告はありません。",
+        "missing_email": "メール未登録",
+        "table": "練習と課題の進捗",
+        "teacher_footer": "閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。",
+        "personal_footer": "読み取り専用のページです。閲覧URLは15分以内に失効します。URLを他の人へ共有せず、共有PCでは利用後にページを閉じてください。再発行：CloudShellまたはUbuntuで jdu-my-progress。",
+    },
+    "uz": {
+        "title": "JDU Linux Lab — Natijalar",
+        "personal_title": "JDU Linux Lab — Mening natijalarim",
+        "intro": "P0–P6 (mashqlar) va M1–M7 (topshiriqlar) bo‘yicha eng so‘nggi natijalar. Sahifa har 30 soniyada yangilanadi.",
+        "language": "Sahifa tili",
+        "teacher_email": "Talaba emaili / Server ID",
+        "personal_email": "Ro‘yxatdan o‘tgan email / Server ID",
+        "updated": "Oxirgi yuborilgan vaqt (UTC)",
+        "empty": "Hozircha natija yuborilmagan.",
+        "missing_email": "Email kiritilmagan",
+        "table": "Mashqlar va topshiriqlar natijalari",
+        "teacher_footer": "Ko‘rish havolasi ma’lum vaqtdan keyin bekor bo‘ladi. Email o‘qituvchi natijalarni tekshirishi uchun ishlatiladi. Email egasi tasdiqlanmagan.",
+        "personal_footer": "Bu sahifa faqat ko‘rish uchun. Havola 15 daqiqadan so‘ng bekor bo‘ladi. Uni boshqalarga yubormang va umumiy kompyuterda ko‘rgach sahifani yoping. Yangi havola uchun CloudShell yoki Ubuntu’da jdu-my-progress buyrug‘ini bajaring.",
+    },
+    "ru": {
+        "title": "JDU Linux Lab — Результаты",
+        "personal_title": "JDU Linux Lab — Мои результаты",
+        "intro": "Последние результаты упражнений P0–P6 и заданий M1–M7. Страница обновляется каждые 30 секунд.",
+        "language": "Язык страницы",
+        "teacher_email": "Email студента / Server ID",
+        "personal_email": "Зарегистрированный email / Server ID",
+        "updated": "Последняя отправка (UTC)",
+        "empty": "Результаты пока не отправлены.",
+        "missing_email": "Email не зарегистрирован",
+        "table": "Результаты упражнений и заданий",
+        "teacher_footer": "Ссылка для просмотра действует ограниченное время. Email используется преподавателем для проверки результатов. Принадлежность адреса студенту не подтверждена.",
+        "personal_footer": "Эта страница доступна только для просмотра. Ссылка действует не более 15 минут. Не передавайте её другим и закройте страницу после работы на общем компьютере. Чтобы получить новую ссылку, выполните jdu-my-progress в CloudShell или Ubuntu.",
+    },
+}
+
+
 def standard_mission_cell(name, score):
     if not score:
         return f'<td class="missing">{name}<br>—</td>'
@@ -349,9 +396,13 @@ def paired_mission_cell(missions, stored_name, display_name):
 
 
 def dashboard(event, personal=False):
-    token = (event.get("queryStringParameters") or {}).get("session", "")
-    if not token:
+    query = event.get("queryStringParameters") or {}
+    token = query.get("session", "")
+    if not isinstance(token, str) or not token:
         return response(401, "Session URL is required.", "text/plain; charset=utf-8")
+    requested_language = query.get("lang", "ja")
+    language = requested_language if isinstance(requested_language, str) and requested_language in DASHBOARD_TEXT else "ja"
+    labels = DASHBOARD_TEXT[language]
     namespace = "STUDENT_SESSION" if personal else "SESSION"
     item = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"{namespace}#{digest(token)}"}}, ConsistentRead=True).get("Item")
     expires_at = int(item.get("expiresAt", {}).get("N", "0")) if item else 0
@@ -362,7 +413,7 @@ def dashboard(event, personal=False):
 
     if personal:
         server_id = attr_s(item, "serverId")
-        requested_id = (event.get("queryStringParameters") or {}).get("server_id", server_id)
+        requested_id = query.get("server_id", server_id)
         if attr_s(item, "role") != "student" or not SERVER_ID_RE.fullmatch(server_id) or requested_id != server_id:
             return response(403, {"error": "forbidden"})
         server = DDB.get_item(TableName=TABLE_NAME, Key={"pk": {"S": f"SERVER#{server_id}"}}, ConsistentRead=True).get("Item")
@@ -385,16 +436,23 @@ def dashboard(event, personal=False):
             else standard_mission_cell(display_name, mission_score(missions, stored_name))
             for display_name, stored_name in DISPLAY_MISSIONS
         ]
-        email_label = html.escape(attr_s(server, "studentEmail")) or "メール未登録"
+        email_label = html.escape(attr_s(server, "studentEmail")) or labels["missing_email"]
         server_label = html.escape(attr_s(server, "serverId"))
         rows.append((attr_s(server, "serverId"), f"<tr><th scope=row><strong>{email_label}</strong><br><small>{server_label}</small></th>{''.join(cells)}<td>{html.escape(attr_s(server, 'updatedAt'))}</td></tr>"))
     rows.sort(key=lambda pair: pair[0])
-    body_rows = "".join(row for _, row in rows) or '<tr><td colspan="16">まだ進捗報告はありません。</td></tr>'
-    page = f"""<!doctype html><html lang=ja><head><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><meta http-equiv=refresh content=30><title>JDU Linux Lab Progress</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child{{text-align:left;position:sticky;left:0;min-width:220px}}tbody th{{background:white;z-index:1}}thead th:first-child{{z-index:3}}thead th{{background:#edf2f7;position:sticky;top:0;z-index:2}}td span,small{{color:#66788a}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><h1>JDU Linux Lab 進捗</h1><p>P0～P6（練習）とM1～M7（課題）の最新結果です。30秒ごとに更新します。</p><div class=wrap role=region aria-label="課題の進捗一覧" tabindex=0><table><thead><tr><th scope=col>学生メール / Server ID</th>{''.join(f'<th scope=col>{name}</th>' for name, _ in DISPLAY_MISSIONS)}<th scope=col>最終送信 (UTC)</th></tr></thead><tbody>{body_rows}</tbody></table></div><footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer></body></html>"""
-    if personal:
-        page = page.replace("JDU Linux Lab 進捗", "JDU Linux Lab 自分の進捗").replace("学生メール / Server ID", "登録メール / Server ID")
-        page = page.replace("<footer>閲覧URLは一定時間で失効します。登録メールは教員の進捗確認に使用します。入力したメールの本人確認は行っていません。</footer>", "<footer>読み取り専用のページです。閲覧URLは15分以内に失効します。URLを他の人へ共有せず、共有PCでは利用後にページを閉じてください。再発行：CloudShellまたはUbuntuで jdu-my-progress。</footer>")
-    return response(200, page, "text/html; charset=utf-8")
+    body_rows = "".join(row for _, row in rows) or f'<tr><td colspan="16">{labels["empty"]}</td></tr>'
+    title = labels["personal_title"] if personal else labels["title"]
+    email_header = labels["personal_email"] if personal else labels["teacher_email"]
+    footer = labels["personal_footer"] if personal else labels["teacher_footer"]
+    session_value = html.escape(token, quote=True)
+    language_buttons = "".join(
+        f'<button type="submit" name="lang" value="{code}" lang="{code}" aria-pressed="{str(code == language).lower()}">{name}</button>'
+        for code, name in (("ja", "日本語"), ("uz", "O‘zbekcha"), ("ru", "Русский"))
+    )
+    page = f"""<!doctype html><html lang="{language}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="30"><title>{title}</title><style>body{{font-family:system-ui,sans-serif;margin:24px;background:#f4f6f8;color:#18212b}}h1{{font-size:1.35rem}}p{{color:#52606d}}nav form{{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}}button{{min-height:36px;padding:6px 12px;background:white;border:1px solid #8b9bab;border-radius:6px;color:#18212b;cursor:pointer}}button[aria-pressed=true]{{background:#174f83;color:white;border-color:#174f83}}button:focus-visible{{outline:3px solid #c14c00;outline-offset:2px}}.wrap{{overflow:auto;background:white;border:1px solid #d9e2ec;border-radius:10px}}table{{border-collapse:separate;border-spacing:0;width:100%;min-width:1500px}}th,td{{padding:10px;border-bottom:1px solid #e6eaf0;text-align:center}}th:first-child{{text-align:left;position:sticky;left:0;min-width:220px}}tbody th{{background:white;z-index:1}}thead th:first-child{{z-index:3}}thead th{{background:#edf2f7;position:sticky;top:0;z-index:2}}td span,small{{color:#66788a}}.done{{background:#e5f7ea;color:#176b32}}.partial{{background:#fff3d6;color:#815500}}.missing{{color:#8997a5}}footer{{margin-top:12px;font-size:.85rem;color:#66788a}}</style></head><body><header><nav aria-label="{labels['language']}"><form method="get"><span>{labels['language']}:</span><input type="hidden" name="session" value="{session_value}">{language_buttons}</form></nav></header><main><h1>{title}</h1><p>{labels['intro']}</p><div class="wrap" role="region" aria-label="{labels['table']}" tabindex="0"><table><caption>{labels['table']}</caption><thead><tr><th scope="col">{email_header}</th>{''.join(f'<th scope="col">{name}</th>' for name, _ in DISPLAY_MISSIONS)}<th scope="col">{labels['updated']}</th></tr></thead><tbody>{body_rows}</tbody></table></div></main><footer>{footer}</footer></body></html>"""
+    result = response(200, page, "text/html; charset=utf-8")
+    result["headers"]["Content-Language"] = language
+    return result
 
 
 def handler(event, context):

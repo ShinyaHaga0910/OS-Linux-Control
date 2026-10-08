@@ -1,8 +1,8 @@
 # OS-Linux-Control Lab 2026
 
-Status: Git release v1.0.1 / local acceptance tests passed / Learner Lab verification pending
+Status: v1.0.1 released / local acceptance tests passed / Learner Lab verification pending
 
-2026年度のAWS Academy Learner Lab用Ubuntu実習環境です。この`2026/v1.0.0/`は学生に配布したURLを維持するための固定パスです。現行のGitリリース番号は`v1.0.1`です。更新履歴は[CHANGELOG.md](../../CHANGELOG.md)を参照してください。
+2026年度のAWS Academy Learner Lab用Ubuntu実習環境です。この`2026/v1.0.0/`は学生に配布したURLを維持するための固定パスです。現行リリースは`v1.0.1`です。更新履歴は[CHANGELOG.md](../../CHANGELOG.md)を参照してください。
 
 ## 学生の初回構築
 
@@ -26,14 +26,13 @@ ssh jdu-ubuntu
 
 ### メールだけ再登録する
 
-メールを入れ忘れた、間違えた、または以前の登録ツールで入力できなかった場合は、**初回構築コマンドを再実行しません**。初回に使ったCloudShellで次の2行を実行してください。最新版の登録ツールを取得し、メールだけ入力し直します。演習用サーバーと課題の進捗はリセットされません。
+メールを入れ忘れた、間違えた場合は、**初回構築コマンドを再実行しません**。初回に使ったCloudShellで次を実行します。演習用サーバーと課題の進捗はリセットされません。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
-bash /tmp/jdu-recover-email.sh
+jdu-register --change-email
 ```
 
-`@jdu.uz`のアドレスを入力し、表示された内容を確認して`Yes`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が出れば完了です。詳細は[メール再登録の学生向け手順](setup/student-registration.ja.md#メールだけ再登録する)を参照してください。登録通信の再確認だけなら`jdu-register`を実行します。教員用スタックを先に更新していないと、新しい登録確認APIは使えません。
+`@jdu.uz`のアドレスを入力し、表示された内容を確認して`Yes`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が出れば完了です。古い環境でコマンドが使えない場合の更新方法は[メール再登録の学生向け手順](setup/student-registration.ja.md#メールだけ再登録する)を参照してください。登録通信の再確認だけなら`jdu-register`を実行します。教員用スタックを先に更新していないと、新しい登録確認APIは使えません。
 
 ## 演習と確認
 
@@ -107,7 +106,7 @@ bash /tmp/jdu-install-teacher.sh --region us-east-1
 
 ## 学生が自分の進捗を確認する
 
-学生はCloudShellでも、`ssh jdu-ubuntu`で接続したUbuntu上でも `jdu-my-progress` を実行できます。端末でリンクをクリックできない場合は、表示されたHTTPS URLをコピーしてブラウザで開きます。手元のブラウザは自動起動しません。登録メールとServer ID、自分のP・Mの最新結果だけを表示する読み取り専用ページです。ホスト名とEC2インスタンスIDは表示しません。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
+学生はCloudShellでも、`ssh jdu-ubuntu`で接続したUbuntu上でも `jdu-my-progress` を実行できます。端末でリンクをクリックできない場合は、表示されたHTTPS URLをコピーしてブラウザで開きます。手元のブラウザは自動起動しません。登録メールとServer ID、自分のP・Mの最新結果だけを表示する読み取り専用ページです。画面上部のボタンで日本語・ウズベク語・ロシア語を切り替えられます。ホスト名とEC2インスタンスIDは表示しません。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
 
 最新のinstallerで構築した学生CloudShellとUbuntuには、両方にコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
 

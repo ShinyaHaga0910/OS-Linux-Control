@@ -17,7 +17,6 @@ for script in \
   "$root_dir/scripts/jdu-cloud-reset" \
   "$root_dir/scripts/jdu-progress" \
   "$root_dir/scripts/install-my-progress-ubuntu.sh" \
-  "$root_dir/scripts/recover-student-email.sh" \
   "$root_dir/teacher/install-teacher.sh" \
   "$root_dir/teacher/scripts/jdu-dashboard" \
   "$root_dir/tests/mock-bin/aws" \
@@ -375,7 +374,7 @@ python3 "$root_dir/tests/test-progress-backend.py" "$root_dir/teacher/lambda/pro
 python3 "$root_dir/tests/test-personal-progress-command.py" "$root_dir/scripts/jdu-my-progress"
 bash "$root_dir/tests/test-ubuntu-progress-installer.sh" "$root_dir"
 python3 "$root_dir/tests/test-student-registration.py" "$root_dir/scripts/register-student.py"
-bash "$root_dir/tests/test-email-recovery.sh" "$root_dir"
+bash "$root_dir/tests/test-email-upgrade.sh" "$root_dir"
 python3 "$root_dir/tests/test-install-registration.py" "$root_dir"
 python3 "$root_dir/tests/test-semester-registration-key.py" "$root_dir"
 
@@ -414,8 +413,9 @@ printf 'JDU_PROGRESS_ENDPOINT=%s\n' "$progress_endpoint" > "$progress_test_dir/t
 printf '%s\n' 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' > "$progress_test_dir/admin.key"
 dashboard_output="$(MOCK_CURL_LOG="$progress_test_dir/curl.log" MOCK_CURL_RESPONSE='{"url":"https://example.test/dashboard?session=short","expires_in_seconds":1800}' PATH="$root_dir/tests/mock-progress:$PATH" JDU_TEACHER_CONFIG="$progress_test_dir/teacher.env" JDU_TEACHER_ADMIN_KEY="$progress_test_dir/admin.key" bash "$root_dir/teacher/scripts/jdu-dashboard")"
 grep -Fq 'https://example.test/dashboard?session=short' <<<"$dashboard_output"
+[[ "$dashboard_output" == 'https://example.test/dashboard?session=short' ]]
 grep -Fq 'X-JDU-Admin-Key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' "$progress_test_dir/curl.log"
-grep -Fq 'Click here to open the teacher dashboard' "$root_dir/teacher/scripts/jdu-dashboard"
+grep -Fq '\033]8;;%s\033\\%s' "$root_dir/teacher/scripts/jdu-dashboard"
 set +e
 invalid_dashboard_output="$(MOCK_CURL_LOG="$progress_test_dir/curl.log" MOCK_CURL_RESPONSE='{"url":"http://example.test/dashboard?session=short"}' PATH="$root_dir/tests/mock-progress:$PATH" JDU_TEACHER_CONFIG="$progress_test_dir/teacher.env" JDU_TEACHER_ADMIN_KEY="$progress_test_dir/admin.key" bash "$root_dir/teacher/scripts/jdu-dashboard" 2>&1)"
 invalid_dashboard_status=$?
