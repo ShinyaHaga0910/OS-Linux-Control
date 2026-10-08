@@ -31,10 +31,10 @@ Google Classroomで、**今セミスター用のセットアップコマンド**
 途中で次の入力欄が表示されます。
 
 ```text
-Classroom email:
+Classroom email (visible):
 ```
 
-**Google Classroomで使用する自分のメールアドレス**を入力してEnterを押します。入力した文字は画面に表示されませんが、そのまま入力できます。パスワードを入力する欄ではありません。
+**Google Classroomで使用する自分のメールアドレス**を入力してEnterを押します。入力した文字は画面に表示されます。空欄のままEnterを押しても先へ進みません。画面に表示されたアドレスを確認し、正しければ`YES`と入力してEnterを押します。間違っていればEnterだけを押して入力し直します。パスワードは入力しません。アドレスが見える画面を撮影・共有しないでください。
 
 このメールアドレスを、教員があなたのサーバーと課題の進捗を確認するときに使います。Server IDをGoogle Classroomへ別途提出する必要はありません。メールアドレスの所有者を認証する操作ではないため、入力間違いがないよう確認してください。
 
@@ -74,12 +74,23 @@ URLの有効期限は15分です。期限切れの場合は、CloudShellで`jdu-
 
 | 状況 | CloudShellで行うこと |
 | --- | --- |
-| メールアドレスを間違えた | `jdu-register --change-email`で入力し直す |
+| メールを入れ忘れた、または間違えた | 下のメール再登録コマンドを、初回に使ったCloudShellで実行する |
 | 登録状態をもう一度確認したい | `jdu-register`を実行する |
 | ダッシュボードのURLが期限切れ | `jdu-my-progress`を実行する |
 | セットアップや登録に失敗した | 止まった手順とエラーを教員に伝える。自己判断でスタックを削除しない |
 
 配布コマンドの登録キー、秘密鍵、認証トークン、ダッシュボードの専用URLは公開・共有しないでください。共有PCでは確認後にダッシュボードを閉じてください。
+
+### メールだけ再登録する
+
+初回の構築コマンドは再実行しません。次の2行を**初回に使ったCloudShell**で実行します。最新版の登録ツールを取得し、メールだけを入力し直します。演習用サーバーや課題は作り直しません。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
+bash /tmp/jdu-recover-email.sh
+```
+
+メールを入力して`YES`で確定します。`PASS Teacher registration, EC2 identity, and email link confirmed.`が表示されれば完了です。登録情報が見つからない場合は、別のCloudShellで操作していないか確認し、教員へ連絡してください。すでに最新版の登録ツールがある場合は`jdu-register --change-email`でも修正できます。
 
 ## 教員の事前準備
 

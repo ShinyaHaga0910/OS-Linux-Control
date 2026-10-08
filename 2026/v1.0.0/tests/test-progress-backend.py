@@ -181,6 +181,13 @@ assert '<td class="done"><strong>P6 6/6</strong>' in dashboard["body"]
 assert '<td class="missing">P2<br>—</td>' in dashboard["body"]
 assert "入力したメールの本人確認は行っていません" in dashboard["body"]
 assert app.handler(event("GET /health"), None)["statusCode"] == 200
+previous_m3_score = stored_server["missions"]["M"]["M3"].copy()
+assert app.handler(event("POST /link-email", {"server_id": server_id, "student_email": "updated@example.test"}, auth), None)["statusCode"] == 200
+assert stored_server["studentEmail"]["S"] == "updated@example.test"
+assert stored_server["missions"]["M"]["M3"] == previous_m3_score
+updated_dashboard = app.handler(event("GET /dashboard", query={"session": session_token}), None)
+assert "updated@example.test" in updated_dashboard["body"]
+assert "student@example.test" not in updated_dashboard["body"]
 print("PASS progress backend registration, authentication, submission, session, and dashboard")
 
 # Student links are server-bound and must never become teacher credentials.

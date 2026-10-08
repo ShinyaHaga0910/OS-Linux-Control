@@ -31,4 +31,4 @@
 4. 初期設定完了→メール入力→登録確認成功→Dashboardにメールと同じinstance IDが表示されることを確認する。
 5. `jdu-check` の結果が更新され、メール修正が反映されることを確認してから学生へ配布する。
 
-既存の学生環境に入力コマンドを追加する場合、教員APIを更新してから新installerを実行する。installerは以前からP6/M6のCloudShell側を初期化するため、既に課題を進めた環境へ無断で再実行しない。再試行・メール修正だけならCloudShellの `jdu-register` を使い、課題をresetしない。
+既存の学生環境でメールだけを再登録する場合は、[学生用のメール再登録手順](../setup/student-registration.ja.md#メールだけ再登録する)を使う。古いCloudShellツールも更新でき、課題をresetしない。installerはP6/M6のCloudShell側を初期化するため、既に課題を進めた環境へメール修正目的で再実行しない。登録通信の再確認だけならCloudShellの`jdu-register`を使う。

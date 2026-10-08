@@ -85,13 +85,20 @@ T4gなどのArm型は選びません。種類を固定する場合は`--instance
 
 DynamoDBには、ランダムなServer ID、学生が入力したGoogle Classroom用メールアドレス、EC2の識別情報、P0～P6・M1～M7の最新提出結果、日時を保存します。学生氏名は保存しません。学生はUbuntu上の`jdu-progress id`で自分のServer IDを確認できます。
 
-メールは初回セットアップ時に一度入力します。サーバー登録とEC2の識別情報を確認した後、認証トークン付きのHTTPS通信で`/link-email`へ送信します。学生のCloudShellの`~/.jdu-student/student-email.txt`へ権限`0600`で保存し、教員側のDynamoDBにも保存します。CloudFormationやEC2へメールを渡さず、構築出力にも表示しません。
+メールは初回セットアップ時に入力します。サーバー登録とEC2の識別情報を確認した後、認証トークン付きのHTTPS通信で`/link-email`へ送信します。学生のCloudShellの`~/.jdu-student/student-email.txt`へ権限`0600`で保存し、教員側のDynamoDBにも保存します。CloudFormationやEC2へメールを渡しません。学生が入力・確認している間はCloudShell画面にメールが表示されます。
 
 メールの表示は認証済みの教員ページに限定します。学生向けの登録確認では、メールが紐づいているかどうかだけを返します。保存データとローカルのメール記録は、大学の保管方針に従って不要になった時点で削除します。
 
 メールは学生の自己申告であり、Google認証やメールの所有者確認は行っていません。Google Classroomの履修者一覧と照合してください。再構築により同じメールに複数のサーバーが紐づいた場合は、EC2のインスタンスIDと最終提出日時で現在の環境を確認します。Classroomへの成績の自動返却は行いません。学生がServer IDをClassroomへ手入力して提出する必要はありません。
 
-メールを修正する場合は、学生が同じCloudShellで`jdu-register --change-email`を実行します。登録通信だけを再確認する場合は`jdu-register`を実行します。課題のresetや点数の変更は行いません。初回の登録に失敗している場合は、先にセットアップと登録のログを確認してください。
+メールを修正する場合は、学生が同じCloudShellで`jdu-register --change-email`を実行します。古いツールしか入っていない学生やメール入力前に止まった学生には、次のメール専用の再登録コマンドを配布してください。初回の構築コマンドは再実行しません。登録通信だけを再確認する場合は`jdu-register`を実行します。メール修正では課題のresetや点数の変更は行いません。登録情報がCloudShellにない場合は、先にセットアップと登録のログを確認してください。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
+bash /tmp/jdu-recover-email.sh
+```
+
+このコマンドは、既存の登録状態を確認し、チェックサムを照合して最新版の`jdu-register`を導入した後、`--change-email`だけを実行します。学生は画面に表示されたアドレスを確認し、`YES`で確定します。空欄は受け付けません。メールアドレスが表示された画面のスクリーンショットを共有しないよう伝えてください。
 
 `progress.env`、認証トークン、SSH秘密鍵、進捗ページの閲覧URLを学生の提出物として集めないでください。
 

@@ -31,10 +31,10 @@ Setup mashqlar uchun server yaratadi, Ubuntu’ni dastlabki sozlaydi va server�
 Jarayon davomida quyidagi so‘rov chiqadi:
 
 ```text
-Classroom email:
+Classroom email (visible):
 ```
 
-**Google Classroom’da ishlatadigan shaxsiy email manzilingizni** kiriting va Enter tugmasini bosing. Kiritayotgan belgilar ekranda ko‘rinmaydi: bu odatiy holat. Bu yerga parol kiritilmaydi.
+**Google Classroom’da ishlatadigan shaxsiy email manzilingizni** kiriting va Enter tugmasini bosing. Manzil ekranda ko‘rinadi; bo‘sh Enter bilan davom etib bo‘lmaydi. Ko‘rsatilgan manzilni tekshiring, so‘ng `YES` deb yozib Enter bosing. Xato bo‘lsa, faqat Enter bosib, manzilni qayta kiriting. Parol kerak emas. Email ko‘ringan ekran rasmini ulashmang.
 
 O‘qituvchi shu email orqali server’ingiz va topshiriqlardagi progress’ingizni siz bilan bog‘laydi. Server ID’ni Google Classroom’ga alohida topshirish shart emas. Bu amal email egasini tasdiqlamaydi, shuning uchun manzilni xatosiz kiriting.
 
@@ -74,12 +74,23 @@ Ikkalasini tekshirganingizdan so‘ng dastlabki ro‘yxatdan o‘tish tugaydi. K
 
 | Holat | CloudShell’da bajariladigan amal |
 | --- | --- |
-| Email noto‘g‘ri kiritildi | `jdu-register --change-email` orqali qayta kiriting |
+| Email kiritilmadi yoki noto‘g‘ri kiritildi | Quyidagi email’ni qayta ro‘yxatdan o‘tkazish command’ini o‘sha CloudShell’da bajaring |
 | Registration holatini qayta tekshirmoqchisiz | `jdu-register`’ni bajaring |
 | Dashboard URL muddati tugadi | `jdu-my-progress`’ni bajaring |
 | Setup yoki registration xato bilan tugadi | Qaysi bosqichda to‘xtaganini va error’ni o‘qituvchiga ayting. Stack’ni o‘zingizcha o‘chirmang |
 
 Command ichidagi registration key, private key, authentication token va shaxsiy dashboard URL’ni ommaga chiqarmang yoki boshqalarga bermang. Umumiy kompyuterda ishlagandan keyin dashboard sahifasini yoping.
+
+### Faqat email’ni qayta ro‘yxatdan o‘tkazish
+
+Dastlabki setup command’ini qayta ishga tushirmang. Quyidagi ikki qatorni **dastlabki sozlashda ishlatilgan CloudShell**’da bajaring. Bu registration tool’ni yangilaydi va faqat email’ni qayta kiritadi. Mashq server’i va topshiriqlar qayta tiklanmaydi.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/recover-student-email.sh -o /tmp/jdu-recover-email.sh
+bash /tmp/jdu-recover-email.sh
+```
+
+Email’ni kiriting va `YES` bilan tasdiqlang. `PASS Teacher registration, EC2 identity, and email link confirmed.` chiqsa, ish tugadi. Registration ma’lumotlari topilmasa, to‘g‘ri CloudShell’ni tekshiring va o‘qituvchiga murojaat qiling. Yangi tool allaqachon o‘rnatilgan bo‘lsa, `jdu-register --change-email` ham ishlaydi.
 
 ## O‘qituvchining oldindan tayyorgarligi
 

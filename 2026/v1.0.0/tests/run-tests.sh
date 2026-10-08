@@ -16,6 +16,7 @@ for script in \
   "$root_dir/scripts/jdu-cloudcheck" \
   "$root_dir/scripts/jdu-cloud-reset" \
   "$root_dir/scripts/jdu-progress" \
+  "$root_dir/scripts/recover-student-email.sh" \
   "$root_dir/teacher/install-teacher.sh" \
   "$root_dir/teacher/scripts/jdu-dashboard" \
   "$root_dir/tests/mock-bin/aws" \
@@ -370,6 +371,7 @@ PY
 python3 "$root_dir/tests/test-progress-backend.py" "$root_dir/teacher/lambda/progress_app.py"
 python3 "$root_dir/tests/test-personal-progress-command.py" "$root_dir/scripts/jdu-my-progress"
 python3 "$root_dir/tests/test-student-registration.py" "$root_dir/scripts/register-student.py"
+bash "$root_dir/tests/test-email-recovery.sh" "$root_dir"
 python3 "$root_dir/tests/test-install-registration.py" "$root_dir"
 python3 "$root_dir/tests/test-semester-registration-key.py" "$root_dir"
 

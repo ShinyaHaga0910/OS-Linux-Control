@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Link a classroom email without placing personal data in EC2 or CloudFormation."""
-import getpass
 import json
 import os
 from pathlib import Path
@@ -17,6 +16,27 @@ def request(endpoint, route, body, headers):
                   headers={"Content-Type": "application/json", **headers}, method="POST")
     with urlopen(req, timeout=20) as result:
         return json.load(result)
+
+
+def prompt_email():
+    if not sys.stdin.isatty():
+        raise ValueError("Run this command interactively in CloudShell to enter your email.")
+    print("Enter the email address you use for Google Classroom.")
+    print("It links your lab progress to you; it is not email verification.")
+    print("Your teacher uses this address to identify your lab progress. Do not share a screenshot of this screen.")
+    print("Your typing is visible. Pressing Enter without an address does not skip registration.")
+    while True:
+        email = input("Classroom email (visible): ").strip().lower()
+        if not email:
+            print("An email address is required. Please type it before pressing Enter.")
+            continue
+        if len(email) > 254 or not EMAIL_RE.fullmatch(email):
+            print("The email format is invalid. Please try again.")
+            continue
+        print(f"You entered: {email}")
+        if input("Type YES to confirm this address (Enter alone means re-enter): ").strip().upper() == "YES":
+            return email
+        print("Not confirmed. Please enter the address again.")
 
 
 def main():
@@ -40,17 +60,7 @@ def main():
     email_file = state / "student-email.txt"
     email = email_file.read_text().strip() if email_file.exists() and "--change-email" not in sys.argv else ""
     if not email:
-        print("Enter the email address you use for Google Classroom.")
-        print("It links your lab progress to you; it is not email verification.")
-        print("Only your teacher can view it. It is stored in your private CloudShell and the teacher progress table.")
-        print("Input is hidden. Type your email and press Enter.")
-        if not sys.stdin.isatty():
-            raise ValueError("Run this command interactively in CloudShell to enter your email.")
-        while True:
-            email = getpass.getpass("Classroom email: ").strip().lower()
-            if len(email) <= 254 and EMAIL_RE.fullmatch(email):
-                break
-            print("The email format is invalid. Please try again.")
+        email = prompt_email()
     if len(email) > 254 or not EMAIL_RE.fullmatch(email):
         raise ValueError("The saved email is invalid. Run jdu-register --change-email.")
     result = request(endpoint, "/link-email", {"server_id": server_id, "student_email": email}, auth)
