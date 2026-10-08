@@ -21,6 +21,7 @@ curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-prepare-student-home
 curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-worker" -o /opt/jdu-lab/bin/jdu-worker
 curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-http-service" -o /opt/jdu-lab/bin/jdu-http-service
 curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-progress" -o /opt/jdu-lab/bin/jdu-progress
+curl -fsSL --retry 5 --retry-delay 5 "$BASE_URL/scripts/jdu-my-progress" -o /opt/jdu-lab/bin/jdu-my-progress
 
 verify_download() {
   local published_path="$1" local_path="$2" expected
@@ -34,14 +35,16 @@ verify_download scripts/jdu-prepare-student-home /opt/jdu-lab/bin/jdu-prepare-st
 verify_download scripts/jdu-worker /opt/jdu-lab/bin/jdu-worker
 verify_download scripts/jdu-http-service /opt/jdu-lab/bin/jdu-http-service
 verify_download scripts/jdu-progress /opt/jdu-lab/bin/jdu-progress
+verify_download scripts/jdu-my-progress /opt/jdu-lab/bin/jdu-my-progress
 rm -f -- /tmp/jdu-SHA256SUMS
 
-chmod 0755 /opt/jdu-lab/bin/jdu-labcheck /opt/jdu-lab/bin/jdu-fixture /opt/jdu-lab/bin/jdu-prepare-student-home /opt/jdu-lab/bin/jdu-worker /opt/jdu-lab/bin/jdu-http-service /opt/jdu-lab/bin/jdu-progress
+chmod 0755 /opt/jdu-lab/bin/jdu-labcheck /opt/jdu-lab/bin/jdu-fixture /opt/jdu-lab/bin/jdu-prepare-student-home /opt/jdu-lab/bin/jdu-worker /opt/jdu-lab/bin/jdu-http-service /opt/jdu-lab/bin/jdu-progress /opt/jdu-lab/bin/jdu-my-progress
 ln -sfn /opt/jdu-lab/bin/jdu-labcheck /usr/local/bin/jdu-labcheck
 ln -sfn /opt/jdu-lab/bin/jdu-fixture /usr/local/bin/jdu-fixture
 ln -sfn /opt/jdu-lab/bin/jdu-labcheck /usr/local/bin/jdu-check
 ln -sfn /opt/jdu-lab/bin/jdu-fixture /usr/local/bin/jdu-reset
 ln -sfn /opt/jdu-lab/bin/jdu-progress /usr/local/bin/jdu-progress
+install -m 0755 /opt/jdu-lab/bin/jdu-my-progress /usr/local/bin/jdu-my-progress
 ln -sfn /opt/jdu-lab/bin/jdu-prepare-student-home /usr/local/sbin/jdu-prepare-student-home
 rm -f -- /opt/jdu-lab/bin/jdu-probe /usr/local/bin/jdu-probe
 

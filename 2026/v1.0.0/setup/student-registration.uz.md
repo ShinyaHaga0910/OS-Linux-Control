@@ -51,7 +51,7 @@ Birinchi xabar server ro‘yxatdan o‘tganini va email bog‘langanini, ikkinch
 
 ## 6. Shaxsiy dashboard’ingizni oching
 
-Xuddi shu CloudShell’da bajaring:
+CloudShell’da bajaring. `ssh jdu-ubuntu` orqali Ubuntu server’ga kirgandan keyin ham shu command’ni bajarishingiz mumkin. Yangi setup paytida u Ubuntu’ga avtomatik o‘rnatiladi:
 
 ```bash
 jdu-my-progress
@@ -61,7 +61,17 @@ Chiqqan HTTPS URL’ni browser’da oching. Bu **sizning shaxsiy progress dashbo
 
 P0–P6 va M1–M7 bo‘yicha progress’ni ko‘rishingiz mumkin. Dastlab natijalar hali yuborilmaganligi sababli bo‘sh kataklar yoki «—» normal holatdir. Email manzili talaba sahifasida ko‘rsatilmaydi.
 
-URL 15 daqiqa amal qiladi. Muddati tugasa, CloudShell’da `jdu-my-progress`’ni yana bajaring va yangi URL’ni oching. Kompyuteringizga certificate o‘rnatish shart emas.
+URL 15 daqiqa amal qiladi. Muddati tugasa, CloudShell yoki Ubuntu’da `jdu-my-progress`’ni yana bajaring va yangi URL’ni oching. Kompyuteringizga certificate o‘rnatish shart emas.
+
+Avval yaratilgan Ubuntu server’da `jdu-my-progress: command not found` chiqsa, **SSH orqali Ubuntu’ga kirgandan keyin** quyidagilarni bir marta bajaring:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/install-my-progress-ubuntu.sh -o /tmp/jdu-install-my-progress-ubuntu.sh
+bash /tmp/jdu-install-my-progress-ubuntu.sh
+jdu-my-progress
+```
+
+Topshiriqlar va natijalar reset qilinmaydi. Chiqqan URL’ni browser’da oching va boshqalarga yubormang. Ubuntu registration ma’lumotlari o‘qilmasa, `ssm-user` sifatida kirganingizni tekshiring va o‘qituvchiga murojaat qiling.
 
 ## Yakuniy tekshiruv
 

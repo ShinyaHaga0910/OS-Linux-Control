@@ -107,9 +107,9 @@ bash /tmp/jdu-install-teacher.sh --region us-east-1
 
 ## 学生が自分の進捗を確認する
 
-学生のCloudShellで `jdu-my-progress` を実行し、表示されたHTTPS URLをブラウザで開きます。自分のサーバーのP・Mの最新結果だけを表示する読み取り専用ページです。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
+学生はCloudShellでも、`ssh jdu-ubuntu`で接続したUbuntu上でも `jdu-my-progress` を実行できます。表示されたHTTPS URLをブラウザで開きます。自分のサーバーのP・Mの最新結果だけを表示する読み取り専用ページです。証明書のインストールや追加のパスワード設定は不要です。URLは最長15分で失効し、期限切れなら同じコマンドで再発行します。URLを共有せず、学校の共有PCでは利用後にページを閉じてください。教員画面のURLは学生へ配布しません。
 
-最新のinstallerで構築した学生CloudShellにはコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
+最新のinstallerで構築した学生CloudShellとUbuntuには、両方にコマンドが自動で入ります。既存環境はサーバーを作り直さず、CloudShellで次のコマンドだけ追加できます（教員側のスタック更新が先です）。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/jdu-my-progress -o /tmp/jdu-my-progress
@@ -117,7 +117,15 @@ install -D -m 0755 /tmp/jdu-my-progress "$HOME/.local/bin/jdu-my-progress"
 jdu-my-progress
 ```
 
-認証にはCloudShellの既存登録情報を使用します。メールの入力だけでログインする方式ではありません。学生・教員ともに、練習はP0～P6、課題はM1～M7と表示します。表示と送信コマンドのIDは同じです（例：P1 → `jdu-check P1`）。
+既存のUbuntuでコマンドが見つからない場合は、`ssh jdu-ubuntu`で接続した**Ubuntu上**で次を一度実行します。登録情報を使ってURLを発行するだけで、課題環境はリセットしません。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/install-my-progress-ubuntu.sh -o /tmp/jdu-install-my-progress-ubuntu.sh
+bash /tmp/jdu-install-my-progress-ubuntu.sh
+jdu-my-progress
+```
+
+認証には、その環境にある既存のサーバー登録情報を使用します。Ubuntuでは`ssm-user`が読み取れる`/etc/jdu-lab/progress.env`を使います。メールの入力だけでログインする方式ではありません。学生・教員ともに、練習はP0～P6、課題はM1～M7と表示します。表示と送信コマンドのIDは同じです（例：P1 → `jdu-check P1`）。
 
 旧環境で「no progress endpoint saved」と表示された場合は、教員がこのクラスの実際の送信先URLを確認し、`~/.jdu-student/progress.env` に `JDU_PROGRESS_ENDPOINT=https://…` の1行を追加します。既存のサーバーIDとtokenは変更しません。送信先を別のクラスや古いスタックから転記しないでください。
 
@@ -125,7 +133,7 @@ jdu-my-progress
 
 ローカル自動試験は実施しています。AWS Academy Learner Lab実機での新規構築と全演習の通し受入試験は未完了です。
 
-制作途中の旧版ディレクトリは現行のGitツリーから削除しました。以後の制作途中の変更はこのディレクトリとGitコミット履歴で管理します。旧版の`main`上のURLは使えません。既存のUbuntu環境は自動更新されないため、新しい配布物を試す際は環境を再構築してください。
+制作途中の旧版ディレクトリは現行のGitツリーから削除しました。以後の制作途中の変更はこのディレクトリとGitコミット履歴で管理します。旧版の`main`上のURLは使えません。既存のUbuntu環境は自動更新されません。`jdu-my-progress`だけは上記の手順で後から追加できます。その他の環境変更を試す場合は、影響を確認してから再構築してください。
 
 ### インスタンスの自動選択
 

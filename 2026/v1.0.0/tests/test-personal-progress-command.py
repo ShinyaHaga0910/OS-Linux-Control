@@ -1,3 +1,4 @@
+import base64
 import contextlib
 import importlib.machinery
 import io
@@ -38,4 +39,28 @@ with tempfile.TemporaryDirectory() as temporary:
             pass
         else:
             raise AssertionError("Unexpected personal URL accepted")
-print("PASS personal helper authorization, private output, and URL destination validation")
+    # The Ubuntu host stores the same server credentials in base64-encoded fields.
+    ubuntu_config = state / "ubuntu-progress.env"
+    ubuntu_config.write_text(
+        "JDU_PROGRESS_ENDPOINT_B64=" + base64.b64encode(b"https://example.test").decode() + "\n"
+        "JDU_PROGRESS_SERVER_ID=srv-12345678\n"
+        "JDU_PROGRESS_SERVER_TOKEN_B64=" + base64.b64encode(secret.encode()).decode() + "\n"
+    )
+    os.environ["JDU_STUDENT_STATE_DIR"] = str(state / "no-cloudshell-state")
+    os.environ["JDU_UBUNTU_PROGRESS_CONFIG"] = str(ubuntu_config)
+    payload["url"] = "https://example.test/student/progress?session=ubuntu-token"
+    calls.clear()
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        app.main()
+    assert payload["url"] in output.getvalue() and secret not in output.getvalue()
+    assert calls[0].get_header("Authorization") == "Bearer " + secret
+    assert json.loads(calls[0].data) == {"server_id": "srv-12345678"}
+    ubuntu_config.write_text("JDU_PROGRESS_ENDPOINT_B64=invalid!\nJDU_PROGRESS_SERVER_ID=srv-12345678\nJDU_PROGRESS_SERVER_TOKEN_B64=invalid!\n")
+    try:
+        app.load_config()
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Invalid Ubuntu progress credentials accepted")
+print("PASS CloudShell and Ubuntu personal helper authorization, private output, and URL validation")

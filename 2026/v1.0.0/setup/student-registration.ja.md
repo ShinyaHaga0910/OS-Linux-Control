@@ -51,7 +51,7 @@ PASS The AWS lab environment is ready.
 
 ## 6. 自分専用のダッシュボードを開く
 
-続けて同じCloudShellで実行します。
+CloudShellで実行できます。また、`ssh jdu-ubuntu`でUbuntuに接続した後も、Ubuntu上で同じコマンドを実行できます。新しく構築したUbuntuには自動で入っています。
 
 ```bash
 jdu-my-progress
@@ -61,7 +61,17 @@ jdu-my-progress
 
 P0～P6、M1～M7の進捗を確認できます。最初は未提出のため、結果が空欄や「—」でも正常です。登録したメールアドレスは学生用ページには表示されません。
 
-URLの有効期限は15分です。期限切れの場合は、CloudShellで`jdu-my-progress`をもう一度実行して新しいURLを開きます。学生PCへの証明書のインストールは不要です。
+URLの有効期限は15分です。期限切れの場合は、CloudShellまたはUbuntuで`jdu-my-progress`をもう一度実行して新しいURLを開きます。学生PCへの証明書のインストールは不要です。
+
+すでに構築したUbuntuで`jdu-my-progress: command not found`と表示された場合だけ、**UbuntuへSSH接続した後**に次を一度実行してください。演習の進捗はリセットされません。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ShinyaHaga0910/OS-Linux-Control/main/2026/v1.0.0/scripts/install-my-progress-ubuntu.sh -o /tmp/jdu-install-my-progress-ubuntu.sh
+bash /tmp/jdu-install-my-progress-ubuntu.sh
+jdu-my-progress
+```
+
+表示されたURLはブラウザで開きます。URLや認証情報を他の人へ送らないでください。Ubuntu上の登録情報が読めないというエラーが出た場合は、`ssm-user`で接続しているか確認し、解決しなければ教員へ連絡してください。
 
 ## 完了確認
 

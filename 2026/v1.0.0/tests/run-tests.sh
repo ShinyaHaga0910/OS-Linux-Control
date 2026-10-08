@@ -16,6 +16,7 @@ for script in \
   "$root_dir/scripts/jdu-cloudcheck" \
   "$root_dir/scripts/jdu-cloud-reset" \
   "$root_dir/scripts/jdu-progress" \
+  "$root_dir/scripts/install-my-progress-ubuntu.sh" \
   "$root_dir/scripts/recover-student-email.sh" \
   "$root_dir/teacher/install-teacher.sh" \
   "$root_dir/teacher/scripts/jdu-dashboard" \
@@ -278,6 +279,8 @@ assert '/opt/jdu-lab/bin/jdu-fixture reset all' in setup
 assert '/usr/local/bin/jdu-check' in setup
 assert '/usr/local/bin/jdu-reset' in setup
 assert '/usr/local/bin/jdu-progress' in setup
+assert 'verify_download scripts/jdu-my-progress /opt/jdu-lab/bin/jdu-my-progress' in setup
+assert 'install -m 0755 /opt/jdu-lab/bin/jdu-my-progress /usr/local/bin/jdu-my-progress' in setup
 assert 'jdu-fixture reset all' in setup and 'jdu-progress register' in setup
 assert 'required_packages+=(tree)' in setup
 assert '/opt/jdu-lab/fixtures/m3/jdu-m3-process${process_number}.service' in setup
@@ -370,6 +373,7 @@ PY
 
 python3 "$root_dir/tests/test-progress-backend.py" "$root_dir/teacher/lambda/progress_app.py"
 python3 "$root_dir/tests/test-personal-progress-command.py" "$root_dir/scripts/jdu-my-progress"
+bash "$root_dir/tests/test-ubuntu-progress-installer.sh" "$root_dir"
 python3 "$root_dir/tests/test-student-registration.py" "$root_dir/scripts/register-student.py"
 bash "$root_dir/tests/test-email-recovery.sh" "$root_dir"
 python3 "$root_dir/tests/test-install-registration.py" "$root_dir"
