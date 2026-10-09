@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1350 594"><svg class="d2-330653452 d2-svg" width="1350" height="594" viewBox="-38 -38 1350 594"><rect x="-38" y="-38" width="1350" height="594" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-330653452 .text-bold {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-330653452 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="YmVmb3Jl boundary"><g class="shape" ><rect x="0" y="0" width="609" height="518" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="304.5" y="29" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">setgid выключен</text></g><g class="YWZ0ZXI= boundary"><g class="shape" ><rect x="665" y="0" width="609" height="518" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="969.5" y="29" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">setgid включён</text></g><g class="YmVmb3JlLmRpcg== os"><g class="shape" ><rect x="60" y="60" width="489" height="98" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="304.5" y="106.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="304.5" dy="0">общий каталог</tspan><tspan x="304.5" dy="26.5">группа-владелец ops</tspan></text></g><g class="YmVmb3JlLnVzZXI= identity"><g class="shape" ><rect x="60" y="198" width="489" height="98" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="304.5" y="244.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="304.5" dy="0">jduwriter</tspan><tspan x="304.5" dy="26.5">основная группа jduwriter</tspan></text></g><g class="YmVmb3JlLmZpbGU= warning"><g class="shape" ><rect x="60" y="336" width="489" height="98" rx="10" stroke="#B33A3A" fill="#FFE9E9" style="stroke-width:2;" /></g><text x="304.5" y="382.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="304.5" dy="0">новый файл</tspan><tspan x="304.5" dy="26.5">группа jduwriter</tspan></text></g><g class="YWZ0ZXIuZGly os"><g class="shape" ><rect x="725" y="60" width="489" height="122" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="969.5" y="106.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="969.5" dy="0">общий каталог</tspan><tspan x="969.5" dy="25.666667">группа-владелец ops</tspan><tspan x="969.5" dy="25.666667">setgid = 2</tspan></text></g><g class="YWZ0ZXIudXNlcg== identity"><g class="shape" ><rect x="725" y="222" width="489" height="98" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="969.5" y="268.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="969.5" dy="0">jduwriter</tspan><tspan x="969.5" dy="26.5">основная группа jduwriter</tspan></text></g><g class="YWZ0ZXIuZmlsZQ== app"><g class="shape" ><rect x="725" y="360" width="489" height="98" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="969.5" y="406.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="969.5" dy="0">новый файл</tspan><tspan x="969.5" dy="26.5">группа ops</tspan></text></g><mask id="d2-330653452" maskUnits="userSpaceOnUse" x="-38" y="-38" width="1350" height="594">
+<rect x="-38" y="-38" width="1350" height="594" fill="white"></rect>
+
+</mask></svg></svg>

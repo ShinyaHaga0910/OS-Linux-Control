@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1788 444"><svg class="d2-868848073 d2-svg" width="1788" height="444" viewBox="-25 -26 1788 444"><rect x="-25" y="-26" width="1788" height="444" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-868848073 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-868848073 .text-italic {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-868848073 .fill-N2{fill:#676C7E;}
+		.d2-868848073 .fill-B1{fill:#0D32B2;}
+		.d2-868848073 .stroke-B1{stroke:#0D32B2;}
+		.d2-868848073 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="dXNlcg== identity"><g class="shape" ><rect x="12" y="156" width="329" height="80" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="176.5" y="205.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">пользователь</text></g><g class="Z3Vp boundary"><g class="shape" ><rect x="421" y="12" width="904" height="174" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="873" y="41" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">GUI</text></g><g class="Y2xp boundary"><g class="shape" ><rect x="421" y="206" width="1304" height="174" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="1073" y="235" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">CLI</text></g><g class="Z3VpLndpbmRvdw== identity"><g class="shape" ><rect x="471" y="62" width="302" height="74" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="622" y="108.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">окна / кнопки</text></g><g class="Z3VpLmFwcA== app"><g class="shape" ><rect x="994" y="62" width="281" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="1134.5" y="108.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">приложение</text></g><g class="Y2xpLnRlcm1pbmFs neutral"><g class="shape" ><rect x="471" y="256" width="233" height="74" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="587.5" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">терминал</text></g><g class="Y2xpLnNoZWxs os"><g class="shape" ><rect x="895" y="256" width="233" height="74" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="1011.5" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">оболочка</text></g><g class="Y2xpLmNvbW1hbmQ= app"><g class="shape" ><rect x="1466" y="256" width="209" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="1570.5" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">команда</text></g><g class="Z3VpLih3aW5kb3cgLSZndDsgYXBwKVswXQ=="><marker id="mk-d2-868848073-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 775 99 L 990 99" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-868848073-3488378134)" mask="url(#d2-868848073)" /><text x="883.5" y="105" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">действие</text></g><g class="Y2xpLih0ZXJtaW5hbCAtJmd0OyBzaGVsbClbMF0="><path d="M 706 293 L 891 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-868848073-3488378134)" mask="url(#d2-868848073)" /><text x="799.5" y="299" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">текст</text></g><g class="Y2xpLihzaGVsbCAtJmd0OyBjb21tYW5kKVswXQ=="><path d="M 1130 293 L 1462 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-868848073-3488378134)" mask="url(#d2-868848073)" /><text x="1297" y="299" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">разбирает и запускает</text></g><g class="KHVzZXIgLSZndDsgZ3VpKVswXQ=="><path d="M 343 182.666 L 371 182.666 S 381 182.666 381 172.666 L 381 109 S 381 99 391 99 L 416.5 99" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-868848073-3488378134)" mask="url(#d2-868848073)" /></g><g class="KHVzZXIgLSZndDsgY2xpKVswXQ=="><path d="M 343 209.332993 L 371 209.332993 S 381 209.332993 381 219.332993 L 381 283 S 381 293 391 293 L 416.5 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-868848073-3488378134)" mask="url(#d2-868848073)" /></g><mask id="d2-868848073" maskUnits="userSpaceOnUse" x="-25" y="-26" width="1788" height="444">
+<rect x="-25" y="-26" width="1788" height="444" fill="white"></rect>
+<rect x="841" y="89" width="85" height="21" fill="black"></rect>
+<rect x="772" y="283" width="55" height="21" fill="black"></rect>
+<rect x="1196" y="283" width="202" height="21" fill="black"></rect>
+</mask></svg></svg>

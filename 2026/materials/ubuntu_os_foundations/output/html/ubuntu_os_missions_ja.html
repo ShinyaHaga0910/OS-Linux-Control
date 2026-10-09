@@ -1,0 +1,161 @@
+<!doctype html><html lang='ja'><head><meta charset='utf-8'>
+<title>Ubuntu・OS基礎 自力課題</title><style>
+@page { size: A4; margin: 18mm; }
+body { max-width: 174mm; margin: 0 auto; font-family: 'Noto Sans JP','Yu Gothic',sans-serif; color:#172033; line-height:1.78; font-size:10.5pt; }
+h1 { color:#174E84; border-bottom:3px solid #79A9D7; padding-bottom:3mm; page-break-before:always; }
+h1:first-of-type { page-break-before:auto; }
+h2 { color:#245E9A; margin-top:9mm; border-left:4px solid #4A90C2; padding-left:3mm; }
+@media print { h2.chapter-answers { break-before: page; page-break-before: always; } }
+h3 { color:#315E79; margin-top:6mm; }
+h4 { color:#315E79; margin-top:4mm; margin-bottom:2mm; font-size:10.5pt; }
+p { text-align:justify; }
+code { font-family: Consolas,'Noto Sans Mono',monospace; background:#EEF2F7; padding:0 1mm; }
+pre { background:#172033; color:#F6F8FB; padding:4mm; border-radius:2mm; white-space:pre-wrap; overflow-wrap:anywhere; }
+img { display:block; max-width:100%; height:auto; margin:5mm auto 2mm; page-break-inside:avoid; }
+table { width:100%; border-collapse:collapse; margin:4mm 0; font-size:9pt; page-break-inside:auto; }
+th { background:#245E9A; color:white; }
+th,td { border:1px solid #CBD5E1; padding:2mm; vertical-align:top; }
+blockquote { background:#EEF4FB; border-left:4px solid #4A90C2; padding:3mm; }
+.cover { min-height:230mm; display:flex; flex-direction:column; justify-content:center; text-align:center; page-break-after:always; }
+.cover h1 { page-break-before:auto; font-size:26pt; border:0; }
+.meta { color:#526079; }
+</style></head><body>
+<section class='cover'><h1>Ubuntu・OS基礎 自力課題</h1><p class='meta'>Ubuntu Server 24.04 LTS / JDU Cyber Security<br>2026-09-25</p></section>
+<h1>Ubuntu and OS Foundations — 自力課題 Mission Guide</h1>
+<p>注: ロシア語版・ウズベク語版は現行のM1～M7と内容を同期した翻訳初稿です。母語話者による校閲は未実施です。採点条件の正本は日本語版です。</p>
+<p>対象: Mission 1～7 環境: Ubuntu Server 24.04 LTS 進め方: 授業回ではなく、学生ごとの進度でMissionを進める。</p>
+<p>この文書は、commandを自分で選ぶ課題M1～M7である。完全なcommand手順が必要な場合は、先に[GUIDED_PRACTICE.md](GUIDED_PRACTICE.md)のP0～P6を実施する。</p>
+<p>PとMは別のresourceを使う。Pを完了しても、対応するMはPASSにならない。推奨順序は<code>P0 → P1 → M1 → P2 → M2 → … → P6 → M6 → M7</code>である。旧M0は手順付き練習P0へ移した。統合課題M7には対応するPを設けない。</p>
+<h2>最初にUbuntuへ接続する</h2>
+<p>AWS Academy Learner Labのセットアップを完了してから、AWSコンソールでCloudShellを開く。CloudShellで次のcommandを実行し、自分のUbuntu演習サーバーへ接続する。</p>
+<pre><code>ssh jdu-ubuntu</code></pre>
+<p>接続後、Ubuntuで次を実行する。</p>
+<pre><code>id -un</code></pre>
+<p><code>ssm-user</code>と表示されることを確認する。この文書のUbuntu側の操作は、この接続先で実行する。CloudShellで操作する課題では、課題中の指示に従って<code>exit</code>でCloudShellへ戻る。</p>
+<h2>共通操作</h2>
+<p>初回構築時に、すべてのMissionは自動で未完成の状態になる。最初にresetする必要はない。</p>
+<h3>実行user</h3>
+<p>Ubuntuへ接続した直後の管理userは<code>ssm-user</code>である。次のcommandで確認する。</p>
+<pre><code>id -un</code></pre>
+<p><code>jdu-check</code>と<code>jdu-reset</code>は、必ず<code>ssm-user</code>で実行する。別のuserで実行すると、<code>ssm-user</code>へ戻る方法を表示して終了する。</p>
+<p>演習用userは<code>jduops</code>、<code>jduviewer</code>、<code>jduwriter</code>である。<code>ssm-user</code>から演習用userへ切り替える例を示す。</p>
+<pre><code>sudo su - jduops
+id</code></pre>
+<p>元の<code>ssm-user</code>へ戻る。</p>
+<pre><code>exit
+id -un</code></pre>
+<p>この演習で切り替えるuserのうち、Passwordなしで<code>sudo</code>を使えるのは<code>ssm-user</code>だけである。例えば、<code>jduwriter</code>から<code>jduviewer</code>へ直接切り替えない。一度<code>exit</code>で<code>ssm-user</code>へ戻り、そこから<code>sudo su - jduviewer</code>を実行する。</p>
+<p><code>jduapp</code>、<code>jduweb</code>、<code>jdufinal</code>、<code>jduworker</code>はservice専用userである。Login shellは<code>nologin</code>であり、<code>su -</code>による対話loginは行わない。必要な確認は<code>ssm-user</code>から<code>sudo -u USER COMMAND</code>で1 commandだけ実行する。</p>
+<p>現在のMissionを確認する。</p>
+<pre><code>jdu-check M1</code></pre>
+<p>教員のprogress serverが設定されている場合、現在の結果は自動送信される。全問PASSする前でも送信される。</p>
+<p><code>RESULT</code>はUbuntu上の課題判定である。<code>REPORT</code>はHTTPS送信の成否である。送信に失敗しても、課題のPASS/FAILは変わらない。自分の匿名server IDは次で確認できる。</p>
+<pre><code>jdu-progress id</code></pre>
+<p>通信を一時的に行わず、local判定だけを実行する場合は次を使う。</p>
+<pre><code>jdu-check M1 --no-submit</code></pre>
+<p>最初からやり直す場合だけ、そのMissionをresetする。</p>
+<pre><code>jdu-reset M1</code></pre>
+<p>reset直後は、すべての課題が<code>FAIL</code>になる。これは正常である。LabCheckは状態を修正しない。</p>
+<h2>M1 Shell, path, file, and text</h2>
+<h3>目的</h3>
+<p>相対pathと絶対pathを区別する。Directoryとfileを作る。Fileをコピーする。Logから必要な行を取り出す。</p>
+<h3>初期状態</h3>
+<p><code>~/jdu-lab/m1/inbox</code>に素材がある。<code>case01</code>は未完成であり、<code>staging</code>に不要な<code>.tmp</code> fileがある。</p>
+<h3>課題</h3>
+<ol><li>次のdirectory treeを作る。</li></ol>
+<pre><code>~/jdu-lab/m1/case01/
+├── config/
+├── logs/
+└── notes/</code></pre>
+<ol><li><code>inbox/config/app.conf</code>を<code>case01/config/app.conf</code>へコピーする。</li><li><code>inbox/logs/incident.log</code>を<code>case01/logs/incident.log</code>へコピーする。</li><li>コピーした2 fileの内容を変更しない。</li><li><code>case01</code>の中から<code>.tmp</code> fileをすべて除く。</li><li><code>incident.log</code>から<code>ERROR</code>を含む完全な行だけを取り出し、<code>notes/errors.txt</code>へ保存する。行番号を付けない。</li><li><code>incident.log</code>の最後の5行を順序を変えず、<code>notes/recent.txt</code>へ保存する。</li></ol>
+<h3>判定</h3>
+<p>5項目を判定する。Directory、source file、<code>.tmp</code>、<code>errors.txt</code>、<code>recent.txt</code>がそれぞれ判定に対応する。</p>
+<pre><code>jdu-check M1</code></pre>
+<p>確認候補: <code>pwd</code>, <code>ls</code>, <code>tree</code>, <code>mkdir</code>, <code>cp</code>, <code>rm</code>, <code>find</code>, <code>grep</code>, <code>tail</code></p>
+<h2>M2 User, group, permission, and sudo</h2>
+<h3>目的</h3>
+<p>User、primary group、supplementary groupを区別する。共有directoryへgroup accessとsetgidを設定する。</p>
+<h3>初期状態</h3>
+<p><code>jduops</code>、<code>jduviewer</code>、<code>ops</code>は存在する。初期状態では、<code>jduviewer</code>だけがsupplementary group <code>ops</code>に誤って所属している。<code>jduops</code>は<code>ops</code>に所属していない。<code>/srv/jdu-share</code>と<code>README.txt</code>のowner、group、modeは未完成である。</p>
+<h3>課題</h3>
+<ol><li><code>jduops</code>をsupplementary group <code>ops</code>へ追加する。</li><li><code>jduviewer</code>をsupplementary group <code>ops</code>から削除する。</li><li><code>/srv/jdu-share</code>を<code>root:ops</code>にする。</li><li><code>/srv/jdu-share</code>をmode <code>2775</code>にする。setgidを使う。world-writableにしない。</li><li><code>/srv/jdu-share/README.txt</code>を<code>root:ops</code>、mode <code>664</code>にする。</li><li><code>ssm-user</code>から<code>sudo su - jduops</code>で切り替える。共有directoryにfileを作る。新しいfileのgroupが<code>ops</code>になることも確認する。</li><li><code>jduviewer</code>が<code>README.txt</code>を読めることを確認する。</li><li><code>jduviewer</code>が共有directoryにfileを作れないことを確認する。</li></ol>
+<p><code>jduops</code>での確認後は<code>exit</code>で<code>ssm-user</code>へ戻る。次に<code>sudo su - jduviewer</code>で切り替える。<code>jduviewer</code>での確認後も<code>exit</code>で戻る。最後に<code>id -un</code>が<code>ssm-user</code>であることを確認してから<code>jdu-check M2</code>を実行する。</p>
+<h3>判定</h3>
+<p>6課題を判定する。Group membership、directory owner/group、directory mode、sample file、group継承、viewer accessが対応する。</p>
+<pre><code>jdu-check M2</code></pre>
+<p>確認候補: <code>id</code>, <code>groups</code>, <code>getent passwd</code>, <code>getent group</code>, <code>stat</code>, <code>namei</code>, <code>chown</code>, <code>chmod</code>, <code>usermod</code>, <code>sudo -u</code></p>
+<p>禁止: <code>chmod 777</code></p>
+<h2>M3 Process and package</h2>
+<p>第8・9章と練習P3の両部分を終えてから取り組む。第10章では、サービスの起動と自動起動を詳しく学ぶ。</p>
+<h3>目的</h3>
+<p>Serviceとprocessを対応させ、対象のserviceを停止する。Ubuntu packageを調査し、installする。</p>
+<h3>初期状態</h3>
+<p><code>jdu-m3-process1.service</code>、<code>jdu-m3-process2.service</code>、<code>jdu-m3-process3.service</code>が通常のsystemd unitとして動いている。<code>cmatrix</code>は未installである。初期状態を確認するには、次を使う。</p>
+<pre><code>systemctl list-units --type=service &#x27;jdu-m3-*&#x27;
+systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3.service</code></pre>
+<h3>課題A: process2だけを停止する</h3>
+<ol><li><code>jdu-m3-process2.service</code>のMain PIDを調べ、手元にメモする。</li><li><code>ps</code>で同じPIDのprocessを確認する。</li><li>対象のserviceを停止する。</li><li><code>process2</code>が停止し、<code>process1</code>と<code>process3</code>が動いていることを確認する。</li></ol>
+<p>メモしたPIDを直接停止するのではなく、systemdが管理するserviceを停止する。</p>
+<h3>課題B: cmatrixをinstallする</h3>
+<ol><li>Package情報を確認する。</li><li><code>apt</code>で<code>cmatrix</code>をinstallする。</li><li>Commandを実行する。終了は<code>Ctrl+C</code>とする。</li></ol>
+<h3>判定</h3>
+<p>2課題を判定する。課題A全体で1件、課題B全体で1件である。提出fileはない。</p>
+<pre><code>jdu-check M3</code></pre>
+<p>確認候補: <code>systemctl status</code>, <code>systemctl stop</code>, <code>systemctl is-active</code>, <code>ps</code>, <code>apt show</code>, <code>apt install</code>, <code>command -v</code></p>
+<h2>M4 systemd service</h2>
+<h3>目的</h3>
+<p>Unit fileの設定を読み、serviceのactiveとenabledを区別する。</p>
+<h3>初期状態</h3>
+<p>教師が用意した<code>jdu-status.service</code>はloaded、inactive、disabledである。Unit fileは完成済みである。</p>
+<h3>課題</h3>
+<ol><li><code>systemctl cat jdu-status.service</code>で<code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>を読む。</li><li>Unit fileを変更せず、serviceをstartする。</li><li>Boot時にstartするようenableする。</li><li>Activeとenabledを別々に確認する。</li></ol>
+<h3>判定</h3>
+<p>2課題を判定する。変更されていないunitのactiveとenabledを別々に確認する。提出fileはない。</p>
+<pre><code>jdu-check M4</code></pre>
+<p>確認候補: <code>systemctl cat</code>, <code>systemctl start</code>, <code>systemctl enable</code>, <code>systemctl is-active</code>, <code>systemctl is-enabled</code></p>
+<h2>M5 Port, socket, and log</h2>
+<h3>目的</h3>
+<p>Service、process、socket、IP address、port、HTTP、journalを一つの実行状態として関連付ける。</p>
+<h3>初期状態</h3>
+<p>教師が用意した<code>jdu-web.service</code>はloaded、inactive、disabledである。Unit fileとcontent fileは完成済みである。TCP 8081にはlistenerがない。</p>
+<h3>課題</h3>
+<ol><li>Unit fileの<code>User</code>、<code>ExecStart</code>、address、port、content pathを読む。</li><li>Unit fileを変更せず、<code>jdu-web.service</code>をstartする。</li><li><code>127.0.0.1:8081</code>で通信を待ち受けているsocketを確認する。この状態をlistener（待受socket）という。</li><li>待受socketを所有するprocessのPIDと、serviceのMain PIDを比較する。</li><li><code>0.0.0.0:8081</code>や<code>[::]:8081</code>でlistenしていないことを確認する。</li><li><code>http://127.0.0.1:8081/</code>へrequestを送り、HTTP responseを確認する。</li><li>Service user <code>jduweb</code>がcontent fileを読めることを確認する。ファイルと親directoryのpermissionも確認する。</li><li><code>http://127.0.0.1:8081/m5-check</code>へrequestを送る。</li><li>現在のservice起動に対応するjournalで<code>REQUEST path=/m5-check</code>を確認する。</li><li>TCP 18081にlistenerがなく、HTTP requestが失敗することを確認する。</li></ol>
+<h3>判定</h3>
+<p>4課題を判定する。ListenerとPID、HTTPとfile access、学生が送ったrequestのlog、open portとclosed portの比較が対応する。LabCheckが送る<code>/</code> requestは、学生の<code>/m5-check</code>を代行しない。</p>
+<pre><code>jdu-check M5</code></pre>
+<h2>M6 SSH and remote operation</h2>
+<h3>目的</h3>
+<p>CloudShellをlocal、Ubuntuをremoteとして区別する。SSH remote commandと<code>scp</code>のupload、downloadを使う。</p>
+<h3>初期状態</h3>
+<p>SSH鍵、alias <code>jdu-ubuntu</code>、Session Manager tunnelは構築済みである。これらは課題点に含めない。CloudShellとUbuntuのMission fileは存在しない。</p>
+<h3>課題</h3>
+<ol><li>CloudShellで<code>id -un</code>、<code>hostname</code>、<code>pwd</code>を確認する。</li><li><code>ssh jdu-ubuntu</code>またはSSH remote commandで、Ubuntu側の同じ3項目を確認する。</li><li>CloudShellの<code>~/jdu-lab/m6/local-source.txt</code>へ、次の一行だけを書く。</li></ol>
+<pre><code>JDU SSH transfer test</code></pre>
+<ol><li><code>scp</code>で、Ubuntuの<code>~/jdu-lab/m6/upload.txt</code>へuploadする。</li><li>SSH remote commandを使い、Ubuntuに<code>~/jdu-lab/m6/remote-result.txt</code>を作る。値を手入力しない。</li></ol>
+<pre><code>REMOTE_USER=&lt;Ubuntuで取得したuser&gt;
+REMOTE_HOST=&lt;Ubuntuで取得したhostname&gt;
+REMOTE_PATH=&lt;Ubuntuで取得したhome directory&gt;</code></pre>
+<ol><li><code>scp</code>で、Ubuntuの<code>remote-result.txt</code>をCloudShellの<code>~/jdu-lab/m6/downloaded-result.txt</code>へdownloadする。</li><li>Upload元と先、download元と先を<code>sha256sum</code>で比較する。</li></ol>
+<h3>判定</h3>
+<p>Ubuntu側は2課題を判定する。UbuntuへSSHで入った状態で実行する。この結果はDashboardの<code>M6 Ubuntu</code>へ送られる。</p>
+<pre><code>jdu-check M6</code></pre>
+<p>CloudShell側は4課題を判定する。Ubuntuから<code>exit</code>してCloudShellへ戻った後に実行する。この結果はDashboardの<code>M6 CloudShell</code>へ送られる。</p>
+<pre><code>jdu-check M6</code></pre>
+<p>DashboardのM6欄は、Ubuntu <code>2/2</code>、CloudShell <code>4/4</code>、合計<code>6/6</code>を別々に表示する。M6のMission完了は両方が全件PASSになった時点である。どちらか一方だけを再実行しても、もう一方の最新結果は保持される。</p>
+<p>両方で全件<code>PASS</code>にする。秘密鍵を表示、提出、移動しない。SSH service、SSH設定、<code>authorized_keys</code>を変更しない。</p>
+<p>確認候補: <code>ssh</code>, <code>scp</code>, <code>sha256sum</code>, <code>id</code>, <code>hostname</code>, <code>pwd</code>, <code>printf</code></p>
+<h2>M7 Integrated Ubuntu check</h2>
+<h3>目的</h3>
+<p>M2、M4、M5の知識を、新しいserviceへ自力で適用する。新しいcommandは追加しない。</p>
+<h3>初期状態</h3>
+<ul><li>教師配布の<code>jdu-final.service</code>はloaded、inactive、disabledである。</li><li><code>/srv/jdu-final</code>と<code>index.txt</code>は存在しない。</li><li><code>jduwriter</code>と<code>jduviewer</code>は<code>finalops</code>に所属していない。</li></ul>
+<h3>課題</h3>
+<ol><li><code>systemctl cat jdu-final.service</code>で<code>User</code>、<code>WorkingDirectory</code>、<code>ExecStart</code>を読む。</li><li><code>/srv/jdu-final</code>を<code>root:finalops</code>、mode <code>2775</code>で作る。</li><li><code>/srv/jdu-final/index.txt</code>を作る。内容は<code>/etc/jdu-lab/final-marker</code>と同じ一行にする。</li><li><code>index.txt</code>を<code>root:finalops</code>、mode <code>664</code>にする。</li><li><code>jduwriter</code>を<code>finalops</code>へ追加する。<code>jduviewer</code>は追加しない。</li><li>Writerがcontentを更新でき、viewerが更新できないことを確認する。</li><li>Unit fileを変更せず、serviceをstartしてenableする。</li><li>Serviceが<code>jdufinal</code>で動き、<code>127.0.0.1:8090</code>だけでlistenすることを確認する。</li><li>HTTP responseがstatus 200で、指定markerを返すことを確認する。</li><li><code>http://127.0.0.1:8090/m7-check</code>へrequestを送る。</li><li>現在のservice起動に対応するjournalで<code>REQUEST path=/m7-check</code>を確認する。</li></ol>
+<p>Userを切り替える場合は、<code>ssm-user</code>から<code>sudo su - jduwriter</code>または<code>sudo su - jduviewer</code>を使う。各確認後は<code>exit</code>で<code>ssm-user</code>へ戻る。最後に<code>id -un</code>を確認してから<code>jdu-check M7</code>を実行する。</p>
+<h3>判定</h3>
+<p>6課題を判定する。File構成、writer/viewer、service、socket、HTTP、journalが対応する。Unit file、SSH設定、LabCheckを変更しない。</p>
+<pre><code>jdu-check M7</code></pre>
+<p>確認候補: <code>id</code>, <code>getent</code>, <code>stat</code>, <code>chown</code>, <code>chmod</code>, <code>systemctl</code>, <code>ps</code>, <code>sudo ss -lntp</code>, <code>curl</code>, <code>sudo journalctl</code></p>
+<h2>安全上の禁止事項</h2>
+<ul><li><code>chmod 777</code>を使わない。</li><li><code>/etc/ssh/sshd_config</code>を変更しない。</li><li><code>ssh.service</code>を停止しない。</li><li><code>killall</code>または広い条件の<code>pkill</code>を使わない。</li><li>秘密鍵を表示、提出、Gitへ追加しない。</li><li>外部hostへscanまたはlogin試行をしない。</li></ul>
+</body></html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1279 444"><svg class="d2-2469637499 d2-svg" width="1279" height="444" viewBox="-25 -26 1279 444"><rect x="-25" y="-26" width="1279" height="444" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-2469637499 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-2469637499 .text-italic {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-2469637499 .fill-N2{fill:#676C7E;}
+		.d2-2469637499 .fill-B1{fill:#0D32B2;}
+		.d2-2469637499 .stroke-B1{stroke:#0D32B2;}
+		.d2-2469637499 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="dXNlcg== identity"><g class="shape" ><rect x="12" y="156" width="192" height="80" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="108" y="205.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">foydalanuvchi</text></g><g class="Z3Vp boundary"><g class="shape" ><rect x="284" y="12" width="550" height="174" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="559" y="41" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">GUI</text></g><g class="Y2xp boundary"><g class="shape" ><rect x="284" y="206" width="932" height="174" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="750" y="235" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">CLI</text></g><g class="Z3VpLndpbmRvdw== identity"><g class="shape" ><rect x="334" y="62" width="184" height="74" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="426" y="108.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">oyna / tugma</text></g><g class="Z3VpLmFwcA== app"><g class="shape" ><rect x="692" y="62" width="92" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="738" y="108.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">ilova</text></g><g class="Y2xpLnRlcm1pbmFs neutral"><g class="shape" ><rect x="334" y="256" width="133" height="74" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="400.5" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">terminal</text></g><g class="Y2xpLnNoZWxs os"><g class="shape" ><rect x="642" y="256" width="94" height="74" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="689" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">shell</text></g><g class="Y2xpLmNvbW1hbmQ= app"><g class="shape" ><rect x="1014" y="256" width="152" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="1090" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">command</text></g><g class="Z3VpLih3aW5kb3cgLSZndDsgYXBwKVswXQ=="><marker id="mk-d2-2469637499-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 520 99 L 688 99" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2469637499-3488378134)" mask="url(#d2-2469637499)" /><text x="605" y="105" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">amal</text></g><g class="Y2xpLih0ZXJtaW5hbCAtJmd0OyBzaGVsbClbMF0="><path d="M 469 293 L 638 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2469637499-3488378134)" mask="url(#d2-2469637499)" /><text x="554.5" y="299" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">matn</text></g><g class="Y2xpLihzaGVsbCAtJmd0OyBjb21tYW5kKVswXQ=="><path d="M 738 293 L 1010 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2469637499-3488378134)" mask="url(#d2-2469637499)" /><text x="875" y="299" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">talqin qilib boshlaydi</text></g><g class="KHVzZXIgLSZndDsgZ3VpKVswXQ=="><path d="M 206 182.666 L 234 182.666 S 244 182.666 244 172.666 L 244 109 S 244 99 254 99 L 279.5 99" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2469637499-3488378134)" mask="url(#d2-2469637499)" /></g><g class="KHVzZXIgLSZndDsgY2xpKVswXQ=="><path d="M 206 209.332993 L 234 209.332993 S 244 209.332993 244 219.332993 L 244 283 S 244 293 254 293 L 279.5 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2469637499-3488378134)" mask="url(#d2-2469637499)" /></g><mask id="d2-2469637499" maskUnits="userSpaceOnUse" x="-25" y="-26" width="1279" height="444">
+<rect x="-25" y="-26" width="1279" height="444" fill="white"></rect>
+<rect x="586" y="89" width="38" height="21" fill="black"></rect>
+<rect x="535" y="283" width="39" height="21" fill="black"></rect>
+<rect x="804" y="283" width="142" height="21" fill="black"></rect>
+</mask></svg></svg>

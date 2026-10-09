@@ -3,6 +3,7 @@ set -Eeuo pipefail
 
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 python3 "$root_dir/tests/test-language-links.py" "$root_dir/../.."
+python3 "$root_dir/tests/test-material-links.py" "$root_dir/../.."
 checker="$root_dir/scripts/check-aws-environment.sh"
 mock_bin="$root_dir/tests/mock-bin"
 export JDU_STUDENT_USER="$(id -un)"
@@ -44,7 +45,7 @@ PY
 printf '%s\n' 'PASS shell and Python syntax'
 python3 "$root_dir/tests/test-availability-zone.py"
 bash "$root_dir/tests/test-existing-update-safety.sh" "$root_dir"
-python3 "$root_dir/tests/test-guided-command-comments.py" "$root_dir/../materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md"
+python3 "$root_dir/tests/test-guided-command-comments.py" "$root_dir/../materials/ubuntu_os_foundations/docs/ja/practice.md"
 
 (
   cd "$root_dir"

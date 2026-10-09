@@ -24,4 +24,4 @@ GitHub上の変更は[CONTRIBUTING.md](./CONTRIBUTING.md)に従い、Issue、専
 
 ## 作業後の最低確認
 
-変更したMarkdownの相対リンク、Labと教材の同内容コピー、関係するテストまたは生成手順を確認する。実行していない確認は未実施と記す。制作手順は[BUILD.md](./2026/materials/ubuntu_os_foundations/v1.0.0/BUILD.md)、現在の検証範囲は[validation.md](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/validation.md)を参照する。
+変更したMarkdownの相対リンク、Labと教材の同内容コピー、関係するテストまたは生成手順を確認する。実行していない確認は未実施と記す。制作手順は[BUILD.md](2026/materials/ubuntu_os_foundations/BUILD.md)、現在の検証範囲は[validation.md](2026/materials/ubuntu_os_foundations/instructor/validation.md)を参照する。

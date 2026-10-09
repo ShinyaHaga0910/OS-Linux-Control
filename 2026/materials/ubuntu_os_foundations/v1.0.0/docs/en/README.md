@@ -1,7 +1,7 @@
-# English source edition
+# 教材の移行先
 
-Status: planned; no English textbook files exist yet.
+この場所は、配布済みリンクを維持するための互換用入口です。
 
-The current source edition is Japanese (`docs/ja/`). An English edition may become the translation source after it has been written and technically reviewed. Until that decision is made, do not describe English as the existing canonical source or translate the other editions from this empty directory.
+[現行の資料を開く](../../../docs/en/README.md)
 
-Use the same filenames and chapter order as `docs/ja/`. Preserve commands, paths, identifiers, figure IDs, check IDs, and source URLs exactly across languages.
+現行教材の正本は版番号を含まない場所にあります。配布版はGitHub Releasesで確認してください。

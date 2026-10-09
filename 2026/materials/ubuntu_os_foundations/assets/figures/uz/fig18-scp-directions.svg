@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 985 506"><svg class="d2-4141469196 d2-svg" width="985" height="506" viewBox="-25 -26 985 506"><rect x="-25" y="-26" width="985" height="506" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-4141469196 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-4141469196 .text-italic {
+	font-family: "NotoSansJP";
+}
+
+.d2-4141469196 .text-mono-bold {
+	font-family: "d2-4141469196-font-mono-bold";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-4141469196 .fill-N2{fill:#676C7E;}
+		.d2-4141469196 .fill-B1{fill:#0D32B2;}
+		.d2-4141469196 .stroke-B1{stroke:#0D32B2;}
+		.d2-4141469196 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="bG9jYWw= boundary"><g class="shape" ><rect x="57" y="12" width="287" height="285" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="200.5" y="41" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="200.5" dy="0">ulanish manbasi</tspan><tspan x="200.5" dy="26.5">local</tspan></text></g><g class="cmVtb3Rl boundary"><g class="shape" ><rect x="561" y="108" width="317" height="285" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="719.5" y="137" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="719.5" dy="0">ulanish manzili</tspan><tspan x="719.5" dy="26.5">remote</tspan></text></g><g class="bG9jYWwuZmlsZQ== key"><g class="shape" ><rect x="120" y="171" width="174" height="76" rx="10" stroke="#173B65" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="207" y="217.5" fill="#172033" class="text-mono-bold" style="text-anchor:middle;font-size:24px">notes.txt</text></g><g class="bG9jYWwucmVjZWl2ZWQ= key"><g class="shape" ><rect x="107" y="75" width="187" height="76" rx="10" stroke="#173B65" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="200.5" y="121.5" fill="#172033" class="text-mono-bold" style="text-anchor:middle;font-size:24px">report.txt</text></g><g class="cmVtb3RlLnVwbG9hZGVk key"><g class="shape" ><rect x="611" y="171" width="203" height="76" rx="10" stroke="#173B65" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="712.5" y="217.5" fill="#172033" class="text-mono-bold" style="text-anchor:middle;font-size:24px">~/notes.txt</text></g><g class="cmVtb3RlLmZpbGU= key"><g class="shape" ><rect x="611" y="267" width="217" height="76" rx="10" stroke="#173B65" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="719.5" y="313.5" fill="#172033" class="text-mono-bold" style="text-anchor:middle;font-size:24px">~/report.txt</text></g><g class="KGxvY2FsLmZpbGUgLSZndDsgcmVtb3RlLnVwbG9hZGVkKVswXQ=="><marker id="mk-d2-4141469196-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 296 209 L 607 209" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-4141469196-3488378134)" mask="url(#d2-4141469196)" /><text x="452.5" y="215" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">upload</text></g><g class="KHJlbW90ZS5maWxlIC0mZ3Q7IGxvY2FsLnJlY2VpdmVkKVswXQ=="><path d="M 830 305 L 913 305 S 923 305 923 315 L 923 423 S 923 433 913 433 L 22 433 S 12 433 12 423 L 12 123 S 12 113 22 113 L 103 113" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-4141469196-3488378134)" mask="url(#d2-4141469196)" /><text x="371.5" y="439" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">download</text></g><mask id="d2-4141469196" maskUnits="userSpaceOnUse" x="-25" y="-26" width="985" height="506">
+<rect x="-25" y="-26" width="985" height="506" fill="white"></rect>
+<rect x="427" y="199" width="51" height="21" fill="black"></rect>
+<rect x="336" y="423" width="71" height="21" fill="black"></rect>
+</mask></svg></svg>
