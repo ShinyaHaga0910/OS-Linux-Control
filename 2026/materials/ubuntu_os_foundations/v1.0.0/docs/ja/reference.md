@@ -1,5 +1,7 @@
 # Ubuntu・OS基礎 用語集・コマンド早見表
 
+[日本語](../ja/reference.md) · [Русский](../ru/reference.md) · [O‘zbekcha](../uz/reference.md)
+
 対象: Ubuntu Server 24.04 LTS / 公開Lab v1.0.0。本書は暗記表ではない。目的からコマンドを探し、必要なオプションと確認方法を本文で読み直すために使う。
 
 ## 用語集

@@ -1,6 +1,8 @@
 # Dastlabki sozlash va topshiriqlarni tekshirish tizimida ro‘yxatdan o‘tish
 
-[Tilni tanlash](README.md) · [日本語](student-registration.ja.md) · [Русский](student-registration.ru.md)
+[日本語](student-registration.ja.md) · [Русский](student-registration.ru.md) · [O‘zbekcha](student-registration.uz.md)
+
+Lab muhiti oldin yaratilgan bo‘lsa, dastlabki o‘rnatishni takrorlamang: [mavjud Labni yangilash yo‘riqnomasidan](../UPDATE_EXISTING.uz.md) foydalaning.
 
 **O‘qituvchi bergan command’ni bajaring va shaxsiy progress dashboard’ingizni oching — shunda dastlabki ro‘yxatdan o‘tish tugaydi.** Siz mashqlar uchun server yaratasiz va uni Google Classroom’da ishlatadigan email manzilingiz bilan o‘qituvchining topshiriqlarni tekshirish tizimida bog‘laysiz. P0 mashqi ro‘yxatdan o‘tgandan keyin bajariladi.
 

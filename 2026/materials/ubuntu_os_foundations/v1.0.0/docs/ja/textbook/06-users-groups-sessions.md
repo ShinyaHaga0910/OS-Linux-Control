@@ -1,5 +1,7 @@
 # 第6章 ユーザー、グループ、ログイン
 
+[日本語](../../ja/textbook/06-users-groups-sessions.md) · [Русский](../../ru/textbook/06-users-groups-sessions.md) · [O‘zbekcha](../../uz/textbook/06-users-groups-sessions.md)
+
 ## 6.1 ユーザーの種類と役割
 
 Linuxには、人が操作するためのアカウントだけでなく、OSやサービスのプロセスを動かすためのアカウントもある。Linuxはユーザーを**UID（ユーザーID）**、グループを**GID（グループID）**という数値で内部的に識別する。まず、用途と権限の違いを整理する。

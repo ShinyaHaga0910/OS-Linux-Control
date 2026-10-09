@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TEXTBOOK = ROOT / "docs" / "ja" / "textbook"
 HTML_OUT = ROOT / "output" / "html"
 PDF_OUT = ROOT / "output" / "pdf"
+LANGUAGE_NAV = re.compile(r"\[日本語\]\([^)]+\) · \[Русский\]\([^)]+\) · \[O‘zbekcha\]\([^)]+\)")
 HTML_OUT.mkdir(parents=True, exist_ok=True)
 PDF_OUT.mkdir(parents=True, exist_ok=True)
 
@@ -121,6 +122,10 @@ def markdown_blocks(path: Path):
 
     while i < len(lines):
         line = lines[i]
+        if LANGUAGE_NAV.fullmatch(line.strip()):
+            yield from flush_para()
+            i += 1
+            continue
         if line.startswith("```"):
             yield from flush_para()
             lang = line[3:].strip()

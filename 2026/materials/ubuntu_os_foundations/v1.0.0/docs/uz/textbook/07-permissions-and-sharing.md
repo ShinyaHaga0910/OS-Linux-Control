@@ -1,5 +1,7 @@
 # 7-bob. Permission va umumiy directory
 
+[日本語](../../ja/textbook/07-permissions-and-sharing.md) · [Русский](../../ru/textbook/07-permissions-and-sharing.md) · [O‘zbekcha](../../uz/textbook/07-permissions-and-sharing.md)
+
 ## 7.1 Permission kimga qaysi amal mumkinligini bildiradi
 
 Linuxdagi asosiy **`permission`** uchta sinf uchun belgilanadi: egasi bo‘lgan `user` (`u: owner user`), egasi bo‘lgan `group` (`g: owner group`) va boshqalar (`o: others`). Har bir sinfga o‘qish (`r: read`), yozish (`w: write`) va bajarish (`x: execute`) huquqlari berilishi mumkin.

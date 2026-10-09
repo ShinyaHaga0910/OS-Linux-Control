@@ -1,5 +1,7 @@
 # 2-bob. Unixdan hozirgi operatsion tizimlargacha
 
+[日本語](../../ja/textbook/02-unix-linux-os-history.md) · [Русский](../../ru/textbook/02-unix-linux-os-history.md) · [O‘zbekcha](../../uz/textbook/02-unix-linux-os-history.md)
+
 ## Nima uchun tarixni o‘rganamiz?
 
 Maqsad sanalarni yodlash emas. Linux, macOS va Windowsda nima sababdan ayrim atamalar o‘xshash, ayrim `command`lar esa boshqacha ekanini tushunish muhim. Shuningdek, “Linux Unixning asl kodini bevosita meros qilib olgan”, “macOS Linuxning bir turi”, “Windows ham Unixdan kelib chiqqan” kabi noto‘g‘ri tasavvurlardan qochish kerak.

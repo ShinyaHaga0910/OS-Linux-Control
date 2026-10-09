@@ -1,5 +1,7 @@
 # 第4章 ファイル、ディレクトリ、パス、編集
 
+[日本語](../../ja/textbook/04-files-paths-editor.md) · [Русский](../../ru/textbook/04-files-paths-editor.md) · [O‘zbekcha](../../uz/textbook/04-files-paths-editor.md)
+
 ## 4.1 ファイルには内容とメタデータがある
 
 ファイルにはデータ本文だけでなく、名前、種別、所有者（owner）、グループ（group）、アクセス権（パーミッション）、サイズ、最終更新時刻などの**メタデータ（metadata）**が存在する。`cat` で表示される内容が完全に同一の2つのファイルであっても、所有者やアクセス権が異なればOS上では別の状態として扱われる。

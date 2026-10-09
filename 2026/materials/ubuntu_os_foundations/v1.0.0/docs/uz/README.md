@@ -1,5 +1,7 @@
 # O‘zbekcha nashr
 
+[日本語](../ja/README.md) · [Русский](../ru/README.md) · [O‘zbekcha](README.md)
+
 Holati: barcha bo‘limlarning ChatGPT yordamida tayyorlangan tarjima qoralamasi yakunlandi. O‘zbek tilida so‘zlashuvchi mutaxassisning tahriri va talabalar bilan sinovi hali o‘tkazilmagan. Hozircha tasdiqlangan o‘quv nashri emas.
 
 Eslatma: P1–P6 mashqlarining yaponcha asl nusxasi keyin yangilandi. Ushbu o‘zbekcha `practice.md` va unga mos PDF hali yangi savol matnlarini o‘z ichiga olmaydi; ularni tarjima qilish kerak.
@@ -15,3 +17,5 @@ Hozirgi tarjima manbasi `docs/ja/` katalogidagi yaponcha matndir. IT atamalari [
 - [A4 PDF mashqlar](../../output/pdf/ubuntu_os_guided_practice_uz.pdf)
 - [A4 PDF topshiriqlar](../../output/pdf/ubuntu_os_missions_uz.pdf)
 - [A4 PDF ma’lumotnoma](../../output/pdf/ubuntu_os_reference_uz.pdf)
+
+Lab muhiti oldin yaratilgan bo‘lsa, [stackni o‘chirmasdan yangilash yo‘riqnomasidan](../../../../../lab/UPDATE_EXISTING.uz.md) foydalaning.

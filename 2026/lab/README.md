@@ -1,6 +1,8 @@
 # OS-Linux-Control Lab 2026
 
-公開済みの最新Releaseはv1.0.2です。AWS実機での新規テスト構築、既存テストLabの更新、一部課題の受入試験は完了しました。全演習の通し受入試験は未完了です。結果と対象は[変更履歴](../../CHANGELOG.md)を参照してください。
+学生向けの言語別入口: [日本語](setup/student-registration.ja.md) · [Русский](setup/student-registration.ru.md) · [O‘zbekcha](setup/student-registration.uz.md)
+
+公開済みの最新Releaseはv1.0.3です。AWS実機での新規テスト構築、既存テストLabの更新、一部課題の受入試験は完了しました。全演習の通し受入試験は未完了です。結果と対象は[変更履歴](../../CHANGELOG.md)を参照してください。
 
 2026年度のAWS Academy Learner Lab用Ubuntu実習環境です。今後の編集対象は`2026/lab/`です。既存学生が使う`2026/v1.0.0/`のRaw URLは互換用スナップショットとして維持します。更新履歴は[CHANGELOG.md](../../CHANGELOG.md)を参照してください。
 

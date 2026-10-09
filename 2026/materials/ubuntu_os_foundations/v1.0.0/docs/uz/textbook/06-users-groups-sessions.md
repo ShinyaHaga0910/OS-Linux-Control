@@ -1,5 +1,7 @@
 # 6-bob. User, group va login
 
+[日本語](../../ja/textbook/06-users-groups-sessions.md) · [Русский](../../ru/textbook/06-users-groups-sessions.md) · [O‘zbekcha](../../uz/textbook/06-users-groups-sessions.md)
+
 ## 6.1 User turlari va vazifalari
 
 Linuxda odam ishlatadigan hisoblargina emas, `OS` va `service` `process`larini ishlatish uchun hisoblar ham bor. Linux ichkarida `user`ni **UID (`user` ID)**, `group`ni esa **GID (`group` ID)** raqami bilan ajratadi. Avval ularning vazifasi va huquqlari farqini ko‘raylik.

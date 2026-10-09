@@ -1,5 +1,7 @@
 # 第2章 Unixから現在のOSへ
 
+[日本語](../../ja/textbook/02-unix-linux-os-history.md) · [Русский](../../ru/textbook/02-unix-linux-os-history.md) · [O‘zbekcha](../../uz/textbook/02-unix-linux-os-history.md)
+
 ## なぜ歴史を学ぶのか
 
 歴史を学ぶ目的は年号の暗記ではない。Linux、macOS、Windowsの間で似た用語や異なるコマンドが使われる理由を理解し、「LinuxはUnixのソースコードをそのまま受け継いだ」「macOSはLinuxの一種である」「WindowsもUnixから派生した」といった誤解を避けるために学ぶ。

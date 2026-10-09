@@ -1,5 +1,9 @@
 # Ubuntu and OS Foundations — to‘liq ko‘rsatmalar bilan mashqlar
 
+[日本語](../ja/practice.md) · [Русский](../ru/practice.md) · [O‘zbekcha](../uz/practice.md)
+
+> Bu tarjimada amaldagi P0–P6 savollari va qadamlari hali aks etmagan. Lab tekshiradigan amaldagi talablar uchun OS-Linux-Control repositorysidagi yaponcha joriy nusxadan foydalaning.
+
 Qamrov: Guided Practice P1–P6. Muhit: Ubuntu Server 24.04 LTS. Har bir P mashqidan keyin shu ko‘nikma bilan Mission Mni mustaqil bajaring.
 
 ## 0. Umumiy qoidalar

@@ -1,5 +1,7 @@
 # Глава 7. Права доступа и общий каталог
 
+[日本語](../../ja/textbook/07-permissions-and-sharing.md) · [Русский](../../ru/textbook/07-permissions-and-sharing.md) · [O‘zbekcha](../../uz/textbook/07-permissions-and-sharing.md)
+
 ## 7.1 Права доступа определяют, кому что разрешено
 
 Базовые **права доступа** Linux задают разрешения на чтение (r: read), запись (w: write) и выполнение (x: execute) для трёх **категорий**: владельца (u: owner user), группы-владельца (g: owner group) и остальных пользователей (o: others).

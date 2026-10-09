@@ -1,5 +1,9 @@
 # Ubuntu and OS Foundations — mustaqil topshiriqlar: Mission Guide
 
+[日本語](../ja/missions.md) · [Русский](../ru/missions.md) · [O‘zbekcha](../uz/missions.md)
+
+> Bu tarjimada amaldagi M1–M7 topshiriqlari hali aks etmagan: eski M0 endi P0 mashqidir. Lab tekshiradigan amaldagi talablar uchun OS-Linux-Control repositorysidagi yaponcha joriy nusxadan foydalaning.
+
 Qamrov: Mission 0–7. Muhit: Ubuntu Server 24.04 LTS. Har bir talaba Missionlarni o‘z sur’atida bajaradi; ular dars soatlariga birma-bir bog‘lanmagan.
 
 Bu hujjat `command`ni talaba o‘zi tanlaydigan M0–M7 topshiriqlaridir. To‘liq, qadamma-qadam ko‘rsatma kerak bo‘lsa, avval `practice.md`dagi P1–P6 mashqlarini bajaring.

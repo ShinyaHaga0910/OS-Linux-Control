@@ -1,5 +1,7 @@
 # 11-bob. Service holatini socket, HTTP va log orqali kuzatish
 
+[日本語](../../ja/textbook/11-sockets-http-and-logs.md) · [Русский](../../ru/textbook/11-sockets-http-and-logs.md) · [O‘zbekcha](../../uz/textbook/11-sockets-http-and-logs.md)
+
 ## 11.1 Service, process va socket munosabati
 
 `systemd` `unit` sozlamasiga binoan `service process`ini ishga tushiradi. Agar `program`ga tarmoq aloqasi kerak bo‘lsa, `system call` orqali `kernel`dan **`socket`** yaratishni so‘raydi. `kernel` IP manzil, aloqa `protocol`i va `port` raqamiga qarab kelgan ma’lumotni tegishli `process`ga yetkazadi.

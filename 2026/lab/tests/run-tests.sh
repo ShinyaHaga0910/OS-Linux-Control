@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 
 root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+python3 "$root_dir/tests/test-language-links.py" "$root_dir/../.."
 checker="$root_dir/scripts/check-aws-environment.sh"
 mock_bin="$root_dir/tests/mock-bin"
 export JDU_STUDENT_USER="$(id -un)"

@@ -1,6 +1,8 @@
 # 初回セットアップと採点システムへの登録
 
-[言語を選ぶ](README.md) · [Русский](student-registration.ru.md) · [O‘zbekcha](student-registration.uz.md)
+[日本語](student-registration.ja.md) · [Русский](student-registration.ru.md) · [O‘zbekcha](student-registration.uz.md)
+
+すでに環境を構築した学生は、初回セットアップを繰り返さず、[既存Labの更新手順](../UPDATE_EXISTING.md)を確認してください。
 
 **教員のコマンドを実行し、自分専用の進捗ダッシュボードを開ければ完了です。** この手順では、演習用サーバーを作り、Google Classroomで使うメールアドレスとサーバーを教員の採点・進捗システムで紐づけます。P0の演習はこの後に行います。
 

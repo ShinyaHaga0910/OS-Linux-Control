@@ -1,5 +1,7 @@
 # 3-bob. GUI, CLI, terminal va shell
 
+[日本語](../../ja/textbook/03-interfaces-and-shell.md) · [Русский](../../ru/textbook/03-interfaces-and-shell.md) · [O‘zbekcha](../../uz/textbook/03-interfaces-and-shell.md)
+
 ## 3.1 Boshqarish oynasi va amalni bajaruvchi programni ajratish
 
 GUI (Graphical User Interface) — oyna, belgi, menyu va ko‘rsatkich yordamida ko‘rib boshqarish usuli. CLI (Command Line Interface) — `command`larni matn sifatida kiritish va natijani matn ko‘rinishida olish usuli. Ikkalasi ham odamning kompyuterga ko‘rsatma berishi uchun kirish nuqtasidir. GUI ishlashi uchun u ichkarida albatta CLIga aylanishi kerak degan qoida yo‘q.

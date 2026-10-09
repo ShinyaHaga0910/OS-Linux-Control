@@ -1,5 +1,7 @@
 # OS-Linux-Control — 2026
 
+学生向けの言語別入口: [日本語](2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/README.md) · [Русский](2026/materials/ubuntu_os_foundations/v1.0.0/docs/ru/README.md) · [O‘zbekcha](2026/materials/ubuntu_os_foundations/v1.0.0/docs/uz/README.md)
+
 Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境です。2026年度は[Introduction-CyberSecurity](https://github.com/ShinyaHaga0910/Introduction-CyberSecurity)という統合科目の前半で使用し、2027年度以降は独立した科目の教材として使えるように管理します。担当教員の個人GitHubアカウントで管理します。
 
 ## 学生向け：2026年度の入口
@@ -76,7 +78,7 @@ Security Groupのinbound ruleは0件です。SSHのTCP 22をインターネッ�
 
 ## 版管理
 
-公開済みの最新リリースは`v1.0.2`です。変更履歴は[CHANGELOG.md](./CHANGELOG.md)とGitHub Releasesで管理します。修正のたびに新しい版番号のディレクトリは作りません。Labの今後の編集対象は`2026/lab/`です。`2026/v1.0.0/`は既存学生のRaw URLを壊さないために残す互換用スナップショットで、編集しません。配布版はGitタグとReleaseで確認してください。既存の教員・学生Labには[削除せずに更新する手順](./2026/lab/UPDATE_EXISTING.md)を使用します。
+公開済みの最新リリースは`v1.0.3`です。変更履歴は[CHANGELOG.md](./CHANGELOG.md)とGitHub Releasesで管理します。修正のたびに新しい版番号のディレクトリは作りません。Labの今後の編集対象は`2026/lab/`です。`2026/v1.0.0/`は既存学生のRaw URLを壊さないために残す互換用スナップショットで、編集しません。配布版はGitタグとReleaseで確認してください。既存の教員・学生Labには[削除せずに更新する手順](./2026/lab/UPDATE_EXISTING.md)を使用します。
 
 Gitの過去のコミットと既存の`2026/v1.0.0/`のRaw URLを保持します。既存Labの稼働中設定は自動変更しません。次の学期の新規配布には`2026/lab/`を使用します。
 
