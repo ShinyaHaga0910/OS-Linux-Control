@@ -1,5 +1,7 @@
 # 10-bob. Systemd va service
 
+[日本語](../../ja/textbook/10-services-and-systemd.md) · [Русский](../../ru/textbook/10-services-and-systemd.md) · [O‘zbekcha](../../uz/textbook/10-services-and-systemd.md)
+
 ## 10.1 Service nima?
 
 **`service`** — foydalanuvchi har safar `terminal`dan qo‘lda ishga tushirmasa ham, `OS` fonda boshqaradigan va davomli funksiya beradigan `program`. Veb-`server`, SSH `server`, vaqtni sinxronlash va `log`larni boshqarish bunga misol. Biroq tizimdagi har bir `process` `service` emas. Har bir `service` ham tarmoqda kutadigan `port`ga ega bo‘lishi shart emas.

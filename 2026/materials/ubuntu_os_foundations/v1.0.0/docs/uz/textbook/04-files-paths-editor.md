@@ -1,5 +1,7 @@
 # 4-bob. File, directory, path va tahrirlash
 
+[日本語](../../ja/textbook/04-files-paths-editor.md) · [Русский](../../ru/textbook/04-files-paths-editor.md) · [O‘zbekcha](../../uz/textbook/04-files-paths-editor.md)
+
 ## 4.1 File ichidagi ma’lumot va metadata
 
 `file` faqat ichidagi matn yoki ma’lumotdan iborat emas. Uning nomi, turi, egasi (`owner`), `group`i, `permission`i, hajmi va oxirgi o‘zgartirilgan vaqti kabi **`metadata`**si ham bor. `cat` bilan ko‘rsatilganda mazmuni aynan bir xil bo‘lgan ikkita `file`ning egasi yoki `permission`i farq qilsa, `OS` ularni turli holatdagi obyektlar deb hisoblaydi.

@@ -17,11 +17,13 @@ FENCE = re.compile(r"^```([^\n]*)\n(.*?)^```", re.MULTILINE | re.DOTALL)
 IMAGE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 URL = re.compile(r"https?://[^)`\s]+")
 SECTION = re.compile(r"^## (\d+\.\d+)\b", re.MULTILINE)
+LANGUAGE_NAV = re.compile(r"^\[日本語\]\([^)]+\) · \[Русский\]\([^)]+\) · \[O‘zbekcha\]\([^)]+\)$", re.MULTILINE)
 
 
 def check_pair(source: Path, target: Path) -> list[str]:
-    ja = source.read_text(encoding="utf-8")
-    uz = target.read_text(encoding="utf-8")
+    # GitHub-only language links are navigation, not translated lesson content.
+    ja = LANGUAGE_NAV.sub("", source.read_text(encoding="utf-8"))
+    uz = LANGUAGE_NAV.sub("", target.read_text(encoding="utf-8"))
     errors = []
     def runnable(text: str) -> list[tuple[str, str]]:
         result = []

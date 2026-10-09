@@ -1,5 +1,7 @@
 # 12-bob. SSH orqali masofadan boshqarish va file uzatish
 
+[日本語](../../ja/textbook/12-ssh-and-file-transfer.md) · [Русский](../../ru/textbook/12-ssh-and-file-transfer.md) · [O‘zbekcha](../../uz/textbook/12-ssh-and-file-transfer.md)
+
 ## 12.1 Ulanish manbasi va manzili
 
 Masofadagi kompyuterni boshqarayotganda `command`ni kiritayotgan tomon bilan uni bajaradigan tomonni ajrating. SSH ulanishini boshlaydigan muhit **`local`**, ulaniladigan muhit **`remote`** deyiladi. Bu nomlar amalni bajarayotgan odamning nuqtayi nazariga bog‘liq. `local` doim stol ustingizdagi fizik PC emas. Agar brauzerda ochilgan bulut `terminal`idan SSH bajarilsa, o‘sha `terminal` ishlayotgan muhit ulanish manbasi bo‘ladi.

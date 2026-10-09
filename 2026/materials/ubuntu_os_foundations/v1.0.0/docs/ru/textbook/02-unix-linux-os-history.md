@@ -1,5 +1,7 @@
 # Глава 2. От Unix до современных ОС
 
+[日本語](../../ja/textbook/02-unix-linux-os-history.md) · [Русский](../../ru/textbook/02-unix-linux-os-history.md) · [O‘zbekcha](../../uz/textbook/02-unix-linux-os-history.md)
+
 ## Зачем изучать историю
 
 Цель исторического обзора — не запомнить даты. Он помогает понять, почему Linux, macOS и Windows используют похожие термины, но нередко разные команды. Важно избежать ошибок: «Linux прямо унаследовал исходный код Unix», «macOS — разновидность Linux», «Windows произошла от Unix».

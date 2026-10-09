@@ -1,5 +1,7 @@
 # 第7章 アクセス権と共有ディレクトリ
 
+[日本語](../../ja/textbook/07-permissions-and-sharing.md) · [Русский](../../ru/textbook/07-permissions-and-sharing.md) · [O‘zbekcha](../../uz/textbook/07-permissions-and-sharing.md)
+
 ## 7.1 アクセス権は誰に何を許すかを表す
 
 基本的なLinuxの**アクセス権（パーミッション）**は、所有ユーザー（u: owner user）、所有グループ（g: owner group）、その他（o: others）という3つの**クラス（区分）**に対して、読み取り（r: read）、書き込み（w: write）、実行（x: execute）の各権限を設定する。

@@ -1,5 +1,7 @@
 # 9-bob. Package va dastur o‘rnatish
 
+[日本語](../../ja/textbook/09-packages-and-apt.md) · [Русский](../../ru/textbook/09-packages-and-apt.md) · [O‘zbekcha](../../uz/textbook/09-packages-and-apt.md)
+
 ## 9.1 Nima uchun package kerak?
 
 Amalda ishlatiladigan dasturiy ta’minot doim bitta bajariladigan `file`dan iborat bo‘lmaydi. Unga umumiy kutubxonalar, sozlama `file`lari namunalari, manual va ma’lumot `file`lari ham kerak bo‘lishi mumkin. **`package`** — shu o‘zaro bog‘liq `file`lar, versiya ma’lumoti, bog‘liqliklar hamda o‘rnatish va o‘chirish skriptlarini birlashtiradigan tarqatish birligi.

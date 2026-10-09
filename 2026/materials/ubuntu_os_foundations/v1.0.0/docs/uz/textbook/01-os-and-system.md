@@ -1,5 +1,7 @@
 # 1-bob. Kompyuter va operatsion tizim
 
+[日本語](../../ja/textbook/01-os-and-system.md) · [Русский](../../ru/textbook/01-os-and-system.md) · [O‘zbekcha](../../uz/textbook/01-os-and-system.md)
+
 ## Ushbu bobdan keyin javob bera oladigan savollar
 
 - Kompyuter qanday asosiy qismlar va kiritish-chiqarish qurilmalaridan iborat?

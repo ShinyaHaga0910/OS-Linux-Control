@@ -1,5 +1,7 @@
 # 5-bob. Matn va kirish-chiqishni birlashtirish
 
+[日本語](../../ja/textbook/05-text-and-streams.md) · [Русский](../../ru/textbook/05-text-and-streams.md) · [O‘zbekcha](../../uz/textbook/05-text-and-streams.md)
+
 ## 5.1 Nima uchun sozlama va loglar ko‘pincha matn bo‘ladi?
 
 Ubuntu va boshqa Linux tizimlarida ko‘plab sozlamalar hamda `log`lar oddiy matn sifatida saqlanadi. Shunda maxsus GUI bo‘lmasa ham ularni o‘qish, solishtirish va qidirish oson. Natijani boshqa `command`ga ham uzatish mumkin. Lekin har bir sozlama yoki `log` oddiy matnli `file` bo‘lishi shart emas. Masalan, `systemd journal` ma’lumotni ikkilik formatda saqlaydi va uni maxsus `command` orqali ko‘rish mumkin.

@@ -1,5 +1,7 @@
 # Ubuntu va OS asoslari: atamalar va commandlar jadvali
 
+[日本語](../ja/reference.md) · [Русский](../ru/reference.md) · [O‘zbekcha](../uz/reference.md)
+
 Qamrov: Ubuntu Server 24.04 LTS / ochiq Lab v1.0.0. Bu yodlash uchun jadval emas. Maqsadga mos `command`ni toping, kerakli `option` va tekshirish usulini kitobdan qayta o‘qing.
 
 ## Atamalar

@@ -1,5 +1,7 @@
 # 第1章 コンピューターとオペレーティングシステム
 
+[日本語](../../ja/textbook/01-os-and-system.md) · [Русский](../../ru/textbook/01-os-and-system.md) · [O‘zbekcha](../../uz/textbook/01-os-and-system.md)
+
 ## この章で答えられるようになる問い
 
 - コンピューターは、どのような部品と入出力装置から構成されるか。

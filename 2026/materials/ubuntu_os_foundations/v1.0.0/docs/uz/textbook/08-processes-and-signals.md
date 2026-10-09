@@ -1,5 +1,7 @@
 # 8-bob. Program, process, PID va signal
 
+[日本語](../../ja/textbook/08-processes-and-signals.md) · [Русский](../../ru/textbook/08-processes-and-signals.md) · [O‘zbekcha](../../uz/textbook/08-processes-and-signals.md)
+
 ## 8.1 Program va process bir xil emas
 
 **`program`** — saqlash qurilmasidagi ko‘rsatmalar va ularga tegishli ma’lumot `file`lari. **`process`** esa shu `program` xotiraga yuklanib, `OS` tomonidan bajarilayotgan holat. Bir `program`dan bir nechta `process` boshlash mumkin. Har biriga alohida **PID (`process` ID)** raqami beriladi.
