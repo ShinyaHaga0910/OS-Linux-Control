@@ -18,6 +18,8 @@ IMAGE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
 URL = re.compile(r"https?://[^)`\s]+")
 SECTION = re.compile(r"^## (\d+\.\d+)\b", re.MULTILINE)
 LANGUAGE_NAV = re.compile(r"^\[日本語\]\([^)]+\) · \[Русский\]\([^)]+\) · \[O‘zbekcha\]\([^)]+\)$", re.MULTILINE)
+TASK_ID = re.compile(r"^## ([PM]\d+)\b", re.MULTILINE)
+NUMBERED_ITEM = re.compile(r"^\d+\.\s", re.MULTILINE)
 
 
 def check_pair(source: Path, target: Path) -> list[str]:
@@ -34,6 +36,27 @@ def check_pair(source: Path, target: Path) -> list[str]:
         return result
     if runnable(ja) != runnable(uz):
         errors.append("runnable code blocks differ")
+    if source.name == "practice.md":
+        ja_comments = [[line for line in body.splitlines() if line.lstrip().startswith("#")]
+                       for _, body in FENCE.findall(ja)]
+        target_comments = [[line for line in body.splitlines() if line.lstrip().startswith("#")]
+                           for _, body in FENCE.findall(uz)]
+        if [len(block) for block in ja_comments] != [len(block) for block in target_comments]:
+            errors.append("command-purpose comments differ")
+    if source.name in {"practice.md", "missions.md"}:
+        expected = [f"P{i}" for i in range(7)] if source.name == "practice.md" else [f"M{i}" for i in range(1, 8)]
+        if TASK_ID.findall(ja) != expected or TASK_ID.findall(uz) != expected:
+            errors.append("P/M section IDs differ")
+        def numbered_counts(text: str) -> list[int]:
+            headings = list(TASK_ID.finditer(text))
+            return [len(NUMBERED_ITEM.findall(text[m.end():headings[i + 1].start() if i + 1 < len(headings) else len(text)]))
+                    for i, m in enumerate(headings)]
+        if numbered_counts(ja) != numbered_counts(uz):
+            errors.append("numbered task counts differ")
+        if source.name == "practice.md":
+            step = re.compile(r"^#### (?:手順|Шаг |\d+-bosqich:)", re.MULTILINE)
+            if len(step.findall(ja)) != len(step.findall(uz)):
+                errors.append("guided step counts differ")
     if [Path(path).name for path in IMAGE.findall(ja)] != [Path(path).name for path in IMAGE.findall(uz)]:
         errors.append("figure identities differ")
     if URL.findall(ja) != URL.findall(uz):
@@ -52,7 +75,11 @@ def check_pair(source: Path, target: Path) -> list[str]:
 
 def main() -> int:
     manifest = json.loads((ROOT / "localization" / "manifest.json").read_text(encoding="utf-8"))
-    practice_pending = manifest["languages"][LANG].get("practice_status") == "outdated_after_ja_practice_revision"
+    translation_status = manifest["languages"][LANG]
+    if any(translation_status.get(f"{kind}_status") != "synced_to_ja_pending_native_review"
+           for kind in ("practice", "missions", "reference", "afterword")):
+        print(f"FAIL: {LANG} translation status is not current")
+        return 1
     with (ROOT / "localization" / "terminology.csv").open(encoding="utf-8", newline="") as stream:
         rows = list(csv.DictReader(stream))
     if not rows or any(not row[LANG].strip() for row in rows):
@@ -79,9 +106,6 @@ def main() -> int:
         failed += 1
     for name in ("practice.md", "missions.md", "reference.md"):
         target = TARGET_ROOT / name
-        if name == "practice.md" and practice_pending and target.is_file():
-            print(f"PENDING: {name}: Japanese source was revised; {LANG} translation has not been updated")
-            continue
         errors = check_pair(ROOT / "docs" / "ja" / name, target) if target.is_file() else [f"missing {LANG} file"]
         print(f"{'FAIL' if errors else 'PASS'}: {name}" + (f": {', '.join(errors)}" if errors else ""))
         failed += bool(errors)
@@ -93,7 +117,7 @@ def main() -> int:
         if re.search(r"[\u3040-\u30ff\u3400-\u9fff]", figure.read_text(encoding="utf-8")):
             print(f"FAIL: Japanese text remains in {figure.name}")
             failed += 1
-    print(f"Checked {len(found)} {LANG} chapter(s); {failed} failed; {int(practice_pending)} practice translation pending.")
+    print(f"Checked {len(found)} {LANG} chapter(s); {failed} failed; translation pending native review.")
     return 1 if failed else 0
 
 

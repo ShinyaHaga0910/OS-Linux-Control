@@ -14,8 +14,8 @@ META = "Ubuntu Server 24.04 LTS / открытый Lab v1.0.0<br/>JDU Cyber Secu
 def main() -> None:
     sets = [
         ("Операционная система и основные команды Linux", "", sorted(materials.TEXTBOOK.glob("*.md")), "ubuntu_os_textbook_ru", True),
-        ("Основы Ubuntu и ОС: пошаговые упражнения", "P1–P6", [RU / "practice.md"], "ubuntu_os_guided_practice_ru", False),
-        ("Основы Ubuntu и ОС: самостоятельные задания", "M0–M7", [RU / "missions.md"], "ubuntu_os_missions_ru", False),
+        ("Основы Ubuntu и ОС: пошаговые упражнения", "P0–P6: задания и решения", [RU / "practice.md"], "ubuntu_os_guided_practice_ru", False),
+        ("Основы Ubuntu и ОС: самостоятельные задания", "M1–M7", [RU / "missions.md"], "ubuntu_os_missions_ru", False),
         ("Основы Ubuntu и ОС: справочник", "Термины и команды", [RU / "reference.md"], "ubuntu_os_reference_ru", False),
     ]
     for title, subtitle, sources, stem, chapters in sets:

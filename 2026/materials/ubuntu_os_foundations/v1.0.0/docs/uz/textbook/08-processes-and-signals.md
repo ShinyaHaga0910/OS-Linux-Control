@@ -40,10 +40,9 @@ Ubuntuda `systemd` `service`larning boshlanishi va holatini boshqaradi. `service
 ```bash
 systemctl list-units --type=service
 systemctl status systemd-journald.service --no-pager
-systemctl show --property MainPID --value systemd-journald.service
 ```
 
-`status`dagi **Main PID** `service`ning asosiy `process` PIDidir. `show --property MainPID --value` faqat shu raqamni chiqaradi. To‘xtagan `service` uchun `0` ko‘rinishi mumkin. Raqamni `ps -fp PID` bilan solishtirib, boshqaruv ma’lumoti va haqiqiy `process` o‘rtasidagi bog‘liqlikni ko‘ring. `ps` `process`ni, `systemctl` `service`ning boshqaruv holatini tekshiradi. `service`ni ishga tushirish va avtomatik boshlash 10-bobda ko‘riladi.
+`status`dagi **Main PID** `service`ning asosiy `process` PIDidir. Ko‘rsatilgan raqamni yozib, `ps -fp PID`dagi `PID` o‘rniga qo‘ying. Shunda `service` boshqaruv ma’lumoti va haqiqiy `process`ni bog‘laysiz. `ps` `process`ni, `systemctl` `service`ning boshqaruv holatini ko‘rsatadi. `systemd` boshqaradigan `service`ni to‘xtatishda PIDga bevosita `signal` yubormasdan, `systemctl stop SERVICE_NAME`ni ishlating. To‘xtatishni `systemd` boshqaradi. Avtomatik ishga tushish 10-bobda ko‘riladi.
 
 ## 8.4 Foreground va background
 

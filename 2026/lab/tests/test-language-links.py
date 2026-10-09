@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check language navigation without treating old translations as current tasks."""
+"""Check language navigation and current translation-status notices."""
 
 from pathlib import Path
 import re
@@ -106,4 +106,4 @@ practice = (DOCS / "ja/practice.md").read_bytes()
 assert practice == (DOCS / "ja/GUIDED_PRACTICE.md").read_bytes()
 assert practice == (LAB / "GUIDED_PRACTICE.md").read_bytes()
 assert (DOCS / "ja/missions.md").read_bytes() == (LAB / "MISSION_GUIDE.md").read_bytes()
-print("PASS current student Markdown language navigation, counterpart links, translation warnings, and update-guide commands")
+print("PASS current student Markdown language navigation, counterpart links, translation status, and update-guide commands")

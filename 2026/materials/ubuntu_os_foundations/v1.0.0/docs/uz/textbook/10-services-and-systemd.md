@@ -70,12 +70,11 @@ systemctl show --property MainPID --value jdu-status.service
 
 8-bobda Main PID orqali `process` topilgan edi. Endi `unit`dagi `User=`, `ExecStart=`, `WorkingDirectory=` qiymatlarini amaldagi `process` bilan solishtiring. `systemctl status` `unit` yuklanganini, ishlayotganini (`active`), Main PID va yaqindagi `log`larni ko‘rsatadi. Natija uzun bo‘lsa `pager` ochilishi mumkin; undan `q` bilan chiqing. `systemctl show` kerakli `property` qiymatini alohida chiqaradi.
 
-Main PIDni olgach, `unit` sozlamasi va ishlab turgan `process` mosligini tekshiring.
+Main PIDni olgach, `unit` sozlamasi va ishlab turgan `process` mosligini tekshiring. Quyidagi `1234` faqat misol uchun: uni o‘z serveringizda ko‘rsatilgan Main PIDga almashtiring.
 
 ```bash
-M4_PID="$(systemctl show --property MainPID --value jdu-status.service)"
-ps -p "$M4_PID" -o pid,user,comm,args
-sudo readlink -f "/proc/$M4_PID/cwd"
+ps -p 1234 -o pid,user,comm,args
+sudo readlink -f /proc/1234/cwd
 ```
 
 | `unit` sozlamasi | Haqiqiy `process`da tekshiriladigan joy |

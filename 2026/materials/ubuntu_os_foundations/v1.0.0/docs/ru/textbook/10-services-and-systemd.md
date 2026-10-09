@@ -70,12 +70,11 @@ systemctl show --property MainPID --value jdu-status.service
 
 В главе 8 мы находили процесс по Main PID. Теперь сопоставим `User=`, `ExecStart=`, `WorkingDirectory=` в юните с реальным процессом. `systemctl status` показывает загрузку и состояние юнита, Main PID и последние связанные записи журнала. Если вывод открылся в постраничном просмотрщике, нажмите `q`. `systemctl show` выдаёт значение конкретного свойства.
 
-Получив Main PID, проверьте соответствие процесса настройкам:
+Получив Main PID, проверьте соответствие процесса настройкам. Число `1234` ниже служит только примером: замените его на показанный на вашем сервере Main PID.
 
 ```bash
-M4_PID="$(systemctl show --property MainPID --value jdu-status.service)"
-ps -p "$M4_PID" -o pid,user,comm,args
-sudo readlink -f "/proc/$M4_PID/cwd"
+ps -p 1234 -o pid,user,comm,args
+sudo readlink -f /proc/1234/cwd
 ```
 
 | Настройка юнита | Где проверить у процесса |
