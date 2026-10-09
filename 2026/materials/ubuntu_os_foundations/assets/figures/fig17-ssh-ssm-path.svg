@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1183 198"><svg class="d2-3669815686 d2-svg" width="1183" height="198" viewBox="-26 -26 1183 198"><rect x="-26" y="-26" width="1183" height="198" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-3669815686 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-3669815686 .text-italic {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-3669815686 .fill-N2{fill:#676C7E;}
+		.d2-3669815686 .fill-B1{fill:#0D32B2;}
+		.d2-3669815686 .stroke-B1{stroke:#0D32B2;}
+		.d2-3669815686 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="bG9jYWw= boundary"><g class="shape" ><rect x="12" y="12" width="424" height="122" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="224" y="58.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="224" dy="0">接続元（SSHクライアント）</tspan><tspan x="224" dy="25.666667">ユーザー秘密鍵を保管</tspan><tspan x="224" dy="25.666667">ホスト公開鍵を確認</tspan></text></g><g class="cmVtb3Rl boundary"><g class="shape" ><rect x="756" y="12" width="363" height="122" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="937.5" y="58.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="937.5" dy="0">接続先（SSHサーバー）</tspan><tspan x="937.5" dy="25.666667">ホスト秘密鍵を保管</tspan><tspan x="937.5" dy="25.666667">ユーザー公開鍵で認証</tspan></text></g><g class="KGxvY2FsIC0mZ3Q7IHJlbW90ZSlbMF0="><marker id="mk-d2-3669815686-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 438.5 73 L 751.5 73" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3669815686-3488378134)" mask="url(#d2-3669815686)" /><text x="596" y="79" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">暗号化されたSSH通信</text></g><mask id="d2-3669815686" maskUnits="userSpaceOnUse" x="-26" y="-26" width="1183" height="198">
+<rect x="-26" y="-26" width="1183" height="198" fill="white"></rect>
+<rect x="504" y="63" width="184" height="21" fill="black"></rect>
+</mask></svg></svg>

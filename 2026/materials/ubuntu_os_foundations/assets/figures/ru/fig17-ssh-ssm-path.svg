@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 2056 198"><svg class="d2-237680134 d2-svg" width="2056" height="198" viewBox="-26 -26 2056 198"><rect x="-26" y="-26" width="2056" height="198" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-237680134 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-237680134 .text-italic {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-237680134 .fill-N2{fill:#676C7E;}
+		.d2-237680134 .fill-B1{fill:#0D32B2;}
+		.d2-237680134 .stroke-B1{stroke:#0D32B2;}
+		.d2-237680134 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="bG9jYWw= boundary"><g class="shape" ><rect x="12" y="12" width="777" height="122" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="400.5" y="58.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="400.5" dy="0">источник (SSH-клиент)</tspan><tspan x="400.5" dy="25.666667">хранит закрытый ключ пользователя</tspan><tspan x="400.5" dy="25.666667">проверяет открытый ключ хоста</tspan></text></g><g class="cmVtb3Rl boundary"><g class="shape" ><rect x="1143" y="12" width="849" height="122" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="1567.5" y="58.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="1567.5" dy="0">адресат (SSH-сервер)</tspan><tspan x="1567.5" dy="25.666667">хранит закрытый ключ хоста</tspan><tspan x="1567.5" dy="25.666667">проверяет открытый ключ пользователя</tspan></text></g><g class="KGxvY2FsIC0mZ3Q7IHJlbW90ZSlbMF0="><marker id="mk-d2-237680134-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 791.5 73 L 1138.5 73" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-237680134-3488378134)" mask="url(#d2-237680134)" /><text x="966" y="79" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">зашифрованная связь SSH</text></g><mask id="d2-237680134" maskUnits="userSpaceOnUse" x="-26" y="-26" width="2056" height="198">
+<rect x="-26" y="-26" width="2056" height="198" fill="white"></rect>
+<rect x="857" y="63" width="218" height="21" fill="black"></rect>
+</mask></svg></svg>

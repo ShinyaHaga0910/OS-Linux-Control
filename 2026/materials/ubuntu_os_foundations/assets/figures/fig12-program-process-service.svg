@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 863 400"><svg class="d2-1722582835 d2-svg" width="863" height="400" viewBox="-37 -37 863 400"><rect x="-37" y="-37" width="863" height="400" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-1722582835 .text-bold {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-1722582835 .fill-B1{fill:#0D32B2;}
+		.d2-1722582835 .stroke-B1{stroke:#0D32B2;}
+		.d2-1722582835 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="cGFja2FnZQ== neutral"><g class="shape" ><rect x="0" y="0" width="411" height="74" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="205.5" y="46.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">パッケージ</text></g><g class="cHJvZ3JhbQ== hardware"><g class="shape" ><rect x="0" y="102" width="411" height="98" rx="10" stroke="#B66516" fill="#FFF0D6" style="stroke-width:2;" /></g><text x="205.5" y="148.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="205.5" dy="0">プログラム</tspan><tspan x="205.5" dy="26.5">ディスク上の実行ファイル</tspan></text></g><g class="cHJvY2Vzcw== app"><g class="shape" ><rect x="0" y="228" width="411" height="98" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="205.5" y="274.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="205.5" dy="0">プロセス</tspan><tspan x="205.5" dy="26.5">実行中のプログラム</tspan></text></g><g class="c2VydmljZQ== os"><g class="shape" ><rect x="439" y="0" width="350" height="149" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="614" y="72" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="614" dy="0">サービス</tspan><tspan x="614" dy="26.5">継続して提供する機能</tspan></text></g><g class="c3lzdGVtZA== identity"><g class="shape" ><rect x="439" y="177" width="350" height="149" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="614" y="249" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="614" dy="0">systemd</tspan><tspan x="614" dy="26.5">起動・停止・監視</tspan></text></g><g class="KHBhY2thZ2UgLSZndDsgcHJvZ3JhbSlbMF0="><marker id="mk-d2-1722582835-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 205.5 76 L 205.5 98" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1722582835-3488378134)" mask="url(#d2-1722582835)" /></g><g class="KHByb2dyYW0gLSZndDsgcHJvY2VzcylbMF0="><path d="M 205.5 202 L 205.5 224" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1722582835-3488378134)" mask="url(#d2-1722582835)" /></g><g class="KHN5c3RlbWQgLSZndDsgcHJvY2VzcylbMF0="><path d="M 437.504739 262.137604 L 414.490521 263.724792" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1722582835-3488378134)" mask="url(#d2-1722582835)" /></g><g class="KHByb2Nlc3MgLSZndDsgc2VydmljZSlbMF0="><path d="M 305.788854 227.605573 L 460.422291 150.288854" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1722582835-3488378134)" mask="url(#d2-1722582835)" /></g><mask id="d2-1722582835" maskUnits="userSpaceOnUse" x="-37" y="-37" width="863" height="400">
+<rect x="-37" y="-37" width="863" height="400" fill="white"></rect>
+
+</mask></svg></svg>

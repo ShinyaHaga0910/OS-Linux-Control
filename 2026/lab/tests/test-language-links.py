@@ -9,7 +9,7 @@ from urllib.parse import unquote, urlparse
 
 ROOT = Path(sys.argv[1]).resolve()
 LAB = ROOT / "2026/lab"
-DOCS = ROOT / "2026/materials/ubuntu_os_foundations/v1.0.0/docs"
+DOCS = ROOT / "2026/materials/ubuntu_os_foundations/docs"
 LABELS = ("日本語", "Русский", "O‘zbekcha")
 LANGS = ("ja", "ru", "uz")
 LINK = re.compile(r"\[(日本語|Русский|O‘zbekcha)\]\(([^)]+)\)")

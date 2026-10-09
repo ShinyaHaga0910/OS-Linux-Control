@@ -1,6 +1,6 @@
 # OS-Linux-Control — 2026
 
-学生向けの言語別入口: [日本語](2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/README.md) · [Русский](2026/materials/ubuntu_os_foundations/v1.0.0/docs/ru/README.md) · [O‘zbekcha](2026/materials/ubuntu_os_foundations/v1.0.0/docs/uz/README.md)
+学生向けの言語別入口: [日本語](2026/materials/ubuntu_os_foundations/docs/ja/README.md) · [Русский](2026/materials/ubuntu_os_foundations/docs/ru/README.md) · [O‘zbekcha](2026/materials/ubuntu_os_foundations/docs/uz/README.md)
 
 Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境です。2026年度は[Introduction-CyberSecurity](https://github.com/ShinyaHaga0910/Introduction-CyberSecurity)という統合科目の前半で使用し、2027年度以降は独立した科目の教材として使えるように管理します。担当教員の個人GitHubアカウントで管理します。
 
@@ -9,10 +9,10 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 | 使う場面 | 開く資料 |
 | --- | --- |
 | 初めて環境を準備する | [初回セットアップ・採点システム登録（日本語・ロシア語・ウズベク語）](./2026/lab/setup/README.md) |
-| OS・Linuxの仕組みを学ぶ | [教科書の章別目次・3言語のPDF一覧](./2026/materials/ubuntu_os_foundations/v1.0.0/README.md) |
+| OS・Linuxの仕組みを学ぶ | [教科書の章別目次・3言語のPDF一覧](2026/materials/ubuntu_os_foundations/README.md) |
 | 手順を見ながら練習する | [練習P0～P6](./2026/lab/GUIDED_PRACTICE.md) |
 | 自分でコマンドを選んで取り組む | [自力課題M1～M7](./2026/lab/MISSION_GUIDE.md) |
-| 用語・コマンド・オプションを調べる | [用語集・コマンド早見表](./2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/reference.md) |
+| 用語・コマンド・オプションを調べる | [用語集・コマンド早見表](2026/materials/ubuntu_os_foundations/docs/ja/reference.md) |
 | 接続方法や進捗確認を調べる | [Labの使い方](./2026/lab/README.md) |
 | すでにある教員・学生Labを更新する | [既存Labの更新（削除・再構築なし）](./2026/lab/UPDATE_EXISTING.md) |
 
@@ -22,13 +22,13 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 
 - [進捗サーバーの構築・更新](./2026/lab/teacher/README.md)
 - [学生手順の試行](./2026/STUDENT_TRIAL.md)
-- [教科書・演習・採点の対応表](./2026/materials/ubuntu_os_foundations/v1.0.0/instructor/coverage.md)
+- [教科書・演習・採点の対応表](2026/materials/ubuntu_os_foundations/instructor/coverage.md)
 - [教材制作の方針](./COURSE_POLICY.md)・[AI作業の入口](./AGENTS.md)
 - [変更・公開の手順](./CONTRIBUTING.md)
 
 ## 現行の配置
 
-以下はGitで管理している主要な配置です。`v1.0.0`という名前の場所は2つありますが、役割が異なります。
+以下はGitで管理している主要な配置です。現行教材とLabの場所には版番号を付けず、配布版はGitタグとGitHub Releasesで管理します。
 
 ```text
 2026/
@@ -44,24 +44,25 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 │   ├── scripts/                             # 学生用の初期化・採点・進捗コマンド
 │   ├── teacher/                             # 教員用進捗サーバー
 │   └── tests/                               # Labの自動テスト
-├── materials/ubuntu_os_foundations/v1.0.0/  # 教科書の公開パスと制作元
+├── materials/ubuntu_os_foundations/         # 現行教材の正本と配布物
 │   ├── docs/{ja,uz,ru}/                     # 言語別の章・演習・課題・早見表
 │   ├── assets/                               # 図と図の生成元
 │   ├── build/                                # PDF・HTMLの生成プログラム
 │   ├── localization/                         # 翻訳状態・用語管理
 │   ├── output/html/                          # 日本語HTML 4冊
-│   └── output/pdf/                           # A4 PDF、各言語4冊
+│   ├── output/pdf/                           # A4 PDF、各言語4冊
+│   └── v1.0.0/                               # 配布済み教材URLの互換入口・生成コピー
 └── v1.0.0/                                  # 旧LabのRaw URLを守る互換コピー。編集しない
 ```
 
-教材の`materials/.../v1.0.0/`は公開中の教材パスです。`2026/v1.0.0/`は旧Labの互換コピーで、現在の演習・構築手順の入口ではありません。Labの変更は`2026/lab/`で行います。
+現行教材は`2026/materials/ubuntu_os_foundations/`で更新します。その中の`v1.0.0/`は配布済み教材URLのための互換入口です。Markdownは移行先を案内し、PDF・HTML・画像は現行の生成コピーを保ちます。手動では編集しません。別の`2026/v1.0.0/`は旧Labの互換スナップショットで、更新しません。Labの変更は`2026/lab/`で行います。
 
 - [実習Labの説明](./2026/lab/README.md)
-- [教科書と制作元の説明](./2026/materials/ubuntu_os_foundations/v1.0.0/README.md)
-- [教科書PDF](./2026/materials/ubuntu_os_foundations/v1.0.0/output/pdf/ubuntu_os_textbook_ja.pdf)
-- [完全手順付き演習PDF](./2026/materials/ubuntu_os_foundations/v1.0.0/output/pdf/ubuntu_os_guided_practice_ja.pdf)
-- [自力課題PDF](./2026/materials/ubuntu_os_foundations/v1.0.0/output/pdf/ubuntu_os_missions_ja.pdf)
-- [用語集・コマンド早見表PDF](./2026/materials/ubuntu_os_foundations/v1.0.0/output/pdf/ubuntu_os_reference_ja.pdf)
+- [教科書と制作元の説明](2026/materials/ubuntu_os_foundations/README.md)
+- [教科書PDF](2026/materials/ubuntu_os_foundations/output/pdf/ubuntu_os_textbook_ja.pdf)
+- [完全手順付き演習PDF](2026/materials/ubuntu_os_foundations/output/pdf/ubuntu_os_guided_practice_ja.pdf)
+- [自力課題PDF](2026/materials/ubuntu_os_foundations/output/pdf/ubuntu_os_missions_ja.pdf)
+- [用語集・コマンド早見表PDF](2026/materials/ubuntu_os_foundations/output/pdf/ubuntu_os_reference_ja.pdf)
 
 PDFだけでなく、本文のMarkdown、図の生成元、生成プログラムも同じリポジトリに保存しています。日本語版が内容の正本です。ウズベク語・ロシア語のMarkdownとPDFは、現行のP0～P6・M1～M7に内容を合わせたChatGPT翻訳初稿です。母語話者による校閲と学生試読は未実施です。英語版は未作成です。
 

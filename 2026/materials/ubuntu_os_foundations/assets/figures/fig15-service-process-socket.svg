@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1476 397"><svg class="d2-846885515 d2-svg" width="1476" height="397" viewBox="-25 -25 1476 397"><rect x="-25" y="-25" width="1476" height="397" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-846885515 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-846885515 .text-italic {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-846885515 .fill-N2{fill:#676C7E;}
+		.d2-846885515 .fill-B1{fill:#0D32B2;}
+		.d2-846885515 .stroke-B1{stroke:#0D32B2;}
+		.d2-846885515 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="c3lzdGVtZA== os"><g class="shape" ><rect x="12" y="153" width="132" height="74" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="78" y="199.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">systemd</text></g><g class="cHJvY2Vzcw== app"><g class="shape" ><rect x="381" y="130" width="368" height="120" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="565" y="199.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">Webサービスのプロセス</text></g><g class="c29ja2V0 hardware"><g class="shape" ><rect x="1113" y="44" width="301" height="98" rx="10" stroke="#B66516" fill="#FFF0D6" style="stroke-width:2;" /></g><text x="1263.5" y="90.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="1263.5" dy="0">待ち受けソケット</tspan><tspan x="1263.5" dy="26.5">IPアドレス + ポート</tspan></text></g><g class="Y2xpZW50 identity"><g class="shape" ><rect x="523" y="12" width="226" height="98" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="636" y="58.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px"><tspan x="636" dy="0">クライアント</tspan><tspan x="636" dy="26.5">curl</tspan></text></g><g class="Y29udGVudA== neutral"><g class="shape" ><rect x="1113" y="261" width="226" height="74" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="1226" y="307.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">公開ファイル</text></g><g class="am91cm5hbA== neutral"><g class="shape" ><rect x="1113" y="167" width="181" height="74" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="1203.5" y="213.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">journalログ</text></g><g class="KHN5c3RlbWQgLSZndDsgcHJvY2VzcylbMF0="><marker id="mk-d2-846885515-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 146 190 L 377 190" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-846885515-3488378134)" mask="url(#d2-846885515)" /><text x="262.5" y="196" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">起動・監視</text></g><g class="KHByb2Nlc3MgLSZndDsgc29ja2V0KVswXQ=="><path d="M 751 154 L 779 154 S 789 154 789 144 L 789 103 S 789 93 799 93 L 1109 93" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-846885515-3488378134)" mask="url(#d2-846885515)" /><text x="901" y="99" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">作成して待ち受け</text></g><g class="KGNsaWVudCAtJmd0OyBzb2NrZXQpWzBd"><path d="M 751 68.5 L 1109 68.5" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-846885515-3488378134)" mask="url(#d2-846885515)" /><text x="931" y="74" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">HTTP要求</text></g><g class="KHNvY2tldCAtJmd0OyBwcm9jZXNzKVswXQ=="><path d="M 1111 117.5 L 849 117.5 S 839 117.5 839 127.5 L 839 168 S 839 178 829 178 L 753 178" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-846885515-3488378134)" mask="url(#d2-846885515)" /><text x="900.5" y="123" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">接続を渡す</text></g><g class="KHByb2Nlc3MgLSZndDsgY29udGVudClbMF0="><path d="M 751 226 L 779 226 S 789 226 789 236 L 789 288.5 S 789 298.5 799 298.5 L 1109 298.5" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-846885515-3488378134)" mask="url(#d2-846885515)" /><text x="894.5" y="304" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">読み取る</text></g><g class="KHByb2Nlc3MgLSZndDsgam91cm5hbClbMF0="><path d="M 751 204.5 L 1109 204.5" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-846885515-3488378134)" mask="url(#d2-846885515)" /><text x="931.5" y="210" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">記録する</text></g><mask id="d2-846885515" maskUnits="userSpaceOnUse" x="-25" y="-25" width="1476" height="397">
+<rect x="-25" y="-25" width="1476" height="397" fill="white"></rect>
+<rect x="212" y="180" width="101" height="21" fill="black"></rect>
+<rect x="822" y="83" width="158" height="21" fill="black"></rect>
+<rect x="892" y="58" width="78" height="21" fill="black"></rect>
+<rect x="850" y="107" width="101" height="21" fill="black"></rect>
+<rect x="854" y="288" width="81" height="21" fill="black"></rect>
+<rect x="891" y="194" width="81" height="21" fill="black"></rect>
+</mask></svg></svg>

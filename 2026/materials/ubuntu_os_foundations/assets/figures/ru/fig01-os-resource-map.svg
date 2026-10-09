@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1208 411"><svg class="d2-2962497432 d2-svg" width="1208" height="411" viewBox="-38 -38 1208 411"><rect x="-38" y="-38" width="1208" height="411" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-2962497432 .text-bold {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-2962497432 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="cGM= boundary"><g class="shape" ><rect x="0" y="0" width="573" height="335" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="286.5" y="29" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">персональный компьютер</text></g><g class="c2VydmVy boundary"><g class="shape" ><rect x="629" y="0" width="503" height="335" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="880.5" y="29" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">сервер</text></g><g class="cGMudXNlcg== identity"><g class="shape" ><rect x="0" y="39" width="573" height="74" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="286.5" y="85.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">пользователь / ввод-вывод</text></g><g class="cGMuYXBw app"><g class="shape" ><rect x="0" y="113" width="573" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="286.5" y="159.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">приложение</text></g><g class="cGMub3M= os"><g class="shape" ><rect x="0" y="187" width="573" height="74" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="286.5" y="233.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">OS</text></g><g class="cGMuaGFyZHdhcmU= hardware"><g class="shape" ><rect x="0" y="261" width="573" height="74" rx="10" stroke="#B66516" fill="#FFF0D6" style="stroke-width:2;" /></g><text x="286.5" y="307.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">оборудование</text></g><g class="c2VydmVyLnVzZXI= identity"><g class="shape" ><rect x="629" y="39" width="503" height="74" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="880.5" y="85.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">пользователь сети</text></g><g class="c2VydmVyLmFwcA== app"><g class="shape" ><rect x="629" y="113" width="503" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="880.5" y="159.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">серверное приложение</text></g><g class="c2VydmVyLm9z os"><g class="shape" ><rect x="629" y="187" width="503" height="74" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="880.5" y="233.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">OS</text></g><g class="c2VydmVyLmhhcmR3YXJl hardware"><g class="shape" ><rect x="629" y="261" width="503" height="74" rx="10" stroke="#B66516" fill="#FFF0D6" style="stroke-width:2;" /></g><text x="880.5" y="307.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">оборудование</text></g><mask id="d2-2962497432" maskUnits="userSpaceOnUse" x="-38" y="-38" width="1208" height="411">
+<rect x="-38" y="-38" width="1208" height="411" fill="white"></rect>
+
+</mask></svg></svg>

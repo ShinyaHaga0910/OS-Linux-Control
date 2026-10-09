@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1363 498"><svg class="d2-1102039591 d2-svg" width="1363" height="498" viewBox="-38 -38 1363 498"><rect x="-38" y="-38" width="1363" height="498" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-1102039591 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-1102039591 .text-mono {
+	font-family: "d2-1102039591-font-mono";
+}
+
+.d2-1102039591 .text-mono-bold {
+	font-family: "d2-1102039591-font-mono-bold";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-1102039591 .fill-B1{fill:#0D32B2;}
+		.d2-1102039591 .fill-B2{fill:#0D32B2;}
+		.d2-1102039591 .stroke-B1{stroke:#0D32B2;}
+		.d2-1102039591 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="dXBkYXRlX2Zsb3c= boundary"><g class="shape" ><rect x="0" y="0" width="1287" height="196" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="643.5" y="29" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">一覧を更新する処理</text></g><g class="aW5zdGFsbF9mbG93 boundary"><g class="shape" ><rect x="0" y="226" width="1287" height="196" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="643.5" y="255" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">パッケージを導入する処理</text></g><g class="dXBkYXRlX2Zsb3cubWV0YWRhdGE= neutral"><g class="shape" ><rect x="60" y="60" width="442" height="76" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="281" y="107.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">リポジトリのパッケージ情報</text></g><g class="dXBkYXRlX2Zsb3cudXBkYXRl key"><g class="shape" ><rect x="542" y="60" width="188" height="76" rx="10" stroke="#173B65" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="636" y="106.5" fill="#172033" class="text-mono-bold" style="text-anchor:middle;font-size:24px">apt update</text></g><g class="dXBkYXRlX2Zsb3cuaW5kZXg= os"><g class="shape" ><rect x="770" y="60" width="411" height="76" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="975.5" y="107.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">ローカルのパッケージ一覧</text></g><g class="aW5zdGFsbF9mbG93LnBhY2thZ2U= hardware"><g class="shape" ><rect x="60" y="286" width="442" height="76" rx="10" stroke="#B66516" fill="#FFF0D6" style="stroke-width:2;" /></g><text x="281" y="333.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">リポジトリのパッケージ本体</text></g><g class="aW5zdGFsbF9mbG93Lmluc3RhbGw= key"><g class="shape" ><rect x="542" y="286" width="203" height="76" rx="10" stroke="#173B65" fill="#FFFFFF" style="stroke-width:2;" /></g><text x="643.5" y="332.5" fill="#172033" class="text-mono-bold" style="text-anchor:middle;font-size:24px">apt install</text></g><g class="aW5zdGFsbF9mbG93Lmluc3RhbGxlZA== app"><g class="shape" ><rect x="785" y="286" width="442" height="76" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="1006" y="333.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">インストール済みプログラム</text></g><g class="dXBkYXRlX2Zsb3cuKG1ldGFkYXRhIC0mZ3Q7IHVwZGF0ZSlbMF0="><marker id="mk-d2-1102039591-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 504 98 L 538 98" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1102039591-3488378134)" mask="url(#d2-1102039591)" /></g><g class="dXBkYXRlX2Zsb3cuKHVwZGF0ZSAtJmd0OyBpbmRleClbMF0="><path d="M 731.5 98 L 766.5 98" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1102039591-3488378134)" mask="url(#d2-1102039591)" /></g><g class="aW5zdGFsbF9mbG93LihwYWNrYWdlIC0mZ3Q7IGluc3RhbGwpWzBd"><path d="M 503.5 324 L 538.5 324" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1102039591-3488378134)" mask="url(#d2-1102039591)" /></g><g class="aW5zdGFsbF9mbG93LihpbnN0YWxsIC0mZ3Q7IGluc3RhbGxlZClbMF0="><path d="M 747 324 L 781 324" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-1102039591-3488378134)" mask="url(#d2-1102039591)" /></g><g class="KHVwZGF0ZV9mbG93LmluZGV4IC0mZ3Q7IGluc3RhbGxfZmxvdy5pbnN0YWxsKVswXQ=="><marker id="mk-d2-1102039591-2177206569" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B2" stroke-width="2" /> </marker><path d="M 917.847545 137.126674 L 702.804909 283.746653" stroke="#0D32B2" fill="none" class="connection stroke-B2" style="stroke-width:2;stroke-dasharray:8.000000,7.892511;" marker-end="url(#mk-d2-1102039591-2177206569)" mask="url(#d2-1102039591)" /></g><mask id="d2-1102039591" maskUnits="userSpaceOnUse" x="-38" y="-38" width="1363" height="498">
+<rect x="-38" y="-38" width="1363" height="498" fill="white"></rect>
+
+</mask></svg></svg>

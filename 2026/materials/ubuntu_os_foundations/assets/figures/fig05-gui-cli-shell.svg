@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.9.0" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1338 444"><svg class="d2-3091589615 d2-svg" width="1338" height="444" viewBox="-25 -26 1338 444"><rect x="-25" y="-26" width="1338" height="444" rx="0" fill="#FFFFFF" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-3091589615 .text-bold {
+	font-family: "NotoSansJP";
+}
+
+.d2-3091589615 .text-italic {
+	font-family: "NotoSansJP";
+}
+]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-3091589615 .fill-N2{fill:#676C7E;}
+		.d2-3091589615 .fill-B1{fill:#0D32B2;}
+		.d2-3091589615 .stroke-B1{stroke:#0D32B2;}
+		.d2-3091589615 .stroke-B2{stroke:#0D32B2;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.light-code{display: block}.dark-code{display: none}]]></style><g class="dXNlcg== identity"><g class="shape" ><rect x="12" y="156" width="134" height="80" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="79" y="205.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">利用者</text></g><g class="Z3Vp boundary"><g class="shape" ><rect x="226" y="12" width="886" height="174" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="669" y="41" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">GUI</text></g><g class="Y2xp boundary"><g class="shape" ><rect x="226" y="206" width="1049" height="174" rx="10" stroke="#173B65" fill="#FAFBFD" style="stroke-width:3;" /></g><text x="750.5" y="235" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">CLI</text></g><g class="Z3VpLndpbmRvdw== identity"><g class="shape" ><rect x="276" y="62" width="319" height="74" rx="10" stroke="#6941A5" fill="#F0E8FF" style="stroke-width:2;" /></g><text x="435.5" y="108.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">ウィンドウ・ボタン</text></g><g class="Z3VpLmFwcA== app"><g class="shape" ><rect x="774" y="62" width="288" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="918" y="108.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">アプリケーション</text></g><g class="Y2xpLnRlcm1pbmFs neutral"><g class="shape" ><rect x="276" y="256" width="196" height="74" rx="10" stroke="#657187" fill="#F2F4F7" style="stroke-width:2;" /></g><text x="374" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">ターミナル</text></g><g class="Y2xpLnNoZWxs os"><g class="shape" ><rect x="670" y="256" width="134" height="74" rx="10" stroke="#2563A6" fill="#E8F1FF" style="stroke-width:2;" /></g><text x="737" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">シェル</text></g><g class="Y2xpLmNvbW1hbmQ= app"><g class="shape" ><rect x="1060" y="256" width="165" height="74" rx="10" stroke="#23834D" fill="#E5F5EA" style="stroke-width:2;" /></g><text x="1142.5" y="302.5" fill="#172033" class="text-bold" style="text-anchor:middle;font-size:24px">コマンド</text></g><g class="Z3VpLih3aW5kb3cgLSZndDsgYXBwKVswXQ=="><marker id="mk-d2-3091589615-3488378134" markerWidth="10" markerHeight="12" refX="7" refY="6" viewBox="0 0 10 12" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0,0 10,6 0,12" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 597 99 L 770 99" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3091589615-3488378134)" mask="url(#d2-3091589615)" /><text x="684.5" y="105" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">操作</text></g><g class="Y2xpLih0ZXJtaW5hbCAtJmd0OyBzaGVsbClbMF0="><path d="M 474 293 L 666 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3091589615-3488378134)" mask="url(#d2-3091589615)" /><text x="571" y="299" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">文字列</text></g><g class="Y2xpLihzaGVsbCAtJmd0OyBjb21tYW5kKVswXQ=="><path d="M 806 293 L 1056 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3091589615-3488378134)" mask="url(#d2-3091589615)" /><text x="932" y="299" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">解釈して起動</text></g><g class="KHVzZXIgLSZndDsgZ3VpKVswXQ=="><path d="M 148 182.666 L 176 182.666 S 186 182.666 186 172.666 L 186 109 S 186 99 196 99 L 221.5 99" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3091589615-3488378134)" mask="url(#d2-3091589615)" /></g><g class="KHVzZXIgLSZndDsgY2xpKVswXQ=="><path d="M 148 209.332993 L 176 209.332993 S 186 209.332993 186 219.332993 L 186 283 S 186 293 196 293 L 221.5 293" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-3091589615-3488378134)" mask="url(#d2-3091589615)" /></g><mask id="d2-3091589615" maskUnits="userSpaceOnUse" x="-25" y="-26" width="1338" height="444">
+<rect x="-25" y="-26" width="1338" height="444" fill="white"></rect>
+<rect x="663" y="89" width="43" height="21" fill="black"></rect>
+<rect x="540" y="283" width="62" height="21" fill="black"></rect>
+<rect x="872" y="283" width="120" height="21" fill="black"></rect>
+</mask></svg></svg>

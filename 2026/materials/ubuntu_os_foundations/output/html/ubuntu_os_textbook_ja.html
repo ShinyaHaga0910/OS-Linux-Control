@@ -1,0 +1,813 @@
+<!doctype html><html lang='ja'><head><meta charset='utf-8'>
+<title>オペレーティングシステムとLinuxの基本操作</title><style>
+@page { size: A4; margin: 18mm; }
+body { max-width: 174mm; margin: 0 auto; font-family: 'Noto Sans JP','Yu Gothic',sans-serif; color:#172033; line-height:1.78; font-size:10.5pt; }
+h1 { color:#174E84; border-bottom:3px solid #79A9D7; padding-bottom:3mm; page-break-before:always; }
+h1:first-of-type { page-break-before:auto; }
+h2 { color:#245E9A; margin-top:9mm; border-left:4px solid #4A90C2; padding-left:3mm; }
+@media print { h2.chapter-answers { break-before: page; page-break-before: always; } }
+h3 { color:#315E79; margin-top:6mm; }
+h4 { color:#315E79; margin-top:4mm; margin-bottom:2mm; font-size:10.5pt; }
+p { text-align:justify; }
+code { font-family: Consolas,'Noto Sans Mono',monospace; background:#EEF2F7; padding:0 1mm; }
+pre { background:#172033; color:#F6F8FB; padding:4mm; border-radius:2mm; white-space:pre-wrap; overflow-wrap:anywhere; }
+img { display:block; max-width:100%; height:auto; margin:5mm auto 2mm; page-break-inside:avoid; }
+table { width:100%; border-collapse:collapse; margin:4mm 0; font-size:9pt; page-break-inside:auto; }
+th { background:#245E9A; color:white; }
+th,td { border:1px solid #CBD5E1; padding:2mm; vertical-align:top; }
+blockquote { background:#EEF4FB; border-left:4px solid #4A90C2; padding:3mm; }
+.cover { min-height:230mm; display:flex; flex-direction:column; justify-content:center; text-align:center; page-break-after:always; }
+.cover h1 { page-break-before:auto; font-size:26pt; border:0; }
+.meta { color:#526079; }
+</style></head><body>
+<section class='cover'><h1>オペレーティングシステムとLinuxの基本操作</h1><p class='meta'>Ubuntu Server 24.04 LTS / JDU Cyber Security<br>2026-09-25</p></section>
+<h1>第1章 コンピューターとオペレーティングシステム</h1>
+<h2>この章で答えられるようになる問い</h2>
+<ul><li>コンピューターは、どのような部品と入出力装置から構成されるか。</li><li>パソコンとサーバーは、何が同じで何が異なるか。</li><li>OSは、利用者、アプリケーション、ハードウェアの間で何をしているか。</li><li>ユーザー空間とカーネル空間は、どのように分かれているか。</li><li>Linuxシステムは、どのような順序で起動し、サービスを動かすか。</li><li>ユーザー、ホスト、プロセスは、どのように識別されるか。</li></ul>
+<h2>1.1 コンピューターを構成するもの</h2>
+<p>コンピューターは、入力された情報をプログラムに従って処理し、結果を出力または保存する機械である。ノートパソコン、デスクトップパソコン、スマートフォン、クラウド上の仮想サーバーは外見や用途が異なるが、基本的な構成は共通している。</p>
+<ul><li><strong>CPU</strong>: プログラムの命令を読み取り、計算や判断を実行する。</li><li><strong>メモリ</strong>: 実行中のプログラムと、そのプログラムがすぐに使うデータを一時的に置く。</li><li><strong>ストレージ（保存領域）</strong>: 電源を切った後も残すプログラム、設定、文書、データ、ログを保存する。SSDや仮想ディスクなどが該当する。</li><li><strong>入力装置</strong>: 利用者の操作や外部の情報を受け取る。キーボード、マウス、タッチパネルなどがある。</li><li><strong>出力装置</strong>: 処理結果を利用者へ伝える。ディスプレイ、スピーカー、プリンターなどがある。</li><li><strong>ネットワーク装置</strong>: ほかのコンピューターとデータを送受信する。</li></ul>
+<p>利用者がキーボードを押しただけでは、CPUやストレージが自動的に目的を理解するわけではない。入力をアプリケーションへ渡し、アプリケーションが必要とするCPU時間やメモリを割り当て、保存されたファイルを読み書きし、結果を画面やネットワークへ返す共通の仕組みが必要である。その中心を担うのが<strong>オペレーティングシステム（OS）</strong>である。</p>
+<h2>1.2 パソコンとサーバーは同じ種類のコンピューターである</h2>
+<p><strong>パソコン（PC）</strong>は、通常は目の前の利用者がキーボード、マウス、ディスプレイを使って操作する。一方、<strong>サーバー</strong>は、ネットワークを通じてほかのコンピューターへ機能やデータを提供する役割を持つ。Webページを返すWebサーバー、データを保存・検索するデータベースサーバー、名前解決を行うDNSサーバーなどがある。</p>
+<p>サーバーはパソコンとは別原理の機械ではない。どちらにもCPU、メモリ、ストレージ、ネットワーク、OS、アプリケーションがある。違いは主に用途、性能、接続方法、連続稼働の要件である。サーバーには常設のキーボードやディスプレイがないことも多く、管理者は別のコンピューターからネットワーク経由で操作する。AWS EC2のインスタンスも、AWSの設備内に作られた仮想的なコンピューターであり、本授業ではサーバーとして使用する。</p>
+<figure><img src='../../assets/figures/fig01-os-resource-map.svg' alt='パソコンとサーバーに共通する構成'></figure>
+<p><strong>図1-1　パソコンとサーバーは、用途や操作方法が異なっても、アプリケーション、OS、ハードウェアという基本構成を共有する。</strong></p>
+<h2>1.3 OSは何を管理するのか</h2>
+<p>複数のアプリケーションが同時に動くとき、それぞれがCPUやメモリを自由に独占したり、ほかの利用者のファイルを勝手に読んだりしては困る。OSは、ハードウェアとアプリケーションの間に入り、資源の利用を調整し、共通の利用方法と保護機能を提供する。</p>
+<p>本書では、OSの主な働きを次の四つに整理する。</p>
+<ol><li><strong>実行の管理</strong>: プログラムをプロセスとして動かし、CPUを使う順序や実行状態を管理する。</li><li><strong>メモリとファイルの管理</strong>: メモリをプロセスへ割り当て、ストレージをファイルとディレクトリとして利用できる形にする。</li><li><strong>利用者と保護の管理</strong>: ユーザー、グループ、アクセス権（パーミッション）を使い、誰が何を読めるか、変更できるか、実行できるかを判断する。</li><li><strong>通信の管理</strong>: プロセスがネットワークを利用するためのソケットなどの共通機能を提供する。</li></ol>
+<p>OSが共通機能を提供するため、アプリケーションの開発者は、機種ごとにCPUやディスクを直接制御する処理をすべて書き直す必要がない。</p>
+<h2>1.4 GUI、CLI、コマンド</h2>
+<p>人がコンピューターへ操作を伝える方法を<strong>ユーザーインターフェース</strong>という。代表的なものがGUIとCLIである。</p>
+<ul><li><strong>GUI（Graphical User Interface）</strong>: ウィンドウ、アイコン、メニュー、ボタンなどを画面に表示し、主にマウスやタッチ操作で指示する。</li><li><strong>CLI（Command Line Interface）</strong>: 文字で命令を入力し、文字で結果を受け取る。</li></ul>
+<p>CLIで入力する個々の命令を<strong>コマンド</strong>という。コマンド名に、必要に応じてオプションや処理対象を続ける。たとえば、<code>cat</code>はファイルの内容を順に読み取り、標準出力へ表示するコマンドである。</p>
+<pre><code>cat /etc/os-release</code></pre>
+<p>この例では、<code>cat</code>がコマンド名、<code>/etc/os-release</code>が読み取るファイルのパスである。入力された文字列はシェルによって解釈され、<code>cat</code>プログラムが起動される。<code>cat</code>はOSへファイルの読み取りを依頼し、OSはアクセス権を確認してから内容を渡す。コマンド、ターミナル、シェルの違いと基本操作は第3章で詳しく扱う。</p>
+<h2>1.5 ユーザー空間とカーネル空間</h2>
+<p>Linuxを使用しているシステムは、概念上、<strong>ユーザー空間（user space）</strong>と<strong>カーネル空間（kernel space）</strong>に分けて考えられる。</p>
+<p><strong>カーネル</strong>はOSの中核であり、CPU、メモリ、デバイス、ファイルシステム、プロセス、アクセス権、ネットワークを管理する。カーネルは強い権限を持つため、通常のアプリケーションから分離されたカーネル空間で動く。</p>
+<p>GUIを構成するプログラム、ターミナル、シェル、コマンド、Webサーバー、データベースなどは、通常はユーザー空間で動く。GUIとCLIは「別の空間」ではなく、どちらもユーザー空間に存在する操作方法と関連プログラムである。アプリケーションもユーザー空間で動き、必要な処理をカーネルへ依頼する。</p>
+<p>この境界を通ってカーネルの機能を呼び出す仕組みを<strong>システムコール（system call）</strong>という。本書ではシステムコールの番号やプログラミング方法までは扱わない。「ユーザー空間のプログラムが、保護されたカーネル機能を利用するための窓口」と理解すればよい。</p>
+<figure><img src='../../assets/figures/fig02-user-kernel-boundary.svg' alt='ユーザー空間とカーネル空間'></figure>
+<p><strong>図1-2　広い意味でのOS環境は、ユーザー空間で動く各種プログラムと、ハードウェアを管理するカーネル空間から構成される。</strong></p>
+<p>厳密には、「OS」という語をカーネルだけに近い意味で使う場合と、基本コマンドや管理プログラムを含むシステム全体の意味で使う場合がある。本書では、両者を区別する必要がある箇所では「カーネル」と「ユーザー空間のプログラム」という名称を使う。</p>
+<h2>1.6 LinuxとUbuntu</h2>
+<p><strong>Linux</strong>は本来カーネルの名称である。一方、実際に利用できるシステムを作るには、カーネルに加えて、基本コマンド、シェル、ライブラリ、パッケージ管理、サービス管理などが必要になる。これらを組み合わせて導入・更新できる形にまとめたものを<strong>Linuxディストリビューション</strong>という。</p>
+<p>Ubuntu、Debian、FedoraなどはLinuxディストリビューションの例である。本授業では実習環境を統一するためにUbuntu Server 24.04 LTSを使用するが、学習の中心はUbuntuという製品名ではなく、Linuxシステムに共通する基本概念と操作である。ディストリビューションの歴史と違いは第2章で扱う。</p>
+<h2>1.7 電源投入からサービスが動くまで</h2>
+<p>ストレージに保存されているプログラムは、置かれているだけでは処理を行わない。プログラムがメモリへ読み込まれ、CPUによって実行されている状態の存在を<strong>プロセス</strong>という。OSは各プロセスを区別するために、<strong>PID（プロセスID）</strong>という番号を割り当てる。</p>
+<p>Linuxシステムの起動は、概略として次の順序で進む。</p>
+<ol><li>電源投入後、ファームウェアがCPU、メモリ、ストレージなどを初期化する。</li><li>ブートローダーがLinuxカーネルをメモリへ読み込む。</li><li>カーネルがメモリ、デバイス、ファイルシステムなどを利用できる状態にする。</li><li>カーネルが、ユーザー空間で最初に動く管理プロセスを起動する。</li><li>Ubuntu Server 24.04では、その管理プロセスとして<code>systemd</code>が動き、PID 1を持つ。</li><li><code>systemd</code>が設定と依存関係を読み、ネットワーク、SSH、ログ管理、Webサーバー、データベースなどに必要なサービスを起動・監視する。</li></ol>
+<p><strong>サービス</strong>とは、利用者が画面から毎回起動しなくても、バックグラウンドで継続的な機能を提供するよう管理されるプログラムである。サービスを起動すると、実際の処理を行う一つ以上のプロセスが動く。たとえばデータベースサーバーでは、データベースのサービスが管理対象となり、その実体であるプロセスがメモリ上で動き、必要に応じてファイルを読み書きし、ネットワークからの要求を待ち受ける。</p>
+<p><code>systemd</code>はデータベースやWeb処理そのものを実行するプログラムではない。どのサービスを、いつ、どの順番で、どのユーザーとして起動するかを管理する。PID、プロセスの親子関係、シグナルは第8章、<code>systemd</code>、サービス、ユニットは第10章で詳しく扱う。</p>
+<figure><img src='../../assets/figures/fig02b-linux-boot-sequence.svg' alt='Linuxシステムの起動順序'></figure>
+<p><strong>図1-3　カーネルが最初のユーザー空間プロセスを起動し、systemdが必要なサービスプロセスを順序付けて起動する。</strong></p>
+<h2>1.8 ホストとユーザーの識別</h2>
+<p>ネットワークへ接続され、独立したOS環境として動作するコンピューターまたは仮想マシンを、<strong>ホスト（host）</strong>と呼ぶ。ホストには、それを識別するための<strong>ホスト名（hostname）</strong>が設定される。ホスト名はコンピューター側の名前であり、利用者の名前ではない。</p>
+<p>一つのホストには複数のユーザーアカウントを登録できる。OSは、操作を行っているユーザーと所属グループを数値のIDで管理する。ユーザーを識別する番号を<strong>UID（user ID）</strong>、グループを識別する番号を<strong>GID（group ID）</strong>という。<code>id</code>コマンドは、現在のユーザー名、UID、主グループ、補助グループを確認するために使う。</p>
+<p>本演習では、学生PC、AWS CloudShell、Ubuntu EC2という複数のホストを使用する。画面上では同じような文字入力欄に見えても、それぞれが別のOS、ユーザー、プロセス、ファイルを持つ。現在のユーザー名、ホスト名、作業ディレクトリを確認することで、どのホストのどの場所を操作しているかを判断できる。</p>
+<pre><code>id
+hostname
+pwd</code></pre>
+<p><code>id</code>はユーザーとグループの識別情報、<code>hostname</code>はホスト名、<code>pwd</code>は現在の作業ディレクトリを表示する。ユーザー管理は第6章、ファイルとパスは第4章、CloudShellとUbuntuの接続関係は第12章で詳しく扱う。</p>
+<figure><img src='../../assets/figures/fig02c-host-user-identity.svg' alt='ホストとユーザーの識別'></figure>
+<p><strong>図1-4　各ホストは独立したOS環境を持ち、その中でユーザー、プロセス、ファイルが個別に管理される。</strong></p>
+<h2>章末問題</h2>
+<h3>問1　パソコンとサーバーは、何が同じで何が異なるか。</h3>
+<h3>問2　GUI、CLI、ユーザー空間、カーネル空間はどのような関係にあるか。</h3>
+<h3>問3　プログラム、プロセス、サービスの違いは何か。</h3>
+<h3>問4　PID 1のsystemdは何をするか。</h3>
+<h3>問5　ホスト名とユーザー名は何が違うか。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> どちらもCPU、メモリ、ストレージ、ネットワーク、OS、アプリケーションを持つコンピューターである。パソコンは目の前の利用者による対話操作を主な用途とし、サーバーはネットワークを通じてほかのコンピューターへ機能やデータを提供することを主な役割とする。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> GUIとCLIは利用者が操作を伝える方法であり、それを実現するプログラムは通常ユーザー空間で動く。ユーザー空間のプログラムは、システムコールを通じてカーネル空間の機能を利用する。カーネルはハードウェアとOS資源を管理する。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> プログラムはストレージに保存された命令群である。プロセスは、そのプログラムがメモリへ読み込まれて実行されている存在である。サービスは、継続的な機能を提供するようsystemdなどによって管理される単位であり、その実体として一つ以上のプロセスが動く。</p>
+<h3>問4</h3>
+<p><strong>答え:</strong> Ubuntu Server 24.04では、カーネルが最初に起動するユーザー空間の管理プロセスがsystemdであり、PID 1を持つ。systemdは設定と依存関係に従って各種サービスを起動、停止、監視する。</p>
+<h3>問5</h3>
+<p><strong>答え:</strong> ホスト名はOSが動いているコンピューターまたは仮想マシンを識別する名前である。ユーザー名は、そのホスト上で操作権限を持つアカウントを識別する名前である。一つのホストに複数のユーザーを登録できる。</p>
+<h2>参考資料</h2>
+<ul><li>Linux Kernel Organization, <a href="https://docs.kernel.org/">The Linux Kernel documentation</a>（2026-09-21確認）</li><li>Linux man-pages, <a href="https://man7.org/linux/man-pages/man2/intro.2.html">intro(2) - introduction to system calls</a>（2026-09-21確認）</li><li>Ubuntu Manpages, <a href="https://manpages.ubuntu.com/manpages/jammy/man7/boot.7.html">boot(7) - system bootup process</a>（2026-09-21確認）</li><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/">Ubuntu Server documentation</a>（2026-09-21確認）</li></ul>
+<h1>第2章 Unixから現在のOSへ</h1>
+<h2>なぜ歴史を学ぶのか</h2>
+<p>歴史を学ぶ目的は年号の暗記ではない。Linux、macOS、Windowsの間で似た用語や異なるコマンドが使われる理由を理解し、「LinuxはUnixのソースコードをそのまま受け継いだ」「macOSはLinuxの一種である」「WindowsもUnixから派生した」といった誤解を避けるために学ぶ。</p>
+<h2>2.1 Unixが示した考え方</h2>
+<p>Unixは1969年にベル研究所（Bell Labs）で開発が始まった。その後の発展を通じて、階層型ファイルシステム、プロセス、マルチユーザー（複数ユーザー）、小さなツール（small tools）の組み合わせなど、現在のOSにもつながる基本設計思想を広めた。</p>
+<figure><img src='../../assets/historical/dec-pdp-7-computergeek7066-cc-by-sa-4.0.jpg' alt='初期Unixの開発に使われた機種DEC PDP-7の保存機'></figure>
+<p><strong>写真2-1　初期Unixの開発に使われた機種DEC PDP-7の保存機。2018年、米国の博物館で撮影。撮影: ComputerGeek7066、<a href="https://commons.wikimedia.org/wiki/File:DEC_PDP-7.jpg">Wikimedia Commons</a>、<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>（無加工）。</strong></p>
+<p>写真は当時のベル研究所の実機を撮影したものではない。PDP-7は1960年代に製造されたコンピューターで、初期Unixが動いた機種である。</p>
+<p>本書の演習との接点は明確である。ファイルをディレクトリの階層構造で扱う。プログラムをプロセスとして観測する。ユーザーとグループで利用権限を分ける。<code>grep</code>の出力を別のコマンドやファイルへつなぐ。これらはUnix系システムで長く培われてきた操作モデルである。</p>
+<p>「Unix」は単一のコマンド集の名称ではない。また、歴史上のUnixから影響を受けたシステムが、すべて同一のソースコードや正式なUNIX商標認証を持つわけでもない。一般にUnixに似た設計やインターフェースを持つシステムを<strong>Unix系（Unix-like）</strong>と呼ぶ。正式な商標・製品認証の話題と、設計思想上の分類は明確に分けて考える必要がある。</p>
+<h2>2.2 GNUと自由に利用できるUnix互換環境</h2>
+<p>GNUプロジェクト（GNU Project）は1983年に発表され、Unixと互換性のある自由なソフトウェアシステムの構築を目指した。シェル、コンパイラ、基本ユーティリティなど多くのプログラムが開発された。現在の多くのLinuxディストリビューションでは、Linuxカーネルの周囲でGNUのツール群を含む多様なソフトウェアが動作している。</p>
+<p><strong>シェル（shell）</strong>とは、利用者が入力した文字列を読み取り、コマンドとして解釈し、必要なプログラムを起動するユーザー空間のプログラムである。シェルは、単に一つのコマンドを起動するだけではない。引数の区切りを解釈する。入出力のリダイレクトやパイプを組み立てる。環境変数を展開する。複数のコマンドを書いたシェルスクリプトを順番に実行する。このように、利用者と多数のコマンドの間で操作を取りまとめる役割を持つ。</p>
+<p><strong>Bash</strong>はGNUプロジェクトが開発するシェルの一つであり、名称は「Bourne-Again Shell」に由来する。Bash自体はLinuxカーネルでも、ターミナル画面でもない。Ubuntuのターミナルで入力した文字列をBashが解釈し、<code>ls</code>や<code>cp</code>などのプログラムを起動する。<code>cd</code>のようにシェル自身の状態を変える処理は、Bashに組み込まれたコマンドとして実行される。ターミナル、シェル、コマンドの違いは第3章で詳しく扱う。</p>
+<p>ここで大切なのは、カーネル単体では学生が操作するシステム全体にはならないという点である。たとえばBashはシェルであり、GNU coreutilsは<code>ls</code>や<code>cp</code>などの基本コマンド群を提供する。さらにパッケージマネージャー、systemd、ライブラリ、設定ファイル、各種アプリケーションが組み合わさることで初めて実用的なシステムになる。</p>
+<h2>2.3 Linuxは独立に実装されたカーネル</h2>
+<p>Linuxカーネルは1991年に開発が始まった。Unixに似た機能とインターフェースを持つことを目指して開発されたが、歴史上のUnixのソースコードから直接枝分かれしたものではない。したがって、OSの系譜図ではUnixからLinuxへ「ソースコードを継承した実線」を引くのではなく、設計上の影響や互換性の目標を示す破線などで表現する。</p>
+<p>Linuxカーネルは、プロセス、メモリ、ファイルシステム、デバイス、ネットワークなどの低レイヤーを担当する。UbuntuはLinuxカーネルに、多数のユーザー空間のツール群、パッケージ、初期設定、リリース管理方針を組み合わせたディストリビューションである。</p>
+<p>一方、Windows NT系はUnixから枝分かれしたOSではなく、Unix系とは別の系統として設計された。Windowsの<code>cmd.exe</code>やPowerShellもシェルであるが、Bashとは構文、組み込みコマンド、パス表記、管理方法が異なる。名前が似たコマンドや、複数のOSで動く外部プログラムも存在するが、Unix系とWindowsで同じコマンドがそのまま利用できるとは考えない方がよい。BashはLinuxそのものではなく、LinuxやmacOSなどでも利用できるシェルの一つである。</p>
+<figure><img src='../../assets/figures/fig03-os-history-map.svg' alt='Unix、GNU、Linuxディストリビューション、macOS、Windowsの関係'></figure>
+<p><strong>図2-1　Unix系・Unix互換系とWindows NT系は別の系統であり、コマンド体系の互換性を前提にできない。</strong> LinuxはUnixに似たインターフェースを持つ独立実装であり、macOSはLinuxの派生ではない。</p>
+<h2>2.4 ディストリビューションが選択と統合を行う</h2>
+<p>Linuxカーネルを利用するシステムにはUbuntu、Debian、Fedoraなど複数のディストリビューションが存在する。各ディストリビューションは、採用するソフトウェア、パッケージ形式、更新方針、初期設定、サポート期間などを独自に決定する。</p>
+<p>本授業では環境をUbuntu Server 24.04 LTSに統一する。ほかのディストリビューションでも同じ<code>ls</code>や<code>grep</code>を利用できる場合が多いが、パッケージ管理コマンド、設定ファイルの配置場所、セキュリティ機能、サービスの初期設定などが異なる場合がある。Red Hat/RHEL向けの手順をUbuntuへ無条件に当てはめてはならない。</p>
+<figure><img src='../../assets/figures/fig04-linux-distribution-stack.svg' alt='Linux kernelからUbuntu systemになる構成'></figure>
+<p><strong>図2-2　Linuxカーネル、ライブラリ・基本コマンド、システム管理、パッケージ、アプリケーションをディストリビューションが統合する構造。</strong> UbuntuとLinuxを完全な同義語として混同しないための構成図である。</p>
+<h2>2.5 macOSはDarwinを基盤に持つ</h2>
+<p>現在のmacOSはDarwinを中核（カーネル基盤）に持つ。Appleの公式資料では、DarwinはMach、BSD、Apple独自の技術などから構成されていると説明されている。BSD由来のプロセスモデル、アクセス権体系、ネットワーク機能などを備えているため、ターミナル上でUnix系に類似したコマンドやパスを利用できる。</p>
+<p>ただし、macOSはLinuxディストリビューションではない。Linuxカーネルを中核にしておらず、独自のGUIシステムやApple固有のフレームワークなど、Darwin単体では構成されない領域も併せ持つ。また、古いClassic Mac OSと、Mac OS X以降のDarwin基盤の系譜も区別して理解する必要がある。</p>
+<h2>2.6 Windowsは別の系統として理解する</h2>
+<p>初期の一般消費者向けWindowsにはMS-DOSを土台にした系列（Windows 95/98など）が存在した。一方、現在のWindowsへ直接つながるWindows NT系列は、それらとは別にゼロから設計されたシステムである。Windows 2000、XP、そして現代のWindowsに至る流れを、Unixから単純に派生した系譜として描いてはならない。</p>
+<p>Windowsにもカーネルモードとユーザーモード、プロセス、ファイルアクセス権、サービス、ネットワークソケット、CLIが存在する。これは現代のOSが解決すべき技術的課題に共通性があるためであり、Unixの子孫であることの証明ではない。PowerShellを利用できることや、Windows Subsystem for Linux（WSL）が動作することも、Windowsカーネル自体がLinuxになったことを意味するわけではない。</p>
+<h2>2.7 共通点と相違点をどう見るか</h2>
+<table>
+<tr><th>観点</th><th>Ubuntu/Linux系</th><th>macOS</th><th>Windows</th></tr>
+<tr><td>中核</td><td>Linuxカーネル</td><td>Darwin（Mach・BSD等）</td><td>Windows NT系カーネル</td></tr>
+<tr><td>主な標準CLI</td><td>シェルとUnix系ツール群</td><td>シェルとBSD/Unix系ツール群</td><td>PowerShell、cmd等</td></tr>
+<tr><td>パスの例</td><td><code>/home/user</code></td><td><code>/Users/user</code></td><td><code>C:\Users\user</code></td></tr>
+<tr><td>ソフトウェア導入</td><td>ディストリビューションのパッケージ管理</td><td>App Store、インストーラー、パッケージ管理ツール等</td><td>Microsoft Store、インストーラー、パッケージ管理ツール等</td></tr>
+<tr><td>本授業での扱い</td><td>実習対象</td><td>比較対象</td><td>比較対象</td></tr>
+</table>
+<p>同じ目的を持つ機能であっても、具体的なコマンド名、初期設定、アクセス権モデルの詳細な挙動はOSごとに異なる。本授業ではUbuntuを用いてOSの基本原理を学び、将来ほかのOSへ移行する際にも、「同じコマンドを探す」のではなく、「同じ目的を担う機能や仕組みを探す」姿勢を身に付けることが重要である。</p>
+<h2>章末問題</h2>
+<h3>問1　LinuxとUbuntuの違いを、「カーネル」と「ディストリビューション」という用語を用いて説明せよ。</h3>
+<h3>問2　シェルとは何か。Bashを例に説明せよ。</h3>
+<h3>問3　macOSをLinuxディストリビューションと呼べない理由を説明せよ。</h3>
+<h3>問4　Windowsにもプロセスやアクセス権が存在することは、WindowsがUnixから直接派生した証拠になるか。理由とともに答えよ。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> Linuxはプロセス、メモリ、デバイスなどを管理するカーネルである。UbuntuはLinuxカーネルに、GNUツール群、シェル、ライブラリ、パッケージ管理、設定などを組み合わせたLinuxディストリビューションである。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> シェルは、利用者が入力した文字列をコマンドとして解釈し、プログラムの起動、引数の受け渡し、リダイレクト、パイプ、変数展開、スクリプト実行などを行うユーザー空間のプログラムである。BashはGNUプロジェクトが開発するシェルの一つであり、Linuxカーネルそのものではない。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> macOSはDarwinを基盤とし、その中核にはMachやBSD由来の技術が使われている。Linuxカーネルを中核としていないため、Linuxディストリビューションではない。</p>
+<h3>問4</h3>
+<p><strong>答え:</strong> 証拠にはならない。プロセスやアクセス権は、現代のOSが共通して必要とする機能である。Windows NT系はUnix系とは別の系統であり、<code>cmd.exe</code>やPowerShellの構文、コマンド、パス、管理方法もBashを中心とするUnix系環境とは異なる。</p>
+<h2>参考資料</h2>
+<ul><li>Dennis M. Ritchie, <a href="https://www.nokia.com/bell-labs/about/dennis-m-ritchie/hist.html">The Evolution of the Unix Time-sharing System</a>（2026-09-18確認）</li><li>Bell Labs, <a href="https://archive.computerhistory.org/resources/access/text/2022/08/102804421-05-01-acc.pdf">A history of computing at Bell Research Laboratories (1937-1975)</a>（2026-09-24確認。初期UnixとPDP-7の関係）</li><li>Wikimedia Commons, <a href="https://commons.wikimedia.org/wiki/File:DEC_PDP-7.jpg">DEC PDP-7.jpg</a>（2026-09-24確認。ComputerGeek7066撮影、CC BY-SA 4.0。2018年に保存機を撮影）</li><li>GNU Project, <a href="https://www.gnu.org/gnu/initial-announcement.en.html">Initial Announcement</a>（2026-09-18確認）</li><li>GNU Project, <a href="https://www.gnu.org/software/bash/manual/html_node/What-is-a-shell_003f.html">What is a shell?</a>（2026-09-21確認）</li><li>GNU Project, <a href="https://www.gnu.org/software/bash/manual/html_node/What-is-Bash_003f.html">What is Bash?</a>（2026-09-21確認）</li><li>Linux Kernel Documentation, <a href="https://cdn.kernel.org/doc/html/latest/process/1.Intro.html">Introduction</a>（2026-09-18確認）</li><li>Apple, <a href="https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/Architecture/Architecture.html">Kernel Architecture Overview</a>（2026-09-18確認。旧archiveであるため歴史・構成の確認に限定）</li><li>Microsoft, <a href="https://learn.microsoft.com/en-us/sysinternals/resources/archive/v02n03">Windows NT Build History</a>（2026-09-18確認。歴史資料）</li><li>Microsoft Learn, <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands">Windows commands</a>（2026-09-21確認）</li></ul>
+<h1>第3章 GUI・CLI・ターミナル・シェル</h1>
+<h2>3.1 操作画面と処理主体を分ける</h2>
+<p>GUI（グラフィカルユーザーインターフェース）は、ウィンドウ、アイコン、メニュー、ポインタなどを使って視覚的に操作する方法である。CLI（コマンドラインインターフェース）は、文字列（テキスト）でコマンドを入力し、文字列の結果を受け取る操作方法である。どちらも人間がコンピューターへ指示を出すための入口であり、GUIが内部で必ずCLIへ変換されなければ動かない、という従属関係ではない。</p>
+<p><strong>ターミナル（terminal）</strong>は、文字を入力し結果を表示する画面・接続環境である。<strong>シェル（shell）</strong>は、その入力された文字列を読み取り、コマンドを解釈して実行するプログラムである。本演習環境で主に使用するシェルは Bash である。</p>
+<pre><code>人間（操作者） → ターミナル → Bash（シェル） → コマンドのプロセス → カーネルの機能</code></pre>
+<p>ターミナルとシェルは同じものではない。ターミナルは文字をやり取りする場所であり、シェルは入力された文字列の意味を判断して処理するプログラムである。</p>
+<figure><img src='../../assets/figures/fig05-gui-cli-shell.svg' alt='GUIとCLIの並列な操作経路'></figure>
+<p><strong>図3-1　GUIとCLIは並列の操作入口。CLIではターミナルとシェルを明確に区別する。</strong></p>
+<h2>3.2 プロンプトは入力位置を示す</h2>
+<p>シェルがユーザーからの入力を待っているときに表示する文字列を<strong>プロンプト（prompt）</strong>という。プロンプトにはユーザー名、ホスト名、現在位置（カレントディレクトリ）などが表示されることが多いが、設定によって表示内容は異なる。</p>
+<p>教材中の次のような<code>$</code>はプロンプトの表示例であり、ユーザー自身が入力する文字ではない。</p>
+<pre><code>$ pwd
+/home/ssm-user</code></pre>
+<p>入力するコマンドは<code>pwd</code>であり、その次の行は出力例である。本書のコマンド例では、入力する部分と出力を区別するために<code>$</code>を表示する場合がある。</p>
+<h2>3.3 コマンド、引数、オプション</h2>
+<p>基本形は次のように読む。</p>
+<pre><code>コマンド   オプション   引数
+ls        -l          /srv</code></pre>
+<p><code>ls</code>は実行するコマンド、<code>-l</code>は詳細表示を指定するオプション、<code>/srv</code>は対象を指定する引数（argument）である。短いオプションを組み合わせて<code>ls -la</code>のように指定できるコマンドも多いが、すべてのコマンドで同じアルファベットが同じ意味を持つとは限らない。たとえば<code>grep -n</code>は行番号の表示を意味するが、<code>tail -n 5</code>は表示する行数を指定する。</p>
+<p>コマンドラインでは空白が要素の区切りとして扱われる。そのため、空白を含む一つの文字列をひとまとまりの引数として渡すには、クォート（引用符）で囲む必要がある。</p>
+<pre><code>printf &#x27;%s\n&#x27; &#x27;JDU SSH transfer test&#x27;</code></pre>
+<p>クォート、変数展開、リダイレクトについては第5章で詳しく解説する。</p>
+<h2>3.4 シェル組み込みコマンドと外部コマンド</h2>
+<p>シェルへ入力できるコマンドには、大きく分けて<strong>シェル組み込みコマンド</strong>と<strong>外部コマンド</strong>がある。</p>
+<p>シェル組み込みコマンド（shell builtin）は、Bash自身に用意されている機能である。別の実行ファイルを探して起動する必要がない。たとえば<code>cd</code>は、現在動作しているBash自身の作業ディレクトリを変更するための組み込みコマンドである。</p>
+<p>外部コマンドは、ストレージ上に保存されたプログラムをシェルが探して起動するものである。<code>ls</code>、<code>mkdir</code>、<code>grep</code>などは、Ubuntuで最初から利用できることが多いが、Bashの組み込み機能ではなく外部プログラムである。つまり、<strong>最初から使えること</strong>と<strong>シェルに組み込まれていること</strong>は別の分類である。</p>
+<p>外部コマンドの中には、OSの導入時から用意されているものと、必要になったときに追加導入するものがある。たとえば<code>python3</code>はPythonプログラムを実行する外部コマンドであり、環境にPythonが導入されている場合だけ利用できる。Ubuntuの構成によっては最初から存在するが、存在しない場合はパッケージとして導入する。パッケージの導入方法は第9章で扱う。</p>
+<pre><code>type cd
+type mkdir
+type python3</code></pre>
+<p><code>type</code>は、入力した名前をBashがどのように解釈するかを表示する。組み込みコマンドならその事実が表示され、外部コマンドなら実行ファイルの場所が表示される。見つからない場合は、その名前のコマンドを現在の環境では利用できない。</p>
+<p><code>type</code>の結果に<strong>エイリアス（alias）</strong>と表示されることもある。エイリアスとは、長いコマンドやよく使う指定に、短い別名を付けるシェルの機能である。たとえば環境によっては<code>ll</code>という名前に<code>ls -alF</code>などが登録されている。エイリアスの有無や内容は環境ごとに異なる。</p>
+<p>外部コマンドが入力されると、シェルは<code>PATH</code>という設定に登録されたディレクトリを順に調べ、同じ名前の実行ファイルを探す。実際の保存場所を最初から暗記する必要はない。まず<code>type</code>で、組み込みコマンド、外部コマンド、エイリアスのどれとして認識されているかを確認する。</p>
+<h2>3.5 シェルがコマンドを実行する流れ</h2>
+<p>シェルは入力された文字列をそのままカーネルへ渡しているわけではない。内部では大まかに次の処理を順番に行っている。</p>
+<ol><li>文字列をコマンド名、オプション、引数に分割・解釈する。</li><li>クォート、環境変数、コマンド置換<code>$(...)</code>、ワイルドカードなどを規則に従って展開する。</li><li>組み込みコマンドであればシェル内部で処理し、外部コマンドであれば実行ファイルを探索する。</li><li>リダイレクトやパイプなど、必要な入出力ストリームの接続を準備する。</li><li>プロセスを開始し、フォアグラウンドで終了を待つか、バックグラウンドで継続動作させる。</li><li>プロセスの終了ステータスを受け取る。</li></ol>
+<p>この流れを知っていると、問題が起きた場所を切り分けやすくなる。コマンドが見つからない場合は、名前の解釈や外部プログラムの探索を確認する。期待した対象が処理されない場合は、オプションや引数の解釈を確認する。入出力やプロセスについては、第5章と第8章で詳しく扱う。</p>
+<h2>3.6 困ったときによく使う操作と調査コマンド</h2>
+<p>CLIで現在位置やコマンドの意味が分からなくなった場合は、推測で操作を続けず、次の操作で状況を確認する。</p>
+<table>
+<tr><th>操作・コマンド</th><th>確認できること</th></tr>
+<tr><td><code>Ctrl+C</code></td><td>現在実行中の処理へ停止を求め、プロンプトへ戻る。</td></tr>
+<tr><td><code>pwd</code></td><td>現在作業しているディレクトリを表示する。</td></tr>
+<tr><td><code>cd ディレクトリ</code></td><td>作業するディレクトリを移動する。</td></tr>
+<tr><td><code>ls</code></td><td>現在のディレクトリにあるファイルやディレクトリを表示する。</td></tr>
+<tr><td><code>grep &#x27;文字列&#x27; ファイル</code></td><td>ファイルから指定した文字列を含む行を探す。</td></tr>
+<tr><td><code>type コマンド名</code></td><td>その名前が組み込み、外部コマンド、エイリアスのどれとして認識されるか調べる。</td></tr>
+<tr><td><code>help コマンド名</code></td><td>Bashの組み込みコマンドの説明を表示する。</td></tr>
+<tr><td><code>exit</code></td><td>現在のシェルを終了し、そのシェルを開始する前の状態へ戻る。</td></tr>
+</table>
+<p><code>pwd</code>、<code>cd</code>、<code>ls</code>は「どこで何を操作しているか」を確認する基本である。<code>grep</code>は長い文章やログから必要な行を探すときに使う。<code>type</code>と<code>help</code>は、コマンド自体の種類や使い方を調べるために使う。なお、<code>grep</code>や<code>ls</code>は調査に便利な外部コマンドであり、すべてがシェル組み込みコマンドという意味ではない。</p>
+<h2>3.7 マニュアルとヘルプを活用する</h2>
+<p>外部コマンドのマニュアルは<code>man</code>コマンド、Bashの組み込みコマンドは<code>help</code>コマンドが確認の入口となる。</p>
+<pre><code>man ls
+help cd
+grep --help</code></pre>
+<p>マニュアルでは<code>NAME</code>でコマンドの概要・目的、<code>SYNOPSIS</code>で構文形式、<code>DESCRIPTION</code>で詳細な動作仕様、<code>OPTIONS</code>で各オプションの意味を確認する。書式内の角括弧<code>[ ]</code>は、多くの場合「省略可能」であることを示す表記規則であり、その括弧記号自体を入力するわけではない。なお、<code>man</code>の閲覧画面は<code>q</code>キーで終了できる。</p>
+<h2>3.8 終了ステータスで成否を判断する</h2>
+<p>コマンドは画面へのテキスト出力とは別に、処理結果を表す小さな整数値を<strong>終了ステータス（終了コード、exit status）</strong>としてシェルへ返す。Unix系システムの共通規約として、<code>0</code>は「成功・正常終了」、<code>0</code>以外は何らかの「失敗・不成功・エラー」を意味する。</p>
+<pre><code>test -e /etc/os-release
+echo $?</code></pre>
+<p><code>$?</code>は直前に実行されたコマンドの終了ステータスを保持する特殊な変数である。別のコマンドを実行すると即座に上書きされてしまうため、確認したいコマンドの直後に参照する必要がある。また、<code>0</code>以外の値がすべて同じ原因を指すとは限らない。たとえば<code>grep</code>は「パターンに一致する行がなかった場合（1）」と「ファイルが存在しないなどの実行エラー（2）」で異なる値を返す。画面に表示されたメッセージだけでなく、システムが何を成功・失敗の判定基準としているかを確認することが重要である。</p>
+<h2>章末問題</h2>
+<h3>問1　ターミナルとシェルの違いを、それぞれの役割に着目して説明せよ。</h3>
+<h3>問2　<code>cd</code>がシェルの組み込みコマンドでなければならない理由を説明せよ。</h3>
+<h3>問3　「最初から使えるコマンド」と「シェル組み込みコマンド」が同じ意味ではない理由を説明せよ。</h3>
+<h3>問4　コマンドの種類を調べる方法を答えよ。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> ターミナルは文字を入力し結果を表示する場所・接続環境である。シェルは入力された文字列を解釈し、組み込み機能を処理したり外部プログラムを起動したりするプログラムである。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> <code>cd</code>は、現在動作しているシェル自身の作業ディレクトリを変更する必要があるためである。別の外部プロセスだけが移動しても、元のシェルの現在位置は変わらない。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> 最初から使える外部プログラムも存在するためである。たとえば<code>mkdir</code>はUbuntuで最初から使えることが多いが、Bashの組み込みではなく外部コマンドである。一方、<code>cd</code>はBashの組み込みコマンドである。</p>
+<h3>問4</h3>
+<p><strong>答え:</strong> <code>type コマンド名</code>を使用する。組み込みコマンド、外部コマンド、エイリアスのどれとして認識されているかを確認できる。</p>
+<h2>参考資料</h2>
+<ul><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/tutorial/basic-installation/">Welcome to the terminal</a>（2026-09-18参照。現行ページ構成は制作時に再確認）</li><li>GNU Project, <a href="https://www.gnu.org/software/bash/manual/bash.html">Bash Reference Manual</a>（2026-09-18は本文取得timeout。執筆内容はUbuntu 24.04実機の<code>help</code>と<code>man bash</code>でも確認する）</li></ul>
+<h1>第4章 ファイル、ディレクトリ、パス、編集</h1>
+<h2>4.1 ファイルには内容とメタデータがある</h2>
+<p>ファイルにはデータ本文だけでなく、名前、種別、所有者（owner）、グループ（group）、アクセス権（パーミッション）、サイズ、最終更新時刻などの<strong>メタデータ（metadata）</strong>が存在する。<code>cat</code> で表示される内容が完全に同一の2つのファイルであっても、所有者やアクセス権が異なればOS上では別の状態として扱われる。</p>
+<pre><code>ls -l /srv/jdu-share/README.txt
+stat /srv/jdu-share/README.txt</code></pre>
+<p><code>ls -l</code> はディレクトリ内の主要情報を一覧形式で表示する。<code>stat</code> は指定した単一対象のメタデータを詳細に表示する。</p>
+<h2>4.2 ディレクトリは名前と対象を結び付ける</h2>
+<p>ディレクトリを「ファイルを箱の中に物理的に詰め込む入れ物」という比喩だけで理解すると、実態とずれて不正確になる。ディレクトリの本質は、ファイル名や別のディレクトリ名を実体と対応付け、階層構造を構築する特殊なファイルである。<code>/srv/jdu-share/README.txt</code> というパスは、最上位のルートディレクトリ <code>/</code> から出発し、<code>srv</code>、<code>jdu-share</code>、<code>README.txt</code> という名前を順番にたどる位置指定である。</p>
+<figure><img src='../../assets/figures/fig06-path-tree.svg' alt='ルートディレクトリから枝分かれする階層構造'></figure>
+<p><strong>図4-1　<code>tree</code>コマンドの表示に近い階層図。枝を順にたどるとファイルの位置が分かる。</strong></p>
+<p>Linuxでは、システム全体がルート <code>/</code> を頂点とする単一の<strong>ディレクトリツリー（階層構造）</strong>として構成される。物理的に異なるディスクや仮想ファイルシステムも、特定のディレクトリへ結合してシステム全体の一部として見せることができる。この接続操作を<strong>マウント（mount）</strong>という。本章では概念の理解にとどめ、ディスクのフォーマットやマウントの具体的な操作は後続のストレージ単元で扱う。</p>
+<p><strong>ルートディレクトリ</strong>は、ディレクトリツリー全体の出発点 <code>/</code> である。<strong>ホームディレクトリ</strong>は、各ユーザーが自分のファイルを置く場所である。たとえば <code>ssm-user</code> のホームディレクトリは <code>/home/ssm-user</code> であり、<code>/</code> の下にある <code>home</code>、その下にある <code>ssm-user</code> と順にたどって到達する。<code>/home</code> は複数ユーザーのホームディレクトリを置く親ディレクトリで、<code>ssm-user</code> 本人のホームディレクトリではない。<code>/</code> と <code>/home/ssm-user</code> は役割も位置も異なる。名前が似ている <code>/root</code> も、ルートディレクトリ <code>/</code> とは別の場所である。</p>
+<h2>4.3 絶対パスと相対パス</h2>
+<p>先頭がスラッシュ <code>/</code> で始まるパスは<strong>絶対パス（absolute path）</strong>である。現在どのディレクトリにいても、常に同じ場所を一意に指し示す。</p>
+<pre><code>/srv/jdu-share/README.txt</code></pre>
+<p>先頭がスラッシュ <code>/</code> で始まらないパスは<strong>相対パス（relative path）</strong>であり、現在のカレントディレクトリ（作業ディレクトリ）を基準として位置を指定する。</p>
+<pre><code>cd /srv/jdu-share
+cat README.txt</code></pre>
+<p><code>pwd</code> は現在のカレントディレクトリを表示する。<code>.</code> は「現在のディレクトリ」、<code>..</code> は「1つ上の親ディレクトリ」、<code>~</code>（チルダ）は「現在のユーザーのホームディレクトリ」へシェルによって自動展開される。</p>
+<pre><code>cd ~/jdu-lab/m1
+pwd
+cd ..
+pwd</code></pre>
+<p><code>~</code> は現在のユーザーのホームディレクトリを表し、ルートディレクトリ <code>/</code> を表す記号ではない。<code>~</code> を含むパスが指す場所は、操作中のユーザーやホストによって変わる。たとえば <code>ssm-user</code> の <code>~</code> が <code>/home/ssm-user</code> であっても、<code>su - jduops</code> でユーザーを切り替えると、<code>~</code> は <code>jduops</code> のホームディレクトリ（<code>/home/jduops</code> など）を指す。別のホストに接続した場合も、そのホスト上で操作しているユーザーのホームディレクトリを指す。現在の場所は <code>pwd</code>、現在のホームディレクトリは <code>printf &#x27;%s\n&#x27; &quot;$HOME&quot;</code> で確認できる。<code>HOME</code> はホームディレクトリの場所を保持する環境変数であり、変数の仕組みは第5章で説明する。</p>
+<h2>4.4 Ubuntuでよく見るディレクトリ</h2>
+<table>
+<tr><th>パス</th><th>本教材での役割</th></tr>
+<tr><td><code>/home</code></td><td>通常ユーザーのホームディレクトリが配置される</td></tr>
+<tr><td><code>/etc</code></td><td>システム全体や各種サービスの設定・識別情報ファイル群。<code>/etc/os-release</code> もここに配置される</td></tr>
+<tr><td><code>/usr/bin</code></td><td>多くの一般的なコマンドの実行ファイルが格納される</td></tr>
+<tr><td><code>/var/log</code></td><td>システムやサービスのログファイルが配置される。すべてのログがここにあるとは限らない</td></tr>
+<tr><td><code>/srv</code></td><td>システムやサービスが提供するデータを配置する領域。本演習では共有フォルダやWebコンテンツに使用する</td></tr>
+<tr><td><code>/tmp</code></td><td>一時ファイル用のディレクトリ。誰でも読み書きできるが、恒久的な保存先ではない</td></tr>
+<tr><td><code>/proc</code></td><td>カーネルがプロセスやシステムの状態をファイルの形式で見せる仮想ファイルシステム</td></tr>
+</table>
+<p>この配置表は「絶対にこのディレクトリにしか置いてはならない」という固定規則ではない。ディストリビューションの方針やアプリケーションの設計によって細部は異なる場合がある。</p>
+<h2>4.5 作成、コピー、移動、削除</h2>
+<pre><code>mkdir -p ~/jdu-lab/p1/practice01/config
+cp inbox/config/training.conf practice01/config/training.conf
+mv old-name.txt new-name.txt
+rm unwanted.tmp</code></pre>
+<ul><li><code>mkdir -p</code> は、指定したパスの途中に存在する親ディレクトリも含めて一括作成し、対象ディレクトリがすでに存在していてもエラーにしない。</li><li><code>cp SOURCE DESTINATION</code> はファイルやディレクトリを複製する。コピー元（SOURCE）とコピー先（DESTINATION）の指定順序を取り違えないよう注意する。</li><li><code>mv</code> はファイルの移動や名前の変更（リネーム）に使用する。</li><li><code>rm</code> はファイルを削除する。通常のGUIのような「ごみ箱」を経由せず即座に削除されるため、実行前に対象パスを <code>pwd</code> や <code>ls</code> で確認する習慣をつける。</li></ul>
+<p>初学者の演習では、指定ディレクトリ以下を警告なしで一括削除できる危険な <code>rm -rf</code> は使用しない。たとえば不要な <code>.tmp</code> ファイルを削除する場合も、まずは <code>find</code> コマンドで一覧を確認する。</p>
+<pre><code>find ~/jdu-lab/p1/practice01 -type f -name &#x27;*.tmp&#x27; -print</code></pre>
+<p>シングルクォートで囲まれた <code>&#x27;*.tmp&#x27;</code> は、シェルによるワイルドカードの事前展開を防ぎ、検索パターン文字列をそのまま <code>find</code> コマンドへ渡すための指定である。対象ファイルを目視で確認した上で、1件ずつ削除するか、演習で指示された安全な範囲だけを慎重に処理する。</p>
+<h2>4.6 そのほかの確認コマンド</h2>
+<pre><code>ls -la
+ls -ld /srv/jdu-share
+tree ~/jdu-lab/m1/case01
+stat -c &#x27;%U:%G %a %n&#x27; /srv/jdu-share/README.txt</code></pre>
+<ul><li><code>ls -la</code> は、ドット <code>.</code> で始まる隠しファイルを含め、カレントディレクトリ内の全項目を詳細一覧で表示する。</li><li><code>ls -ld DIR</code> は、ディレクトリ内のファイル一覧ではなく、指定したディレクトリ自身のメタデータ（属性）を表示する。</li><li><code>tree</code> はディレクトリの階層構造を視覚的なツリー形式で表示する。本演習環境では初期セットアップ時にあらかじめ導入されている。</li><li><code>stat -c</code> は必要な項目だけを指定したフォーマットで抽出表示できる。<code>%U</code> は所有者ユーザー名、<code>%G</code> は所有グループ名、<code>%a</code> は8進数表現のアクセス権モード、<code>%n</code> はファイル名・パスである。</li></ul>
+<p>単一のコマンドですべてを把握しようとするのではなく、「階層構造を見たいのか（<code>tree</code>）」「中身の一覧を見たいのか（<code>ls</code>）」「属性・メタデータを詳しく見たいのか（<code>stat</code>）」という自身の目的に合わせて適切なコマンドを選択する。</p>
+<h2>4.7 nanoで編集する</h2>
+<p><code>nano FILE</code> は、ターミナル画面内でテキストファイルを編集するための簡易エディタである。本書の演習では、編集作業を行う前に対象ディレクトリへ移動し、<code>pwd</code> と <code>ls</code> で現在地と対象ファイルを確実に確認してから起動する。</p>
+<pre><code>cd ~/jdu-lab/m0
+pwd
+nano observation.env</code></pre>
+<figure><img src='../../assets/figures/fig07-nano-workflow.svg' alt='nanoで開く、編集、保存、終了する流れ'></figure>
+<p><strong>図4-2　nanoの基本操作の流れ。画面下に表示される ^ 記号は Ctrlキー を表す。</strong></p>
+<ol><li>カーソルキー（矢印キー）で編集位置を移動し、通常のキーボード入力でテキストを編集する。</li><li><code>Ctrl+O</code> を押してファイルの書き込み（保存準備）を開始する。</li><li>画面最下行にファイル名が表示されたら、意図したパスであることを確認して <code>Enter</code> キーを押して保存を確定する。</li><li><code>Ctrl+X</code> を押して nano エディタを終了する。</li><li><code>cat observation.env</code> などで編集結果を再度読み出し、正しく保存されたことを確認する。</li></ol>
+<p>未保存の変更が残っている状態で終了しようとすると、変更を保存するかどうかの確認メッセージが表示される。英語表記の画面では、<code>Y</code>（Yes）が保存、<code>N</code>（No）が破棄、<code>Ctrl+C</code> が取り消し（キャンセル）を意味する。画面に表示された英語のメッセージを読まずにキーを乱打してはならない。</p>
+<h2>4.8 親ディレクトリのアクセス権も関係する</h2>
+<p>ファイルを読むとき、OSはパスを先頭から順にたどる。その途中にある<strong>各ディレクトリ</strong>で、操作中のユーザーに通り抜ける権限があるかを確かめる。どこか一つでも通過できないディレクトリがあれば、対象ファイル自身に読み取り権限 <code>r</code> があっても、そのファイルを読むことはできない。<code>namei -l</code> コマンドは、指定したパスを構成する親ディレクトリと対象ファイルを一段ずつ表示し、それぞれの所有者とアクセス権を確認できる。</p>
+<pre><code>namei -l /srv/jdu-web/index.txt</code></pre>
+<p>ディレクトリに対する実行権限 <code>x</code> は、プログラムファイルの「実行」とは異なり、「そのディレクトリを経由して配下の名前にアクセスする（通り抜ける）」権限を意味する。この仕組みの詳細は第7章で詳しく解説する。</p>
+<h2>章末問題</h2>
+<h3>問1　ルートディレクトリとホームディレクトリは何が違うか。</h3>
+<h3>問2　<code>ls -l DIR</code> と <code>ls -ld DIR</code> では、何を表示するか。</h3>
+<h3>問3　ファイル自身に読み取り権限 <code>r</code> があるのに読めない場合、<code>namei -l</code> の何を確認するか。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> ルートディレクトリ <code>/</code> はシステム全体のディレクトリツリーの出発点である。ホームディレクトリはユーザーごとの作業場所であり、たとえば <code>ssm-user</code> なら <code>/home/ssm-user</code> である。<code>~</code> は現在のユーザーのホームディレクトリを表す。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> <code>ls -l DIR</code> は <code>DIR</code> の中にある項目を詳細に表示する。<code>ls -ld DIR</code> は <code>DIR</code> というディレクトリ自身の情報を表示する。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> パスの先頭から対象ファイルまでの各親ディレクトリについて、操作中のユーザーが通り抜ける権限 <code>x</code> を持つかを確認する。途中の一つでも通過できなければ、ファイルに <code>r</code> があっても読めない。</p>
+<h2>参考資料</h2>
+<ul><li>Linux man-pages, <a href="https://man7.org/linux/man-pages/man7/path_resolution.7.html">path_resolution(7)</a>（2026-09-18確認）</li><li>Ubuntu 24.04実機の<code>man hier</code>、<code>man find</code>、<code>man stat</code>、nanoの画面（制作時に実機確認する）</li></ul>
+<h1>第5章 テキストと入出力を組み合わせる</h1>
+<h2>5.1 なぜ設定とログはテキストなのか</h2>
+<p>UbuntuをはじめとするLinuxでは、設定やログの多くがプレーンテキスト（文字列データ）として保存される。専用のGUIツールがなくても内容の確認・比較・検索が容易であり、別のコマンドへ柔軟に処理を引き渡せるためである。ただし、すべての設定やログが単純なテキストファイルであるとは限らない。systemd journalのように、バイナリ形式で記録され専用のコマンドを通じて閲覧する仕組みもある。</p>
+<h2>5.2 標準入力・標準出力・標準エラー出力</h2>
+<p>各プロセスには、<strong>標準入力（stdin: standard input）</strong>、<strong>標準出力（stdout: standard output）</strong>、<strong>標準エラー出力（stderr: standard error）</strong>という3つの基本的なデータ入出力の窓口（ストリーム）が用意されている。</p>
+<ul><li><strong>stdin（標準入力）</strong>: 通常の入力データ。キーボード入力や前段のコマンドの出力からデータを受け取る（ファイルディスクリプタ 0）。</li><li><strong>stdout（標準出力）</strong>: 通常の処理結果。ターミナル画面への表示や、次のコマンド、ファイルへ渡す（ファイルディスクリプタ 1）。</li><li><strong>stderr（標準エラー出力）</strong>: エラーメッセージや警告。通常の処理結果（stdout）と明確に分離して扱われる（ファイルディスクリプタ 2）。</li></ul>
+<figure><img src='../../assets/figures/fig08-standard-streams.svg' alt='stdin、stdout、stderr、file、pipeの関係'></figure>
+<p><strong>図5-1　プログラムの三つの標準ストリーム。</strong> <code>&gt;</code> は通常stdoutをファイルへ接続し、<code>|</code> は左側のコマンドのstdoutを右側のコマンドのstdinへ接続する。</p>
+<p><code>cat incident.log</code>をそのまま実行すると、ファイルが入力元となり、ターミナル画面がstdoutの表示先となる。ファイルそのものがターミナルへ飛んでいくのではなく、<code>cat</code>プロセスがファイルの内容を読み出し、その文字列データをstdoutへ書き出しているのである。</p>
+<h2>5.3 <code>grep</code>で必要な行を選ぶ</h2>
+<pre><code>grep &#x27;ERROR&#x27; incident.log</code></pre>
+<p><code>grep</code>は入力を1行ずつ走査し、指定したパターンに一致する行全体をstdoutへ出力する。</p>
+<pre><code>grep -F &#x27;ERROR&#x27; incident.log</code></pre>
+<p><code>-F</code>は検索パターンを正規表現ではなく固定文字列（プレーンテキスト）として扱うオプションである。<code>ERROR</code>のような単純な英単語であれば結果は同じになることが多いが、記号文字をエスケープなしでそのまま検索したい場合に有効である。</p>
+<p><code>grep -n</code>は一致した行番号も先頭に付加して表示する。元の行だけを別のファイルへ保存したい場合は、行番号を加える<code>-n</code>を付けない。</p>
+<p>終了ステータスにも重要な意味がある。<code>grep</code>では一般に「パターンに一致する行があった場合」は<code>0</code>、「一致する行が1行もなかった場合」は<code>1</code>、「ファイルが存在しないなどの実行時エラー」は<code>2</code>となる。画面に何も出力されなかった際、単に対象文字列が存在しなかったのか、それともファイル名を間違えてエラーになっていたのかを区別するために終了ステータスを確認する。</p>
+<h2>5.4 <code>tail</code>で末尾を読む</h2>
+<pre><code>tail -n 5 incident.log</code></pre>
+<p><code>tail -n 5</code>は、ファイルの末尾5行を元の順序のままstdoutへ出力する。ここでの<code>-n</code>は出力行数を指定するオプションであり、<code>grep -n</code>の行番号付加とは全く意味が異なる。オプションのアルファベット1文字だけを丸暗記するのではなく、コマンドごとのマニュアルで仕様を確認することが重要である。</p>
+<p><code>tail -f</code>は、ファイルへ新たに追加された行を継続して表示する。表示を止めるには<code>Ctrl+C</code>を押す。</p>
+<h2>5.5 リダイレクトで結果をファイルへ保存する</h2>
+<pre><code>grep &#x27;ERROR&#x27; incident.log &gt; errors.txt
+tail -n 5 incident.log &gt; recent.txt</code></pre>
+<p><code>&gt;</code>（リダイレクト）は、シェルがstdoutの出力先をファイルへと切り替える機能である。右辺に指定したファイルがすでに存在する場合、コマンドが実行される前にファイルサイズをゼロに切り詰めて（空にして）上書きする。そのため、入力ファイルと出力ファイルに同じファイルを指定すると、コマンドがデータを読み込む前にファイルの内容が消失してしまう危険がある。</p>
+<pre><code># 危険な例。実行しない
+grep &#x27;ERROR&#x27; incident.log &gt; incident.log</code></pre>
+<p><code>&gt;&gt;</code>はファイルの末尾にデータを追記する。複数回実行すると同じ行が重複して増える。毎回同じ内容のファイルを作り直すなら、<code>&gt;</code>で上書きする。</p>
+<p>標準エラー出力（stderr）は、通常<code>&gt;</code>だけでは同じファイルには書き込まれない。<code>2&gt;</code>を使うと、stderrの出力先を別のファイルへ指定できる。</p>
+<h2>5.6 パイプはファイルを作らず次へ渡す</h2>
+<pre><code>grep &#x27;ERROR&#x27; incident.log | tail -n 5</code></pre>
+<p><code>|</code>（パイプ）は、左側のコマンドのstdoutを右側のコマンドのstdinへ直接接続する。ディスク上へ中間ファイルを作成することなく、処理結果をパイプラインとして絞り込むことができる。ただし、左側のコマンドが出力したstderrは通常パイプラインには渡されない。</p>
+<p>パイプライン全体の終了ステータスは、Bashの標準設定では「最後に実行されたコマンド」の終了ステータスとなる。そのため、左側のコマンドが失敗していても右側のコマンドが成功すればパイプ全体として成功と判定されてしまう場合がある。厳密な自動処理スクリプトでは<code>set -o pipefail</code>などの利用を検討する。</p>
+<h2>5.7 クォート、変数、コマンド置換</h2>
+<p>シェルはコマンドを実行する前に、入力された文字列の展開処理を行う。</p>
+<pre><code>name=&#x27;incident.log&#x27;
+printf &#x27;%s\n&#x27; &quot;$name&quot;</code></pre>
+<ul><li><strong>シングルクォート <code>&#x27;...&#x27;</code></strong>: 囲まれた内部の文字列をほぼ文字どおり（リテラル）に扱う。<code>$HOME</code>などの変数も展開されない。</li><li><strong>ダブルクォート <code>&quot;...&quot;</code></strong>: 空白を含む文字列を単一の引数としてまとめつつ、<code>$HOME</code>などの変数や<code>$(...)</code>などのコマンド置換は展開する。</li><li><strong>クォートなし</strong>: 空白による意図しない引数分割やワイルドカード展開が発生するため、変数を使用する際は原則として<code>&quot;$name&quot;</code>のようにダブルクォートで囲む。</li></ul>
+<p><code>$(command)</code>（コマンド置換）は、指定したコマンドを実行し、そのstdout出力をその位置へ文字列として展開・代入する。</p>
+<pre><code>current_user=&quot;$(id -un)&quot;
+printf &#x27;USER=%s\n&#x27; &quot;$current_user&quot;</code></pre>
+<h2>5.8 <code>&amp;&amp;</code>は前が成功したときだけ続ける</h2>
+<pre><code>cd /var/log &amp;&amp; pwd</code></pre>
+<p><code>&amp;&amp;</code>の右辺のコマンドは、左辺のコマンドの終了ステータスが<code>0</code>（成功）であったときのみ実行される。ディレクトリ移動に失敗したまま意図しない場所でファイルを編集・削除してしまう事故を防止できる。ただし、1行の中に何段階も詰め込むと、どの段階でエラーが発生したのか把握しづらくなる。</p>
+<h2>章末問題</h2>
+<h3>問1　<code>grep ERROR incident.log &gt; errors.txt</code>で、<code>errors.txt</code>を開くのは<code>grep</code>かシェルか。</h3>
+<h3>問2　<code>&gt;</code>と<code>&gt;&gt;</code>の動作はどう違うか。取り違えると何が起こるか。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> シェルである。シェルが<code>errors.txt</code>を開いて<code>grep</code>の標準出力先へ接続してから、<code>grep</code>を実行する。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> <code>&gt;</code>はファイルを上書きし、<code>&gt;&gt;</code>は末尾へ追記する。<code>&gt;</code>を誤って使うと既存の内容が失われる。<code>&gt;&gt;</code>を誤って繰り返すと同じ内容が重複する。</p>
+<h2>参考資料</h2>
+<ul><li>Ubuntu 24.04実機の<code>man grep</code>、<code>man tail</code>、<code>man bash</code>（制作時にversion確認）</li><li>GNU Bash Reference Manual（2026-09-18はWeb本文取得timeout。実機manualを一次確認に使う）</li></ul>
+<h1>第6章 ユーザー、グループ、ログイン</h1>
+<h2>6.1 ユーザーの種類と役割</h2>
+<p>Linuxには、人が操作するためのアカウントだけでなく、OSやサービスのプロセスを動かすためのアカウントもある。Linuxはユーザーを<strong>UID（ユーザーID）</strong>、グループを<strong>GID（グループID）</strong>という数値で内部的に識別する。まず、用途と権限の違いを整理する。</p>
+<table>
+<tr><th>種類</th><th>主な役割</th><th>対話ログインとの関係</th></tr>
+<tr><td>管理者の<code>root</code></td><td>システム全体を管理する特別なユーザー。UIDは<code>0</code></td><td>アカウントは存在するが、Ubuntuでは通常、rootのパスワードによる直接ログインを無効にする。必要な管理操作は許可されたユーザーが<code>sudo</code>（管理者などの権限でコマンドを実行する仕組み）で行う</td></tr>
+<tr><td>一般ユーザー</td><td>人が自分の作業を行う。<code>ssm-user</code>や<code>jduops</code>など</td><td>設定と認証方法が許せば対話ログインできる。一般ユーザーであることと<code>sudo</code>を使えることは別である</td></tr>
+<tr><td>サービス用ユーザー</td><td>Webサーバーなどのプロセスを、必要な範囲の権限で動かす。<code>jduweb</code>など</td><td>対話ログインを必要としないことが多い。ログインシェルを<code>/usr/sbin/nologin</code>に設定するのが一般的だが、すべてのサービス用ユーザーに必須の性質ではない</td></tr>
+</table>
+<p>この表はLinuxが内部でユーザーを三種類に固定しているという意味ではない。用途を理解するための分類である。実際にできる操作は、そのアカウントの設定、所属グループ、各ファイルの権限、<code>sudo</code>やSSHの設定によって決まる。また、<code>root</code>のアカウントが存在することと、<code>root</code>として直接ログインできることも別である。</p>
+<p><code>ssm-user</code>のような名前は人間が扱いやすい識別名である。ファイルやディレクトリの所有者情報も、内部では数値のUID/GIDとして記録されている。</p>
+<pre><code>id
+id jduops
+getent passwd root
+getent passwd jduops
+getent passwd jduweb
+getent group ops</code></pre>
+<p><code>id</code>は、現在操作しているユーザーのUID、主グループ、補助グループを表示する。引数にユーザー名を指定すると、そのアカウントの登録情報を確認できる。<code>getent passwd USER</code>には、ユーザー名、UID、主グループのGID、ホームディレクトリ、ログインシェルなどが表示される。たとえば最後の項目が<code>/usr/sbin/nologin</code>なら、通常の対話シェルとしては使えない。<code>getent</code>はローカルファイルだけでなく、システムが設定したネームサービスからも情報を取得する。企業の環境では、LDAPやActive Directoryなどのアカウント情報が含まれる場合もある。</p>
+<h2>6.2 主グループと補助グループ</h2>
+<p>各ユーザーには、必ず1つの<strong>主グループ（primary group）</strong>が設定される。Ubuntuで新規ユーザーを作成すると、ユーザー名と同じ名前の専用グループを主グループとして自動作成する運用が一般的であるが、これは必須の絶対規則ではない。必要に応じて <code>usermod -g</code> コマンドなどで変更することも可能である。</p>
+<p>1人のユーザーは、主グループに加えて複数の<strong>補助グループ（supplementary group）</strong>に所属できる。チームで共有するファイルやディレクトリへのアクセス権を付与する際は、ユーザーの主グループを不用意に変更するのではなく、用途ごとに作成した補助グループへユーザーを追加する運用が適切である。</p>
+<figure><img src='../../assets/figures/fig09-user-group-membership.svg' alt='primary groupとsupplementary group'></figure>
+<p><strong>図6-1　ユーザーごとの主グループと、共有用途で利用する補助グループの関係。</strong></p>
+<p>補助グループへの追加と、補助グループからの削除には、次のコマンドを使う。</p>
+<pre><code>sudo usermod -aG ops jduops
+sudo gpasswd -d jduviewer ops</code></pre>
+<p><code>usermod -aG</code> において、<code>-a</code>（append）は既存の所属グループを維持したまま追加することを意味する。もし <code>-a</code> を付けずに <code>-G</code> だけでグループ名を指定してしまうと、そこに記載しなかった既存の補助グループからすべて除外されてしまう危険がある。設定を変更した後は、必ず <code>id USER</code> で登録情報を再確認する。</p>
+<p><code>getent group ops</code> の出力末尾にあるメンバー一覧は、そのグループを補助グループとして所属しているメンバーを確認するのに役立つ。しかし、そのグループを主グループとして登録されているユーザーは、この一覧に名前が表示されない場合がある。グループの全所属者を確実に確認する際は、<code>id USER</code> などと組み合わせて多角的に照合する。</p>
+<h2>6.3 登録情報と現在のプロセスの資格情報</h2>
+<p>グループの所属登録を変更しても、すでに起動して動作しているシェルのプロセスの資格情報（保持しているグループ一覧）が自動的に更新されるわけではない。新しくログインし直すか、新しいセッションを開始して初めて、最新のグループ情報が反映される。</p>
+<pre><code>id jduops
+sudo su - jduops
+id</code></pre>
+<p>1行目の <code>id jduops</code> はシステムに登録されているアカウント情報を調べる。一方、<code>su -</code> で切り替えた後の <code>id</code> は、新たに起動したログインシェルが実際に保持している実行資格情報を表す。カーネルによるアクセス権の判定は、設定ファイルの静的な登録情報ではなく、操作を実行しているプロセス自身が保持するUID/GIDに基づいて行われる。</p>
+<h2>6.4 <code>su</code>と<code>sudo</code>は目的が違う</h2>
+<p><code>su</code>（substitute user）は、別のユーザー権限で動作するシェルセッションを開始する。<code>su - USER</code> のハイフン <code>-</code> は、実際にそのユーザーがログインした際と同様の環境へ切り替える指定であり、ホームディレクトリや環境変数を対象ユーザーの標準状態に初期化する。</p>
+<p><code>sudo</code>は、設定で許可されたユーザーが、管理者（root）や別のユーザーの権限でコマンドを実行する仕組みである。一般ユーザーなら誰でも<code>sudo</code>を使えるわけではない。管理者権限を与える対象と操作の範囲は、必要最小限にする。</p>
+<pre><code>sudo su - jduops
+id
+pwd
+exit
+id -un</code></pre>
+<p>別のユーザーのシェルを開始すると、元のシェルの内側に新しいシェルが開く。<code>exit</code>は現在のシェルを終了して一つ前のシェルへ戻る。切り替え後は<code>id -un</code>でユーザー名、<code>pwd</code>で作業ディレクトリを確認できる。</p>
+<p>1つのコマンドだけを別ユーザーの権限で試す場合は、対話シェルを開かずに<code>sudo -u USER -- COMMAND</code>と実行する。<code>-u USER</code>は指定したユーザーの権限を使う指定であり、<code>--</code>は<code>sudo</code>のオプションがここで終わることを示す。ユーザーを切り替えたシェルへ入り続ける操作ではなく、指定したコマンドを1回実行した後は元のシェルに戻る。</p>
+<pre><code>sudo -u jduweb -- test -r /srv/jdu-web/index.txt
+echo $?</code></pre>
+<p>これは <code>jduweb</code> の実行資格情報で対象ファイルが読み取り可能かどうかを直接テストしている。<code>test -r</code>自体は成功しても何も表示しない。直後の<code>echo $?</code>が<code>0</code>なら読み取り可能、<code>1</code>なら読み取り不可である。間に別のコマンドを実行すると、そのコマンドの終了ステータスに変わる。管理者である root で読み取れたことをもって、一般のサービスユーザーでも読み取れる証拠と誤認してはならない。</p>
+<h2>6.5 サービス用ユーザーでプロセスの権限を分ける</h2>
+<p>サービス用ユーザーは、サービスのプロセスに与える権限を、人の作業用アカウントや他のサービスから分離するために使う。たとえばWebサーバーのプロセスを<code>jduweb</code>として動かせば、アクセス権の判定には<code>jduweb</code>のUIDとGIDが使われる。サービスが必要とするファイルだけを読めるように設定できる。</p>
+<pre><code>getent passwd jduweb
+id jduweb</code></pre>
+<p><code>/usr/sbin/nologin</code>は、通常の対話ログインに使うシェルの代わりに起動し、ログインを断って終了するプログラムである。この設定でも、アカウント自体は存在する。systemdはサービスの設定で指定したユーザーの権限でプロセスを起動できる。人がそのアカウントで対話ログインできないことと、サービスのプロセスがそのUIDでファイルを扱えることは別である。</p>
+<h2>6.6 アカウント、認証、認可を区別する</h2>
+<p><strong>アカウント（account）</strong>は、システムに登録されたユーザーの情報である。ユーザー名とUID、主グループ、ホームディレクトリ、ログインシェルなどを結び付ける。「<code>ssm-user</code>というアカウントがある」とは、サーバーがその名前を識別できるという意味であり、接続してきた人が本当にその利用者かどうかまでは証明しない。</p>
+<p><strong>認証（authentication）</strong>は、接続してきた相手が、申告したアカウントを使用する正当な相手か確かめることである。パスワード認証なら秘密のパスワードを、SSHの公開鍵認証なら対応する秘密鍵を所持していることを確かめる。公開鍵認証では、接続先の対象ユーザーの<code>~/.ssh/authorized_keys</code>などに公開鍵を登録する。秘密鍵そのものをサーバーへ送って照合するわけではない。</p>
+<p><strong>認可（authorization）</strong>は、その主体が特定の操作をしてよいか判断することである。SSHでは、アカウントやサーバーの設定によって接続を許すかも判断する。接続後は、ファイルを読めるか、書けるか、コマンドを管理者権限で実行できるかを、それぞれの規則で判断する。ログインに成功しても、すべての操作が許されるわけではない。</p>
+<p>SSHで<code>ssm-user</code>として接続する例を、三つの概念に分けてみる。</p>
+<ol><li><strong>アカウント:</strong> 接続先に<code>ssm-user</code>の登録があり、UIDやホームディレクトリなどを取得できる。登録がなければ、そのユーザーとして通常のセッションを開始できない。</li><li><strong>認証:</strong> 接続元は秘密鍵を使い、接続先は<code>ssm-user</code>に登録された公開鍵と対応することを確認する。鍵が合わなければ、アカウントが存在しても認証は失敗する。</li><li><strong>認可:</strong> 接続を許すSSHの設定を通過した後も、開始されたプロセスは<code>ssm-user</code>のUIDと所属グループに応じて操作が制限される。たとえば別ユーザーだけが読めるファイルは読めない。<code>sudo</code>を使えるかも別の設定で判断される。</li></ol>
+<p>これは概念を理解するための整理であり、SSHプログラム内部の厳密な処理順を示すものではない。SSH鍵が正しくても、SSH側のアクセス制限やアカウントの設定によって対話シェルを使えない場合がある。また、サービス用ユーザーはSSHで認証してログインしなくても、systemdから指定されたUIDでプロセスを起動できる。<strong>アカウントを持つこと、ログインを認められること、プロセスが何かを操作できることは、それぞれ別の判断である。</strong></p>
+<h2>章末問題</h2>
+<h3>問1　主グループと補助グループはどう違うか。共有ディレクトリの例で説明せよ。</h3>
+<h3>問2　グループ登録を変更しても、開いたままのシェルに反映されないのはなぜか。何を開始し直すか。</h3>
+<h3>問3　<code>sudo -u jduweb -- test -r FILE</code>を、rootによる<code>cat FILE</code>で代用できないのはなぜか。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> 主グループはユーザーに必ず一つ設定される基本のグループである。補助グループは追加で所属できるグループである。複数のユーザーが共有ディレクトリを利用するときは、共通の補助グループを作って対象ユーザーを追加できる。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> 動作中のシェルは、開始時に得たUIDとグループの資格情報を保持しているためである。新しくログインするか、新しいセッションを開始して、最新のグループ情報を持つシェルを起動する。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> rootが読めても、<code>jduweb</code>のプロセスに読み取り権限があるとは限らないためである。<code>sudo -u jduweb</code>は<code>jduweb</code>の権限で読み取り可否を判定する。</p>
+<h2>参考資料</h2>
+<ul><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/how-to/security/user-management/">User management</a>（2026-09-24確認。rootと一般・システム用ユーザー、アカウント管理）</li><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/how-to/security/openssh-server/">OpenSSH server</a>（2026-09-24確認。公開鍵認証と<code>authorized_keys</code>）</li><li>Ubuntu 24.04 man pages, <a href="https://manpages.ubuntu.com/manpages/noble/man8/adduser.8.html">adduser(8)</a>、<a href="https://manpages.ubuntu.com/manpages/noble/man5/systemd.exec.5.html">systemd.exec(5)</a>（2026-09-24確認。サービス用ユーザーとプロセスの実行ユーザー）</li><li>Linux man-pages, <a href="https://man7.org/linux/man-pages/man5/passwd.5.html">passwd(5)</a>、<a href="https://man7.org/linux/man-pages/man7/credentials.7.html">credentials(7)</a>（2026-09-24確認。UID/GID、ログインシェル、プロセスの資格情報）</li><li>Ubuntu 24.04実機の<code>man id</code>、<code>man getent</code>、<code>man usermod</code>、<code>man gpasswd</code>、<code>man su</code>、<code>man sudo</code>（制作時に確認）</li></ul>
+<h1>第7章 アクセス権と共有ディレクトリ</h1>
+<h2>7.1 アクセス権は誰に何を許すかを表す</h2>
+<p>基本的なLinuxの<strong>アクセス権（パーミッション）</strong>は、所有ユーザー（u: owner user）、所有グループ（g: owner group）、その他（o: others）という3つの<strong>クラス（区分）</strong>に対して、読み取り（r: read）、書き込み（w: write）、実行（x: execute）の各権限を設定する。</p>
+<pre><code>-rw-rw-r-- 1 root ops ... README.txt
+drwxrwsr-x ... root ops ... /srv/jdu-share</code></pre>
+<p>先頭の1文字はファイル種別を示し、<code>-</code> は通常のファイル、<code>d</code> はディレクトリを表す。それに続く9文字を、所有者、グループ、その他の3文字ずつに分割して読み取る。</p>
+<p>カーネルは、操作を試みるプロセスの実行資格情報（UID/GID）と、対象ファイルのメタデータを照合してアクセスの可否を判断する。ここで重要なのは、所有者・グループ・その他の権限をすべて足し合わせて判定するのではない、という点である。プロセスがファイルの所有者であれば「所有者（owner）欄」だけが評価され、所有者ではないがグループに該当すれば「グループ（group）欄」だけが評価され、どちらにも該当しなければ「その他（others）欄」が適用される。</p>
+<figure><img src='../../assets/figures/fig10-permission-decision.svg' alt='processのuser/groupとpermission classの選択'></figure>
+<p><strong>図7-1　プロセスの資格情報から u/g/o のどのクラスを適用するかを選択し、その欄の rwx で操作の可否を判断する流れ。</strong></p>
+<h2>7.2 ファイルとディレクトリでrwxの意味が違う</h2>
+<table>
+<tr><th>権限</th><th>通常ファイル</th><th>ディレクトリ</th></tr>
+<tr><td>r</td><td>内容を読み取る</td><td>内部の名前（ファイル名・ディレクトリ名）一覧を読み取る</td></tr>
+<tr><td>w</td><td>内容を変更・追記する</td><td>内部に名前を新規作成・削除する</td></tr>
+<tr><td>x</td><td>プログラムとして実行する</td><td>内部の名前をたどる、対象のパスへ到達する（トラバース）</td></tr>
+</table>
+<p>ディレクトリに対して書き込み権限（w）があれば、ファイル自体に書き込み権限がなくても、そのディレクトリからファイルを削除できる場合がある（ファイル削除はディレクトリの内容変更であるため）。逆に、ファイル自体に読み取り権限（r）があっても、親ディレクトリに実行権限（x）が付与されていなければ、そのファイルへ到達できず読み取ることができない。このような多段階の権限関係を把握するには、<code>namei -l PATH</code> コマンドで経路上の全ディレクトリのアクセス権を分解して確認する。</p>
+<h2>7.3 8進数モードを読む</h2>
+<p>アクセス権の数値表記（8進数モード）は、<code>r=4</code>、<code>w=2</code>、<code>x=1</code> を加算して表現する。</p>
+<ul><li><code>6 = 4+2 = rw-</code></li><li><code>7 = 4+2+1 = rwx</code></li><li><code>5 = 4+1 = r-x</code></li></ul>
+<p>したがって、通常ファイルの <code>664</code> は <code>rw-rw-r--</code>、ディレクトリの <code>775</code> は <code>rwxrwxr-x</code> となる。</p>
+<pre><code>sudo chmod 664 /srv/jdu-share/README.txt
+sudo chmod 2775 /srv/jdu-share</code></pre>
+<p>全権限を意味する <code>777</code> は、「その他（others）」に対しても読み取り・書き込み・実行を許可する。共有グループのメンバーだけに操作を許す設計には適さない。</p>
+<h2>7.4 <code>chown</code>と<code>chmod</code></h2>
+<p><code>chown</code> は所有者ユーザーおよび所有グループを変更し、<code>chmod</code> はアクセス権モードを変更する。</p>
+<pre><code>sudo chown root:ops /srv/jdu-share
+sudo chown root:ops /srv/jdu-share/README.txt
+sudo chmod 2775 /srv/jdu-share
+sudo chmod 664 /srv/jdu-share/README.txt</code></pre>
+<p>ディレクトリの所有者やアクセス権を変更しても、その配下にすでに存在する既存ファイルやサブディレクトリの属性が自動的に一括変更されるわけではない。<code>-R</code> オプションによって再帰的に配下全体を変更することも可能であるが、想定外のファイルまで意図せず書き換えてしまう危険を伴う。</p>
+<pre><code>stat -c &#x27;%U:%G %a %n&#x27; /srv/jdu-share /srv/jdu-share/README.txt</code></pre>
+<h2>7.5 setgidディレクトリが解決する問題</h2>
+<p>通常、新規に作成されたファイルの所有グループは、作成したプロセスの主グループ（primary group）がそのまま適用される。そのため、複数のユーザーが単一の共有ディレクトリ内で作業を行うと、作成者ごとにファイルのグループがばらばらになり、他のメンバーが編集できなくなる問題が生じ得る。</p>
+<p>ディレクトリに <strong>setgid ビット</strong>（Set Group ID）を設定しておくと、そのディレクトリ配下で新規作成されるファイルやサブディレクトリが、作成者の主グループではなく、親ディレクトリの所有グループを自動的に引き継ぐようになる。たとえば共有先 <code>/srv/jdu-share</code> が <code>root:ops 2775</code> なら、新規ファイルの所有グループは通常 <code>ops</code> になる。</p>
+<figure><img src='../../assets/figures/fig11-setgid-inheritance.svg' alt='setgid設定前後の新規file group'></figure>
+<p><strong>図7-2　setgid は新規項目の所有グループを親ディレクトリとそろえる。所有者、ファイル内容、アクセス権モード全体をコピーする機能ではない。</strong></p>
+<p>8進数モード表記の先頭にある数値 <code>2</code> が setgid ビットを表す。記号（シンボリック）表記では、グループの実行権限の位置が <code>x</code> ではなく <code>s</code> と表示される。</p>
+<pre><code>drwxrwsr-x root ops /srv/jdu-share</code></pre>
+<p>グループに実行権限（x）が付与されていない状態で setgid だけが設定されていると、大文字の <code>S</code> と表示される。共有ディレクトリでは通常グループに <code>rwx</code>（実行権限を含む）を与えるため、小文字の <code>s</code> として表示される。</p>
+<h2>7.6 umaskは新規モードの初期値へ影響する</h2>
+<p>setgid は所有グループの継承を制御する機能であり、新規作成されるファイルのアクセス権モード全体を <code>664</code> に固定するわけではない。新規ファイル作成時の実際のアクセス権は、アプリケーションプログラムが要求する基本モード値から、<strong>umask（ユーザーマスク）</strong>によって制限・マスクされたビットを差し引くことで決定される。</p>
+<pre><code>umask
+touch /srv/jdu-share/sample.txt
+stat -c &#x27;%U:%G %a %n&#x27; /srv/jdu-share/sample.txt</code></pre>
+<p>たとえば、通常ファイルが基本値 <code>666</code> を基準に作成される際、umask が <code>002</code> であれば、結果として <code>664</code>（<code>rw-rw-r--</code>）が設定される。ただし、プログラムが最初から別のモード値を要求することもある。なお、umask は新規作成時にのみ作用し、すでに存在するファイルのアクセス権を後から自動変更することはない。</p>
+<h2>7.7 許可と拒否を実際のユーザーで試す</h2>
+<p>メタデータの表示を目視するだけでなく、実際に対象ユーザーの権限で操作を試行して確認する。</p>
+<pre><code>sudo -u jduviewer -- test -r /srv/jdu-share/README.txt
+echo $?
+sudo -u jduviewer -- test -w /srv/jdu-share
+echo $?</code></pre>
+<p>終了ステータス <code>0</code> はテスト条件が成立（成功）したことを示し、<code>1</code> は不成立（失敗）を意味する。ディレクトリ内にファイルを新規作成できるかどうかは、そのディレクトリ自身の書き込み権限（w）と実行権限（x）に依存する。既存ファイルの書き込み可否だけを確認して、ディレクトリへの作成権限の代用としてはならない。</p>
+<p>アクセス拒否が起きたときは、操作したプロセスのユーザーとグループ、適用された権限クラス、不足した権限を順に確認する。単に<code>777</code>を設定して拒否を解消すると、他のユーザーにも不要な操作を許してしまう。必要なユーザーに必要な権限だけを与える。</p>
+<h2>章末問題</h2>
+<h3>問1　アクセス権モード<code>2775</code>の各桁は何を表すか。</h3>
+<h3>問2　setgidディレクトリ内で新規ファイルを作ると、何が親から引き継がれ、何は引き継がれないか。</h3>
+<h3>問3　rootがファイルを読めても、サービス用ユーザーが読める証明にならないのはなぜか。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> 先頭の<code>2</code>はディレクトリのsetgidである。続く<code>7</code>は所有者の<code>rwx</code>、次の<code>7</code>は所有グループの<code>rwx</code>、最後の<code>5</code>はその他の<code>r-x</code>を表す。ディレクトリなら記号表記は<code>rwxrwsr-x</code>になる。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> 新規ファイルの所有グループは、通常、親ディレクトリの所有グループを引き継ぐ。所有ユーザーやアクセス権モード全体はコピーされない。新規ファイルのモードには、作成プログラムが要求する値とumaskなどが影響する。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> rootは通常のファイルアクセス権による制限を越えて読み取れる場合がある。一方、サービス用ユーザーのプロセスには、そのUIDと所属グループに応じた権限判定が適用されるためである。</p>
+<h2>参考資料</h2>
+<ul><li>Linux man-pages, <a href="https://man7.org/linux/man-pages/man7/path_resolution.7.html">path_resolution(7)</a>（2026-09-18確認）</li><li>Ubuntu 24.04実機の<code>man chmod</code>、<code>man chown</code>、<code>man umask</code>（制作時に確認）</li></ul>
+<h1>第8章 プログラム、プロセス、PID、シグナル</h1>
+<h2>8.1 プログラムとプロセスは違う</h2>
+<p><strong>プログラム</strong>とは、ストレージ（保存領域）に保存された命令群や関連データファイルである。一方、<strong>プロセス</strong>とは、そのプログラムがメモリ上に読み込まれ、OSによって実行されている状態の存在を指す。同一のプログラムから複数のプロセスを起動することが可能であり、それぞれのプロセスには一意の識別番号である<strong>PID（プロセスID）</strong>が割り当てられる。</p>
+<p>なお、パッケージはプログラムや設定ファイルを配布・導入するための単位であり、サービスはバックグラウンドで継続的な機能を提供・管理するための単位である。次の関係性を混同してはならない。</p>
+<pre><code>パッケージをインストールする → プログラムファイルが配置される
+プログラムを実行する         → プロセスが生成される
+systemdがユニットを管理      → サービスプロセスを起動・監視できる</code></pre>
+<figure><img src='../../assets/figures/fig12-program-process-service.svg' alt='program、process、service、packageの関係'></figure>
+<p><strong>図8-1　保存されたもの（プログラム）、実行中のもの（プロセス）、管理単位（サービス）、配布単位（パッケージ）を明確に区別する。</strong></p>
+<h2>8.2 PIDと親子関係</h2>
+<p>カーネルは、起動された各プロセスに対して正の整数値である<strong>PID（プロセスID）</strong>を一意に割り当てる。プロセスは別のプロセスを子プロセスとして生成（起動）することができ、<strong>PPID（親プロセスID）</strong>を参照することでプロセスの親子関係を観測できる。</p>
+<pre><code>ps -e -o pid,ppid,user,stat,comm,args
+ps -p 1234 -o pid,ppid,user,stat,comm,args</code></pre>
+<p>上の <code>1234</code> は表示例であり、実際のPIDは起動のたびに変わる。プロセスが終了した後は、同じ番号が別のプロセスに再利用されることもある。シグナルを送る前には、対象のPIDとともに、ユーザー名（<code>user</code>）、コマンド名（<code>comm</code>）、引数（<code>args</code>）を確認する。</p>
+<p>PID 1 はシステムの起動初期から動作し続ける特別な管理プロセスである。Ubuntuでは通常、systemdがこの役割を担う。</p>
+<h2>8.3 サービスが管理するプロセスを見つける</h2>
+<p>Ubuntuでは、systemdがサービスの起動と状態を管理する。サービスを定義する設定を<strong>ユニット（unit）</strong>と呼び、サービスのユニット名は通常 <code>.service</code> で終わる。設定で指定されたプログラムが実行されると、サービスに対応するプロセスが動く。ユニットという管理対象と、現在動いているプロセスは同じものではない。</p>
+<p><code>systemctl</code> はsystemdが管理するユニットの状態を調べるコマンドである。次の例では、稼働中のサービスを一覧表示し、一つのサービスの状態と主なプロセスを調べる。</p>
+<pre><code>systemctl list-units --type=service
+systemctl status systemd-journald.service --no-pager</code></pre>
+<p><code>status</code> の <strong>Main PID</strong> は、そのサービスの主なプロセスのPIDである。表示された番号をメモし、<code>ps -fp PID</code>の<code>PID</code>をその番号へ置き換えて照合すると、サービスの管理情報と実際のプロセスを結び付けられる。<code>ps</code> はプロセスを調べ、<code>systemctl</code> はサービスの管理状態を調べる。systemdが管理するサービスを停止するには、PIDへ直接シグナルを送る代わりに<code>systemctl stop サービス名</code>を使う。これによりsystemdが停止処理を管理する。サービスの自動起動設定は第10章で扱う。</p>
+<h2>8.4 フォアグラウンドとバックグラウンド</h2>
+<p>ターミナルから通常のコマンドを実行すると、シェルはそのコマンドが<strong>フォアグラウンド（前景）プロセス</strong>として終了するまで待機する。その間、キーボードからの入力は主にそのプロセスへ直接渡される。<code>Ctrl+C</code> は、ターミナルからフォアグラウンドのプロセスグループ全体へ割り込みシグナルを送信する操作である。</p>
+<p>コマンドの末尾に<code>&amp;</code>を付けると、シェルはそのコマンドを<strong>バックグラウンド（背景）</strong>で開始し、次の入力を受け付ける。</p>
+<h2>8.5 シグナルはプロセスへの通知</h2>
+<p><strong>シグナル（signal）</strong>は、OSやプロセスから別のプロセスに対して、特定の出来事や制御要求を非同期に通知する仕組みである。</p>
+<ul><li><strong>TERM（SIGTERM）</strong>: プロセスに対して、データの保存やリソース解放などの正常な終了処理を行う猶予を与えて終了を要求する。プロセスを終了させる際に最初に使用すべき標準シグナルである。</li><li><strong>KILL（SIGKILL）</strong>: カーネルが対象プロセスを強制的に即座終了させる。プロセス側でシグナルを捕捉・後始末することはできない。TERM 等の通常シグナルを受け付けない暴走時の最終手段である。</li><li><strong>INT（SIGINT）</strong>: ターミナルの <code>Ctrl+C</code> などから送信される割り込みシグナルである。</li></ul>
+<pre><code>kill -TERM PID</code></pre>
+<p><code>kill</code>コマンドは、その名称とは異なり、対象プロセスへ指定したシグナルを送るコマンドである。たとえば<code>pkill 1956</code>とすると、<code>1956</code>はPIDではなくプロセス名の検索パターンとして解釈される。PIDを直接指定する場合は<code>kill</code>を用い、プロセス名のパターンで指定する場合は<code>pkill</code>を用いる。</p>
+<h2>8.6 プロセスを終了してもファイルは消えない</h2>
+<p>プロセスを終了させても、ストレージ上に保存されているプログラムファイル、ユニットファイル、データファイルなどはそのまま残る。逆に、ディスク上の実行ファイルを削除したとしても、すでにメモリ上に読み込まれている実行中プロセスが直ちに停止するわけではない。</p>
+<p>systemdで管理されるサービスは、プロセスが終了した後に再起動される場合がある。再起動する条件は、ユニットファイルの<code>Restart=</code>などの設定で決まる。したがって、プロセスが終了したことと、サービスが停止し続けることも別である。</p>
+<h2>8.7 <code>/proc/PID</code>で実行状態を見る</h2>
+<pre><code>printf &#x27;PID=%s\n&#x27; &quot;$$&quot;
+cat &quot;/proc/$$/cmdline&quot; | tr &#x27;\0&#x27; &#x27; &#x27;
+printf &#x27;\n&#x27;
+readlink -f &quot;/proc/$$/cwd&quot;</code></pre>
+<p><code>$$</code>は現在のBashシェルのPIDである。<code>/proc/PID/cmdline</code>では、引数群がNUL文字（<code>\0</code>）で区切られているため、<code>tr</code>で空白に置き換えて表示する。<code>/proc/PID/cwd</code>は、そのプロセスの作業ディレクトリを指すシンボリックリンクである。プロセスが終了すると、対応する<code>/proc/PID</code>も消える。</p>
+<p><code>/proc/PID</code>を読むと、保存されたプログラムファイルではなく、現在動作しているプロセスの情報を観測できる。</p>
+<h2>章末問題</h2>
+<h3>問1　パッケージ、プログラム、プロセス、サービスはどう違うか。</h3>
+<h3>問2　シグナルを送る前に、PIDを<code>ps</code>で照合するのはなぜか。</h3>
+<h3>問3　TERM送信後にサービスが再び動いたら、ユニットファイルの何を確認するか。</h3>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え:</strong> パッケージはプログラムや設定を配布・導入する単位である。プログラムは保存された命令群である。プロセスはプログラムの実行中の状態である。サービスは継続的な機能を提供し、systemdなどが管理する単位である。</p>
+<h3>問2</h3>
+<p><strong>答え:</strong> PIDは起動のたびに変わり、終了後に別のプロセスへ再利用されることがあるためである。PIDだけでなく、実行ユーザー、コマンド名、引数を照合し、意図したプロセスか確認する。</p>
+<h3>問3</h3>
+<p><strong>答え:</strong> <code>Restart=</code>などの再起動設定を確認する。プロセスが終了しても、systemdがその設定に従って再起動する場合がある。</p>
+<h2>参考資料</h2>
+<ul><li>Linux man-pages / Ubuntu 24.04の<code>man ps</code>、<code>man kill</code>、<code>man proc</code>（制作時に実機確認）</li><li>GNU Bash Reference Manual, <a href="https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html">Special Parameters</a>（2026-09-24確認。<code>$$</code>はシェルのPID）</li><li>Ubuntu 24.04 man page, <a href="https://manpages.ubuntu.com/manpages/noble/man5/systemd.service.5.html">systemd.service(5)</a>（2026-09-24確認。<code>Restart=</code>）</li><li>Ubuntu 24.04 man page, <a href="https://manpages.ubuntu.com/manpages/noble/man1/systemctl.1.html">systemctl(1)</a>（2026-09-24確認。<code>status</code>と<code>show</code>）</li></ul>
+<h1>第9章 パッケージとソフトウェアの導入</h1>
+<h2>9.1 パッケージが必要な理由</h2>
+<p>実用的なソフトウェアは、単一の実行ファイルだけで完結するとは限らない。動作に必要な共有ライブラリ、設定ファイルのテンプレート、マニュアル文書、データファイルなどを同時に必要とする。<strong>パッケージ（package）</strong>とは、これら関連するファイル群、バージョン情報、依存関係、およびシステムの導入・削除スクリプトをひとまとめにした配布単位である。</p>
+<p>Ubuntuでは主に Debian パッケージ形式（<code>.deb</code>）を採用し、それを <strong>APT（Advanced Package Tool）</strong> で一括管理する。APT は<strong>リポジトリ（repository）</strong>から利用可能な最新のパッケージ情報を取得し、必要な依存ライブラリを自動で解決しながらシステムへ導入する。インターネット上から拾ってきた素性の知れないスクリプトを不用意に root 権限で直接実行することと、公式に信頼されたリポジトリから検証済みのパッケージを導入することは、セキュリティの観点から根本的に異なる行為である。</p>
+<figure><img src='../../assets/figures/fig13-apt-flow.svg' alt='repository、package index、package、commandの関係'></figure>
+<p><strong>図9-1　<code>apt update</code> はインデックス（一覧情報）を更新し、<code>apt install</code> がパッケージ本体を取得・導入する流れ。</strong></p>
+<h2>9.2 リポジトリとパッケージインデックス</h2>
+<p><strong>リポジトリ（repository）</strong>とは、パッケージ本体とそれに付随するメタデータ（バージョンや依存関係の説明）を提供する配布拠点のサーバーである。手元のUbuntuシステムは、どのリポジトリにどのバージョンのパッケージが存在するかをローカルの<strong>パッケージインデックス（一覧情報）</strong>として保持している。</p>
+<pre><code>sudo apt update
+apt show cmatrix
+sudo apt upgrade</code></pre>
+<p><code>apt update</code> は、リポジトリから利用可能なパッケージの一覧（インデックス）を最新状態に更新する。これだけでは導入済みパッケージの本体は変わらない。<code>apt show cmatrix</code> では、導入前にパッケージの説明やバージョン、依存関係を確認できる。<code>apt upgrade</code> は、更新した一覧を基に、導入済みパッケージを新しいバージョンへ更新する。実行時に表示される変更内容を確認してから、継続するか判断する。これはUbuntuの新しいリリースへ切り替える操作ではない。</p>
+<h2>9.3 インストールと実行確認</h2>
+<pre><code>sudo apt install cmatrix
+command -v cmatrix
+cmatrix</code></pre>
+<p><code>sudo</code> 権限が必要となるのは、システム全体のパッケージデータベースや、管理者保護下にある <code>/usr/bin</code> などの配置領域を変更するためである。導入が完了したら、<code>command -v</code> を用いてシェルがどのパスの実行ファイルを認識しているかを確認する。<code>cmatrix</code> は <code>Ctrl+C</code> で終了できる。</p>
+<p>パッケージがシステムに導入済みであることと、現在そのプロセスがメモリ上で動作していることは全く別の状態である。コマンドを終了させてもパッケージ自体はシステムに残り続ける。その一方で、サーバー系ソフトウェアのパッケージによっては、導入完了時にサービスプロセスを自動起動する設定になっているものもある。思い込みで判断せず、<code>systemctl</code> コマンドを用いて実際の稼働状態を確認することが重要である。</p>
+<h2>9.4 バージョンとファイルの所属を確認する</h2>
+<pre><code>dpkg-query -W -f=&#x27;${Package} ${Version}\n&#x27; cmatrix
+dpkg -S /usr/bin/apt</code></pre>
+<p><code>dpkg-query</code> は、ローカルのパッケージデータベースから現在導入されている正確なバージョン情報を読み出す。<code>dpkg -S PATH</code> は、指定したファイルパスがどのパッケージによって提供・配置されたかを調べる。<code>command -v</code> が「シェルが実行対象として認識しているファイルパス」を答えるのに対し、<code>dpkg -S</code> は「そのファイルを管理しているパッケージの所属関係」を答える。<code>/usr/bin/apt</code>は例である。コマンドの公開パスがシンボリックリンクの場合、そのパス自体はパッケージの管理対象でないことがある。<code>readlink -f</code>で実体のパスを確認してから、その実体を<code>dpkg -S</code>で調べる。</p>
+<h2>9.5 削除とクリーンアップ</h2>
+<p><code>apt remove</code> はパッケージ本体を削除する。<code>apt purge</code> は設定ファイルも含めて削除する。<code>apt autoremove</code> は、ほかのパッケージから必要とされなくなった依存パッケージを削除する。いずれも <code>apt upgrade</code> とは異なり、削除されるものを確認してから実行する。</p>
+<h2>章末問題</h2>
+<h3>問1</h3>
+<p><code>apt update</code>、<code>apt upgrade</code>、<code>apt install</code> の役割の違いを説明せよ。</p>
+<h3>問2</h3>
+<p><code>command -v cmatrix</code> と <code>dpkg -S /usr/bin/apt</code> がそれぞれ何を調べるコマンドであるか、その違いを説明せよ。</p>
+<h3>問3</h3>
+<p>パッケージが正常に導入されていても、対応するプロセスが動いていない状況を一例挙げよ。</p>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え：</strong> <code>apt update</code> は利用可能なパッケージの一覧を更新する。<code>apt upgrade</code> は導入済みパッケージを新しいバージョンへ更新する。<code>apt install</code> は指定したパッケージを導入する。</p>
+<h3>問2</h3>
+<p><strong>答え：</strong> <code>command -v cmatrix</code> はシェルが実行するコマンドのパスを調べる。<code>dpkg -S /usr/bin/apt</code> は、そのファイルを提供するパッケージを調べる。公開パスがシンボリックリンクなら、実体のパスを確認してから所属を調べる。</p>
+<h3>問3</h3>
+<p><strong>答え：</strong> <code>cmatrix</code> を導入したあと、起動せずにいる場合や、起動後に <code>Ctrl+C</code> で終了した場合。パッケージは残るが、<code>cmatrix</code> のプロセスは動いていない。</p>
+<h2>参考資料</h2>
+<ul><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/how-to/software/package-management/">Install and manage packages</a>（2026-09-24確認）</li><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/tutorial/managing-software/">Managing your software</a>（2026-09-24確認）</li><li>Ubuntu 24.04実機の<code>man apt</code>、<code>man dpkg-query</code>、<code>man dpkg</code>（制作時に確認）</li></ul>
+<h1>第10章 systemdとサービス</h1>
+<h2>10.1 サービスとは何か</h2>
+<p><strong>サービス（service）</strong>とは、利用者が毎回ターミナルから手動で起動しなくても、OSシステムがバックグラウンドで自動管理し、継続的な機能を提供するプログラムである。Webサーバー、SSHサーバー、時刻同期、ログ管理デーモンなどがその代表例である。ただし、システム上で動作するすべてのプロセスがサービスであるわけではなく、またすべてのサービスがネットワーク待受用のポートを持つわけでもない。</p>
+<p>Ubuntu 24.04では、最上位プロセスである systemd が PID 1 として起動し、システム内の多様なサービス群を一元管理する。ここで重要なのは、systemd は「個々のサービス処理そのもの」を行うのではなく、各種サービスの起動、停止、依存関係の解決、死活監視、システム起動時の自動起動などを統括管理する「サービスマネージャー」プログラムである、という点である。</p>
+<h2>10.2 ユニットファイルは設定、プロセスは実行状態</h2>
+<p>systemd は<strong>ユニット（unit）</strong>という統一的な管理単位を用いて各種リソースを制御する。その中でもサービスを定義する <code>.service</code> ユニットファイルには、「どの実行ファイルを、どのユーザーの権限で、どのディレクトリを作業場所として起動するか」といった実行ルールが明確に記述されている。</p>
+<pre><code>[Service]
+User=jduapp
+WorkingDirectory=/srv/jdu-status
+ExecStart=/usr/bin/python3 /srv/jdu-status/server.py</code></pre>
+<ul><li><code>User</code>: サービスプロセスを実行するユーザー（資格情報）。</li><li><code>WorkingDirectory</code>: プロセス起動時のカレントディレクトリ（作業ディレクトリ）。</li><li><code>ExecStart</code>: 実際に起動するプログラムの絶対パスと引数。</li></ul>
+<pre><code>systemctl cat jdu-status.service</code></pre>
+<p><code>systemctl cat</code> コマンドは、ディスク上のユニットファイルと、設定を部分上書きするドロップイン設定（drop-in）の内容を表示する。ファイルの変更後に <code>daemon-reload</code> を実行していない場合、表示内容とsystemdが認識している設定は一致しないことがある。</p>
+<figure><img src='../../assets/figures/fig14-systemd-service-lifecycle.svg' alt='unit、systemd、service process、kernelの関係'></figure>
+<p><strong>図10-1　ユニット（unit）は設定、systemd は管理者、サービスプロセスが実際の処理を行う構造。</strong></p>
+<h2>10.3 activeとenabledは別の軸</h2>
+<pre><code>systemctl is-active jdu-status.service
+systemctl is-enabled jdu-status.service</code></pre>
+<ul><li><strong>active / inactive</strong>: そのサービスプロセスが現在メモリ上で動作しているか、停止しているか。</li><li><strong>enabled / disabled</strong>: システムのブート（起動）時に、自動的に起動対象として組み込まれているか否か。</li></ul>
+<p>したがって、「現在は active（稼働中）だが disabled（再起動時には自動起動しない）」という状態や、「現在は inactive（停止中）だが enabled（次回起動時には自動起動する）」という状態が当然に成立し得る。サービスの即時起動（<code>start</code>）と自動起動の有効化（<code>enable</code>）は、全く別軸の独立した操作である。</p>
+<pre><code>sudo systemctl start jdu-status.service
+sudo systemctl enable jdu-status.service</code></pre>
+<p><code>enable --now</code> オプションを使うと、起動と自動起動設定を同時に行える。</p>
+<h2>10.4 start、stop、restart、reload</h2>
+<ul><li><strong>start</strong>: 停止しているサービスプロセスを起動する。</li><li><strong>stop</strong>: 動作中のサービスプロセスを停止する。</li><li><strong>restart</strong>: サービスを一度停止させてから再度起動する。一時的な通信断（停止時間）が発生する。</li><li><strong>reload</strong>: プロセスを停止させることなく、設定ファイルの再読み込みだけを要求する。すべてのサービスがこの機能に対応しているわけではない。</li></ul>
+<p>なお、ユニットファイル自体の記述を変更した際に systemd 本体へ再読み込みを指示する <code>systemctl daemon-reload</code> と、サービスプロセス自身に設定を再読込させる <code>reload</code> は全く別の操作である。</p>
+<h2>10.5 ユニット設定と実プロセスを照合する</h2>
+<pre><code>systemctl status jdu-status.service
+systemctl show --property MainPID --value jdu-status.service</code></pre>
+<p>第8章ではMain PIDからプロセスを特定した。ここではさらに、ユニットの<code>User=</code>、<code>ExecStart=</code>、<code>WorkingDirectory=</code>と実際のプロセスを照合する。<code>systemctl status</code>はユニットのロード状態、稼働状態（active）、Main PID、直近の関連ログを表示する。出力行数が多い場合はページャーが起動するため、<code>q</code>キーで終了する。<code>systemctl show</code>は指定したプロパティの値だけを取得できる。</p>
+<p>Main PIDを取得したら、その番号のプロセスとユニット設定が合致しているかを照合できる。次の<code>1234</code>は説明用の番号であり、実際には表示されたMain PIDへ置き換える。</p>
+<pre><code>ps -p 1234 -o pid,user,comm,args
+sudo readlink -f /proc/1234/cwd</code></pre>
+<p>確認する対応は次のとおりである。</p>
+<table>
+<tr><th>ユニットの設定</th><th>実プロセスで確認する場所</th></tr>
+<tr><td><code>User=</code></td><td><code>ps</code> の USER 欄</td></tr>
+<tr><td><code>ExecStart=</code></td><td><code>ps</code> の args 欄、および <code>/proc/PID/cmdline</code></td></tr>
+<tr><td><code>WorkingDirectory=</code></td><td><code>/proc/PID/cwd</code> が指すシンボリックリンク先</td></tr>
+</table>
+<h2>10.6 activeだけでは機能正常を証明しない</h2>
+<p>systemd がプロセスを active（稼働中）として管理していたとしても、コンテンツファイルに対するアクセス権が不足して読めない、意図しないIPアドレスで待受（listen）している、あるいはアプリケーション内部で例外エラーが発生しているなどの理由で、利用者に正常な応答を返せない場合がある。次章では、サービス管理の状態にとどまらず、プロセス、ソケット、HTTPレスポンス、ログ出力へと確認範囲を広げていく。</p>
+<h2>10.7 <code>systemctl status</code>にすべてのプロセスが並ぶわけではない</h2>
+<p>引数を指定せずに <code>systemctl status</code> を実行すると、システム全体の稼働サマリーやプロセスツリーが表示され、個々のユニットの詳細が必ずしも見やすく一覧化されるわけではない。目的のサービスを確認する際は、必ずユニット名を明示的に指定して実行する。</p>
+<pre><code>systemctl status systemd-journald.service --no-pager
+systemctl list-units --type=service &#x27;systemd-*&#x27;</code></pre>
+<p>ユーザーがターミナルで起動したシェルプロセスなど、systemd のサービスユニット配下に属さないプロセスも多数存在する。システム全体のプロセス一覧を網羅的に確認するには <code>ps</code> コマンドを使用し、systemd の管理対象であるサービスの状態を確認するには <code>systemctl</code> コマンドを使用する、という使い分けを明確にする。</p>
+<h2>章末問題</h2>
+<h3>問1</h3>
+<p>ユニットファイル、systemd、サービスプロセスの3者の役割の違いを説明せよ。</p>
+<h3>問2</h3>
+<p>サービスの状態において「active かつ disabled」という組み合わせは成立し得るか。その状態が何を意味するかを含めて説明せよ。</p>
+<h3>問3</h3>
+<p>ユニットファイルに定義された <code>WorkingDirectory</code> の設定が、実際の稼働プロセスへ正しく反映されているかを <code>/proc</code> 配下の情報を用いて確認する方法を説明せよ。</p>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え：</strong> ユニットファイルは起動方法などの設定を記す。systemdはその設定を使ってサービスを管理する。サービスプロセスは、実際の処理を行う稼働中のプログラムである。</p>
+<h3>問2</h3>
+<p><strong>答え：</strong> 成立し得る。<code>active</code>は現在動いていること、<code>disabled</code>はそのユニットの自動起動が有効化されていないことを示す。手動の<code>start</code>で起動したサービスが、その状態になり得る。</p>
+<h3>問3</h3>
+<p><strong>答え：</strong> 稼働中サービスのMain PIDを<code>systemctl show --property MainPID --value ユニット名</code>で調べる。<code>readlink -f /proc/PID/cwd</code>で、そのプロセスの現在の作業ディレクトリを確認する。表示されたパスをユニットファイルの<code>WorkingDirectory=</code>と照合する。</p>
+<h2>参考資料</h2>
+<ul><li>Ubuntu 24.04 <a href="https://manpages.ubuntu.com/manpages/noble/man1/systemctl.1.html">systemctl(1)</a>、<a href="https://manpages.ubuntu.com/manpages/noble/man5/systemd.exec.5.html">systemd.exec(5)</a>、<a href="https://manpages.ubuntu.com/manpages/noble/man5/proc_pid_cwd.5.html">proc_pid_cwd(5)</a>（2026-09-24確認）</li><li>公開Lab v1.0.0のP4/M4 unitとchecker（Lab固有値の正本）</li></ul>
+<h1>第11章 ソケット、HTTP、ログでサービスを観察する</h1>
+<h2>11.1 サービス、プロセス、ソケットの関係</h2>
+<p>systemd はユニットの設定定義に従ってサービスプロセスを起動する。そのプログラムがネットワーク通信を必要とする場合、システムコールを通じてカーネルへ<strong>ソケット（socket）</strong>の作成を依頼する。カーネルはIPアドレス、通信プロトコル、ポート番号などに基づいて、外部からの通信データを該当するプロセスへ正しく届ける。</p>
+<p>サービスが勝手にソケットを生み出すというよりは、「サービスとして動作するプログラムが、カーネルの提供するソケット機能を利用して通信を行っている」と理解するのが正確である。systemd の役割はそのプロセスを管理・監視することであり、ネットワーク通信の送受信処理そのものをすべて systemd が代行しているわけではない。</p>
+<figure><img src='../../assets/figures/fig15-service-process-socket.svg' alt='systemd、process、socket、clientの関係'></figure>
+<p><strong>図11-1　管理（systemd）、実行（プロセス）、通信機能（カーネル・ソケット）、クライアント要求（リクエスト）の各経路の分離構造。</strong> 1つのサービスが複数のソケットを持つ場合や、ネットワーク通信を行わないサービスも存在する。</p>
+<h2>11.2 プロトコル、IPアドレス、ポート</h2>
+<p>Web通信でよく使われるトランスポート層の通信プロトコルの一つが <strong>TCP（Transmission Control Protocol）</strong> である。TCP はデータが相手へ届いたことを確認し、順序どおりに届ける通信方式である。接続の確立や再送などの詳しい仕組みは後続のネットワーク単元で扱う。</p>
+<p><strong>IPアドレス</strong>はネットワーク上のインターフェース（通信相手のホスト）を識別する。一方、<strong>ポート（port）番号</strong>は、同一ホスト内で動作しているどの通信窓口（どのプロセス）へデータを届けるかを識別するための番号である。「ポート番号そのものがプログラム」なのではない。カーネルがソケットの待受情報とポート番号を照合し、該当するプロセスへ通信データを引き渡す。</p>
+<ul><li><code>127.0.0.1</code>: IPv4の<strong>ループバックアドレス（loopback）</strong>。外部ネットワークからは直接到達できず、基本的に同一ホスト内からの通信のみを受け付ける。</li><li><code>0.0.0.0</code>: そのホストが持つすべてのIPv4ローカルアドレス（すべてのネットワークインターフェース）で待ち受けることを意味する特殊表記。</li><li><code>[::]</code>: すべてのIPv6ローカルアドレスで待ち受ける指定。OSの設定によってはIPv4通信も同時に受け付ける場合がある。</li></ul>
+<h2>11.3 待受ソケットを<code>ss</code>で読む</h2>
+<p><code>ss</code>（Socket Statistics）は、カーネルが管理しているソケットの詳細な状態を表示するコマンドである。</p>
+<pre><code>sudo ss -lntp | grep &#x27;:8081&#x27;</code></pre>
+<ul><li><code>-l</code>: 待受（LISTEN）状態のソケットのみを表示する。</li><li><code>-n</code>: サービス名（httpなど）へ逆引き変換せず、ポート番号の数値をそのまま表示する。</li><li><code>-t</code>: TCPソケットのみを表示する。</li><li><code>-p</code>: そのソケットを利用しているプロセスの情報（名前やPID）を表示する。表示には管理者権限が必要な場合がある。</li></ul>
+<p>概念上の例:</p>
+<pre><code>State  Recv-Q Send-Q Local Address:Port Peer Address:Port Process
+LISTEN 0      5      127.0.0.1:8081  0.0.0.0:*       users:((&quot;python3&quot;,pid=2451,fd=3))</code></pre>
+<p>出力を読む順序は、状態（State: <code>LISTEN</code>）、待受アドレスとポート（Local Address:Port: <code>127.0.0.1:8081</code>）、そして利用プロセス情報（Process: <code>pid=...</code>）である。待受アドレスが <code>127.0.0.1:8081</code> であり、プロセス情報内の PID が systemd で確認したサービスの Main PID と一致しているかを照合する。なお、<code>2451</code> は教科書の表示例であり、必ず自身の環境で出力された実機の PID を読み取ること。</p>
+<figure><img src='../../assets/figures/fig16-ss-output-anatomy.svg' alt='ss出力の読み方'></figure>
+<p><strong>図11-2　ss -lntp の出力行を、状態・アドレス・ポート・プロセス情報へ分解して照合する読み方。</strong></p>
+<h2>11.4 クライアントとサーバー、HTTP</h2>
+<p><strong>サーバー（server）</strong>プロセスは、ソケットを作成してクライアントからの接続要求（リクエスト）を待ち受ける。<strong>クライアント（client）</strong>は、サーバーのソケットへ接続を確立し、リクエストを送信する。本演習環境では、同一のUbuntuホスト内で実行する <code>curl</code> コマンドがクライアントとなり、<code>jdu-web.service</code> のプロセスがサーバーとなる。</p>
+<pre><code>curl -i http://127.0.0.1:8081/</code></pre>
+<p>URL <code>http://127.0.0.1:8081/</code> において、<code>http</code> は通信プロトコル（スキーマ）、<code>127.0.0.1</code> は接続先ホスト、<code>8081</code> はポート番号、<code>/</code> はリクエスト対象のパスである。<code>-i</code> オプションは、応答本文（ボディ）だけでなく HTTP レスポンスヘッダーもあわせて表示する。</p>
+<pre><code>HTTP/1.0 200 OK
+Content-Type: text/plain
+
+（本文）</code></pre>
+<p><code>200</code>（200 OK）は、HTTP アプリケーション層におけるステータスコードである。「TCP レベルのネットワーク接続が成功したこと」「HTTP レベルの応答ヘッダーが返ってきたこと」「応答本文（ボディ）の内容が期待どおりであること」の3点は、それぞれ異なるレイヤーの成否として個別に検証する必要がある。</p>
+<h2>11.5 オープンポートとクローズドポートの比較</h2>
+<pre><code>curl --max-time 2 http://127.0.0.1:18081/
+sudo ss -lnt | grep &#x27;:18081&#x27;</code></pre>
+<p>この例で <code>127.0.0.1:18081</code> に待受ソケットがなければ、接続要求は通常拒否され、<code>curl</code> は <code>Connection refused</code> と表示する。<code>ss -lnt</code> にそのアドレスとポートの行がないことは、そこで待ち受けるTCPソケットがないことを示す。<code>--max-time 2</code> は、<code>curl</code> の処理全体を最長2秒に制限する指定である。</p>
+<p>待受ソケットが存在することと、HTTPの応答が返ることも別である。待受は接続を受け付ける準備を示す。HTTPの応答には、接続後にサーバープログラムがリクエストを処理する必要がある。また、タイムアウトは通信が時間内に完了しなかったという結果であり、それだけで「待受ソケットがない」とは判断できない。</p>
+<h2>11.6 サービスユーザーの読み取りアクセス権</h2>
+<p>Webサーバープロセスが要求されたコンテンツファイルを読み出してクライアントへ返すためには、そのサービスの実行ユーザーが、コンテンツファイル自身およびその親ディレクトリ群への正当なアクセス権（読み取り権限と実行権限）を保持していなければならない。</p>
+<pre><code>id jduweb
+stat -c &#x27;%U:%G %a %n&#x27; /srv/jdu-web/index.txt
+namei -l /srv/jdu-web/index.txt
+sudo -u jduweb -- test -r /srv/jdu-web/index.txt
+echo $?</code></pre>
+<p><code>jduweb</code> ユーザーへ対話的に <code>su -</code> ログインできないことは何ら問題ではない。サービス専用ユーザーは不正利用防止のために対話シェルが無効化されているのが標準であり、第6章で学んだ <code>sudo -u</code> を用いることで、対話ログインを開くことなくそのユーザーの資格情報でファイルのアクセス可否を確実にテストできる。</p>
+<h2>11.7 ログはどこから来るのか</h2>
+<p>プログラムは動作中にさまざまなログメッセージを出力する。systemd 環境のログ収集デーモンである systemd-journald は、各サービスプロセスが出力した標準出力（stdout）や標準エラー出力（stderr）、およびシステムログメッセージを一元的に収集してバイナリ形式で蓄積する。<code>journalctl</code> コマンドは、その蓄積されたジャーナルログを閲覧・検索するために使用する。</p>
+<pre><code>curl -i http://127.0.0.1:8081/
+sudo journalctl -u jdu-web.service --no-pager -n 20</code></pre>
+<p><code>-u</code> は対象ユニットでログを絞り込み、<code>-n 20</code> は直近の20件を表示する。<code>--no-pager</code> はページャーを起動せずに結果を表示する。Webサーバーがアクセスを記録する設計なら、リクエストに対応するログ行が残る。ログの内容や有無はプログラムの実装と設定によって異なる。</p>
+<h2>11.8 Webサービスが要求に応じるまで</h2>
+<p>Webサービスを例にすると、設定・実行・通信・応答・ログは、次のようにつながる。</p>
+<pre><code>ユニットファイル → systemd → サービスプロセス
+                                ↓ カーネルのソケット機能を利用
+                    待受ソケット（IPアドレスとポート）
+                                ↓ クライアントが接続・要求
+                    サービスプロセスが要求を処理
+                       ├─ HTTPレスポンスを返す
+                       └─ 必要に応じてログを出力する</code></pre>
+<p>ユニットファイルは起動方法を定めるが、通信内容を処理するのはサービスプロセスである。待受ソケットは接続を受ける窓口であり、HTTPレスポンスはプログラムが要求を処理した結果である。ログは、その処理やエラーを後から知るための記録である。<code>systemctl</code> はサービスの状態、<code>ss</code> はソケット、<code>curl</code> はHTTP応答、<code>journalctl</code> はジャーナルに収集されたログをそれぞれ表示する。これらは同じ事実を別名で示すものではない。</p>
+<h2>章末問題</h2>
+<h3>問1</h3>
+<p>サービスが active（稼働中）であるにもかかわらず、HTTPで期待した応答を得られない原因の例を2つ挙げよ。</p>
+<h3>問2</h3>
+<p>待受アドレス <code>127.0.0.1:8081</code> と <code>0.0.0.0:8081</code> の違いを、外部ネットワークからの到達可能性に着目して説明せよ。</p>
+<h3>問3</h3>
+<p><code>ss</code> の出力にあるプロセスのPIDと、systemdのMain PIDを照合する理由を説明せよ。</p>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え：</strong> 例えば、サーバープログラムが想定とは別のアドレスやポートで待ち受けている場合。または、サービスの実行ユーザーにコンテンツファイルの読み取り権限がなく、要求を処理できない場合である。</p>
+<h3>問2</h3>
+<p><strong>答え：</strong> <code>127.0.0.1:8081</code> は同じホスト内からの接続を受け付ける。<code>0.0.0.0:8081</code> は、そのホストのすべてのIPv4ローカルアドレスで待ち受ける。ただし、外部から実際に到達できるかはファイアウォールやネットワーク構成にも左右される。</p>
+<h3>問3</h3>
+<p><strong>答え：</strong> 待受ソケットを利用しているプロセスが、目的のサービスとしてsystemdに管理されているプロセスかを確かめるためである。ただし、複数プロセスで動くサービスでは、待受を持つPIDがMain PIDと異なることもある。</p>
+<h2>参考資料</h2>
+<ul><li>Linux man-pages, <a href="https://man7.org/linux/man-pages/man7/socket.7.html">socket(7)</a>（2026-09-18確認）</li><li>Linux man-pages, <a href="https://www.man7.org/linux/man-pages/man2/connect.2.html">connect(2)</a>（2026-09-24確認）</li><li>curl, <a href="https://curl.se/docs/manpage.html">How to use curl</a>（2026-09-24確認）</li><li>Ubuntu 24.04実機の<code>man ss</code>、<code>man curl</code>、<code>man journalctl</code>（制作時に確認）</li><li>公開Lab v1.0.0のP5/M5 program、unit、checker（Lab固有値の正本）</li></ul>
+<h1>第12章 SSHによる遠隔操作とファイル転送</h1>
+<h2>12.1 接続元と接続先</h2>
+<p>離れたコンピューターを操作するときは、コマンドを入力する側と、そのコマンドを受けて動く側を区別する。SSH接続を開始する側を<strong>ローカル（local）</strong>、接続先を<strong>リモート（remote）</strong>と呼ぶ。この呼び方は、操作する人の視点で決まる。ローカルが必ず手元の物理PCとは限らない。ブラウザで開いたクラウド上のターミナルからSSHを実行した場合、そのターミナルが動いている環境が接続元になる。</p>
+<pre><code>コマンドを入力する環境（ローカル）
+              ↓ SSH接続
+コマンドを実行するサーバー（リモート）</code></pre>
+<p>接続前後で、ユーザー名、ホスト名、カレントディレクトリが変わることがある。例えば、接続元で <code>id -un</code>、<code>hostname</code>、<code>pwd</code> を実行すると接続元の状態が分かる。SSHでログインした後に同じコマンドを実行すると、今度は接続先の状態が分かる。<code>exit</code> でリモートのシェルを終了すると、元のローカルのシェルに戻る。プロンプトの見た目だけでは、どちらの環境にいるか判断しない。</p>
+<h2>12.2 SSHが守るもの</h2>
+<p><strong>SSH（Secure Shell）</strong>は、離れたコンピューターとの間に暗号化された通信経路を作り、リモートのシェルやコマンドを利用できるようにする仕組みである。接続時には、主に次の二つの確認を行う。</p>
+<ol><li><strong>接続先の確認（ホスト認証）</strong>：接続先が意図したサーバーかを、サーバーのホスト鍵で確認する。</li><li><strong>利用者の確認（ユーザー認証）</strong>：接続するユーザーがログインを許可されているかを確認する。公開鍵認証では、利用者の鍵ペアを使う。</li></ol>
+<p>その後、操作コマンド、実行結果、転送データは暗号化されたSSH接続を通る。ただし、暗号化だけでサーバーに到達できるわけではない。接続元から接続先まで通信できる経路も必要である。また、SSHにログインできても、接続先のファイルを自由に読んだり変更したりできるわけではない。ログイン後の操作には、接続先OSのユーザーとアクセス権が適用される。</p>
+<figure><img src='../../assets/figures/fig17-ssh-ssm-path.svg' alt='SSHの接続元と接続先にある鍵の役割'></figure>
+<p><strong>図12-1　SSHでは、接続先を確かめるホスト鍵と、利用者を確かめるユーザー鍵が別の役割を持つ。</strong></p>
+<h2>12.3 ユーザー鍵とホスト鍵の置き場所</h2>
+<p>公開鍵認証では、接続する利用者の<strong>秘密鍵（private key）</strong>をSSHクライアント側で保管する。対応する<strong>公開鍵（public key）</strong>は、接続先のユーザーがログインを許可する鍵として、通常は接続先の <code>~/.ssh/authorized_keys</code> に登録する。SSHクライアントは秘密鍵を相手へ渡さずに、その鍵を持っていることを証明する。</p>
+<p>一方、<strong>ホスト鍵（host key）</strong>はサーバーを識別するための鍵である。サーバーはホスト秘密鍵を保持する。クライアントは接続先から提示されたホスト公開鍵を確認し、信頼した記録を通常は <code>~/.ssh/known_hosts</code> に保存する。初めて接続するときに表示される鍵の指紋は、信頼できる経路で得た情報と照合してから受け入れる。知らない鍵を無条件に受け入れると、接続先のなりすましに気づけない。</p>
+<table>
+<tr><th>鍵の種類</th><th>主な目的</th><th>秘密鍵の保管場所</th><th>公開鍵に関する情報</th></tr>
+<tr><td>ユーザー鍵</td><td>接続する利用者の認証</td><td>接続元</td><td>接続先の <code>authorized_keys</code></td></tr>
+<tr><td>ホスト鍵</td><td>接続先サーバーの確認</td><td>接続先</td><td>接続元の <code>known_hosts</code> など</td></tr>
+</table>
+<p>秘密鍵を公開したり、Gitリポジトリへ追加したりしない。秘密鍵ファイルを他の利用者が読める状態にすると、SSHクライアントが使用を拒否することもある。なお、表の <code>~</code> はそれぞれの環境のユーザーのホームディレクトリを表す。同じ文字でも、接続元と接続先では指す場所が異なる。</p>
+<h2>12.4 接続名と通信経路</h2>
+<p>SSHクライアントは、接続先ごとの設定を接続元の <code>~/.ssh/config</code> に記述できる。次は設定の一例である。</p>
+<pre><code>Host study-server
+    HostName server.example.edu
+    User learner
+    IdentityFile ~/.ssh/id_ed25519</code></pre>
+<p>この設定がある場合、<code>ssh study-server</code> と入力すると、SSHクライアントは <code>study-server</code> に対応するホスト名、ユーザー名、秘密鍵ファイルを使う。<code>Host</code> の値はSSH設定内の<strong>別名（ホストエイリアス）</strong>であり、DNSに登録されたホスト名とは別である。そのため、SSHでは使える別名が、SSH設定を読まない別のプログラムでは名前解決できないことがある。</p>
+<p>接続先が直接到達できないネットワークにある場合は、踏み台や中継プログラムを経由してSSHの通信を届ける構成もある。OpenSSHでは <code>ProxyJump</code> や <code>ProxyCommand</code> などで経路を指定できる。これらは「どの経路で接続先へ届くか」の設定であり、「誰としてログインできるか」を決めるユーザー認証とは別である。正しい秘密鍵があっても、通信経路がなければ接続は成立しない。</p>
+<h2>12.5 対話ログインとリモートコマンド</h2>
+<p><code>ssh study-server</code> を実行すると、認証後に接続先の対話シェルを開ける。これに対し、SSHコマンドの後ろに実行内容を付けると、接続先でその内容だけを実行し、結果を接続元へ返せる。</p>
+<pre><code>ssh study-server &#x27;id -un; hostname; pwd&#x27;</code></pre>
+<p>この例の <code>id -un</code>、<code>hostname</code>、<code>pwd</code> は接続先で実行される。コマンド文字列を囲む外側のシングルクォートは、接続元のシェルが <code>$HOME</code> や <code>$(...)</code> を先に展開しないようにするためにも使える。たとえば <code>ssh study-server &#x27;printf &quot;%s\n&quot; &quot;$(hostname)&quot; &quot;$HOME&quot;&#x27;</code> では、接続先のシェルがホスト名とホームディレクトリを調べる。外側をダブルクォートにすると、接続元のシェルが先に展開する。</p>
+<p><code>~</code> も、どちらのホスト・ユーザーのシェルが解釈するかで指すホームディレクトリが変わる。接続元の <code>~/notes.txt</code> と接続先の <code>~/notes.txt</code> は、同じ名前でも別のファイルである。</p>
+<pre><code>ssh study-server &#x27;printf &quot;%s\n&quot; &quot;$HOME&quot; &gt; &quot;$HOME/home-path.txt&quot;&#x27;
+ssh study-server &#x27;printf &quot;%s\n&quot; &quot;$HOME&quot;&#x27; &gt; local-result.txt</code></pre>
+<p>一行目では <code>$HOME</code> の展開と <code>&gt;</code> による保存が接続先で行われ、ファイルは接続先のホームディレクトリに作られる。二行目ではクォートの外にある <code>&gt;</code> を接続元のシェルが解釈する。接続先から返った出力が、接続元の <code>local-result.txt</code> に保存される。どちらのシェルが文字列を解釈するかによって、同じ記号でも結果が変わる。</p>
+<h2>12.6 SCPでファイルを送受信する</h2>
+<p><code>scp</code> はSSH接続と認証を利用してファイルを転送するコマンドである。基本形は <code>scp 転送元 転送先</code> であり、接続先のパスは <code>ホスト名:パス</code> と書く。</p>
+<pre><code>scp notes.txt study-server:~/notes.txt
+scp study-server:~/report.txt report.txt</code></pre>
+<p>一行目は接続元の <code>notes.txt</code> を接続先へ送る<strong>アップロード</strong>である。二行目は接続先の <code>report.txt</code> を接続元へ受け取る<strong>ダウンロード</strong>である。コロン <code>:</code> の後ろの <code>~</code> は接続先ユーザーのホームディレクトリを指す。<code>study-server</code> のようなSSH設定の別名は <code>scp</code> でも使える。</p>
+<figure><img src='../../assets/figures/fig18-scp-directions.svg' alt='SCPのアップロードとダウンロード'></figure>
+<p><strong>図12-2　コマンドを実行する側を基準に、アップロードとダウンロードの方向を区別する。</strong></p>
+<p>転送元と転送先を逆にすると、意図とは反対の方向へファイルをコピーする。転送先に同名のファイルがある場合は上書きにも注意が必要である。接続元と接続先のファイルは、それぞれ別のファイルシステム上に存在する。</p>
+<h2>12.7 内容の一致とファイルの属性</h2>
+<p>転送後に二つのファイルの内容が同じかを確かめるには、両方のファイルで <code>sha256sum</code> を実行し、ハッシュ値を比較できる。</p>
+<pre><code>sha256sum notes.txt
+ssh study-server &#x27;sha256sum ~/notes.txt&#x27;</code></pre>
+<p>ハッシュ値の一致は、二つのファイルの<strong>内容</strong>が同じであることを確認する強い根拠になる。一方、所有者、グループ、アクセス権モード、保存場所はハッシュ計算に含まれない。転送先では別のユーザーがファイルの所有者になったり、アクセス権モードが異なったりする場合がある。これらの属性は接続先で <code>stat</code> を使って別に確認する。</p>
+<pre><code>ssh study-server &#x27;stat -c &quot;%U:%G %a %n&quot; ~/notes.txt&#x27;</code></pre>
+<p>内容の確認と属性の確認は、答える問いが違う。<code>sha256sum</code> は「中身が同じか」、<code>stat</code> は「接続先で誰のファイルとして、どの権限で置かれているか」を調べる。</p>
+<h2>章末問題</h2>
+<h3>問1</h3>
+<p>ブラウザで開いたクラウド上のターミナルから別のサーバーへSSH接続する。このとき、ローカルとリモートはそれぞれどの環境か。</p>
+<h3>問2</h3>
+<p>SSHのユーザー鍵とホスト鍵は、それぞれ何を確認するために使うか。また、ユーザー秘密鍵はどちらに置くか。</p>
+<h3>問3</h3>
+<p>SSH設定のホストエイリアスとDNSホスト名はどう違うか。正しい鍵を持っていても接続できない場合がある理由も述べよ。</p>
+<h3>問4</h3>
+<p>次の二つのコマンドでは、<code>$HOME</code> の展開と結果の保存はそれぞれどちらの環境で行われるか。</p>
+<pre><code>ssh study-server &#x27;printf &quot;%s\n&quot; &quot;$HOME&quot; &gt; &quot;$HOME/home-path.txt&quot;&#x27;
+ssh study-server &#x27;printf &quot;%s\n&quot; &quot;$HOME&quot;&#x27; &gt; local-result.txt</code></pre>
+<h3>問5</h3>
+<p><code>scp</code> で転送した二つのファイルのSHA-256ハッシュ値が一致した。所有者とアクセス権モードも同じだと言えるか。</p>
+<h2 class='chapter-answers'>章末解答</h2>
+<h3>問1</h3>
+<p><strong>答え：</strong> SSHコマンドを実行するクラウド上のターミナル環境がローカルで、接続先のサーバーがリモートである。ブラウザを表示する物理PCが必ずローカルになるわけではない。</p>
+<h3>問2</h3>
+<p><strong>答え：</strong> ユーザー鍵は接続する利用者を認証し、ホスト鍵は接続先サーバーを確認する。ユーザー秘密鍵は接続元に保管し、接続先へ渡さない。</p>
+<h3>問3</h3>
+<p><strong>答え：</strong> ホストエイリアスは接続元のSSH設定で使う別名であり、DNSホスト名とは限らない。鍵が正しくても、接続先まで通信できる経路がなければSSH接続は成立しない。</p>
+<h3>問4</h3>
+<p><strong>答え：</strong> どちらも <code>$HOME</code> は接続先で展開される。一行目の <code>&gt;</code> は引用符の内側にあるため接続先で保存する。二行目の <code>&gt;</code> は引用符の外側にあるため接続元で保存する。</p>
+<h3>問5</h3>
+<p><strong>答え：</strong> 言えない。ハッシュ値はファイルの内容を比較するものであり、所有者とアクセス権モードは含まない。これらは転送先で <code>stat</code> などを使って別に確認する。</p>
+<h2>参考資料</h2>
+<ul><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/how-to/security/openssh-server/">OpenSSH server</a>（2026-09-24確認）</li><li>OpenBSD manual pages, <a href="https://man.openbsd.org/ssh">ssh(1)</a>、<a href="https://man.openbsd.org/ssh_config">ssh_config(5)</a>、<a href="https://man.openbsd.org/scp">scp(1)</a>（2026-09-24確認）</li><li>GNU Coreutils, <a href="https://man7.org/linux/man-pages/man1/sha256sum.1.html">sha256sum(1)</a>（2026-09-24確認）</li></ul>
+<h1>本書のまとめ</h1>
+<p>コンピューター上のプログラムは、OSが提供する機能を利用して動く。Linuxを操作するときは、コマンドの名前だけでなく、その操作がファイル、ユーザー、プロセス、通信のどれに関わるかを考えると、結果を理解しやすい。</p>
+<p>設定ファイルが存在すること、サービスのプロセスが動いていること、ネットワークから期待した応答を得られることは、それぞれ異なる状態である。ある一つの状態が正しくても、ほかの状態が正しいとは限らない。ファイルの所有者やアクセス権、サービスの実行ユーザー、待受ソケット、ログを区別して読むことが大切である。</p>
+<p>後続の授業では、Nginx、BIND 9、PostgreSQLなど、用途の異なるソフトウェアを扱う。それぞれの設定方法は異なるが、「どのユーザーで動くか」「どのファイルを使うか」「どこで通信を受けるか」「動作をどこで確認できるか」という問いは共通して使える。本書で学んだOSの基本概念を、新しいシステムを理解するための土台にしてほしい。</p>
+<p>コマンドの綴りやオプションを読み直したい場合は、巻末の参照資料として用意した[用語集・コマンド早見表](../reference.md)の「コマンドの読み方」「findを段階的に読む」「grepでファイルの中の行を探す」「tailで末尾の行を読む」を参照してほしい。<code>id -un</code>のuser・nameの対応や、検索開始位置・条件・表示を分けた読み方を、短い実行例で説明している。</p>
+</body></html>
