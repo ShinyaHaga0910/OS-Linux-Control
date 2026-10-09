@@ -2,7 +2,7 @@
 
 [日本語](https://github.com/ShinyaHaga0910/OS-Linux-Control/blob/main/2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/practice.md) · [Русский](https://github.com/ShinyaHaga0910/OS-Linux-Control/blob/main/2026/materials/ubuntu_os_foundations/v1.0.0/docs/ru/practice.md) · [O‘zbekcha](https://github.com/ShinyaHaga0910/OS-Linux-Control/blob/main/2026/materials/ubuntu_os_foundations/v1.0.0/docs/uz/practice.md)
 
-注: ロシア語版・ウズベク語版の練習は翻訳初稿で、現行のP0～P6の問題文と手順をまだ反映していません。採点に使う現行要件は日本語版で確認してください。
+注: ロシア語版・ウズベク語版は現行のP0～P6と内容を同期した翻訳初稿です。母語話者による校閲は未実施です。採点条件の正本は日本語版です。
 
 対象: 練習課題P0～P6
 

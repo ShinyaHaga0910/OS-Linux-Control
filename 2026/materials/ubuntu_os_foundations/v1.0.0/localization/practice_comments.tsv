@@ -1,0 +1,145 @@
+ja	ru	uz
+/srvへ移動する。	Перейдите в /srv.	/srv directorysiga o‘ting.
+18181番ポートに待受がないことを確認する。	Убедитесь, что порт 18181 не прослушивается.	18181-portda listening socket yo‘qligini tekshiring.
+8181番ポートで待ち受けるプロセスのpid=を読む。	Найдите pid= процесса, прослушивающего порт 8181.	8181-portni tinglayotgan processning pid= qiymatini o‘qing.
+8181番ポートの待受アドレスとPIDを表示する。	Покажите адрес прослушивания и PID для порта 8181.	8181-portning listening address va PID qiymatini ko‘rsating.
+CloudShellからUbuntuへ接続する。	Подключитесь к Ubuntu из CloudShell.	CloudShelldan Ubuntuga ulaning.
+CloudShellにP6の作業ディレクトリを作る。	Создайте рабочий каталог P6 в CloudShell.	CloudShellda P6 ish directorysini yarating.
+CloudShellのP6ディレクトリへ移動する。	Перейдите в каталог P6 в CloudShell.	CloudShelldagi P6 directorysiga o‘ting.
+CloudShellのホームディレクトリへ移動する。	Перейдите в домашний каталог CloudShell.	CloudShell home directorysiga o‘ting.
+CloudShell上のダウンロード後ファイルのSHA-256を表示する。	Покажите SHA-256 скачанного файла в CloudShell.	CloudShelldagi yuklab olingan filening SHA-256 qiymatini ko‘rsating.
+CloudShell上の転送元ファイルのSHA-256を表示する。	Покажите SHA-256 исходного файла в CloudShell.	CloudShelldagi manba filening SHA-256 qiymatini ko‘rsating.
+CloudShell側のP6を採点する。	Проверьте P6 со стороны CloudShell.	CloudShell tomonidagi P6ni baholang.
+CloudShell側のホスト名を表示する。	Покажите имя хоста CloudShell.	CloudShell hostname qiymatini ko‘rsating.
+CloudShell側のユーザー名を表示する。	Покажите имя пользователя CloudShell.	CloudShell user nomini ko‘rsating.
+CloudShell側の現在地を表示する。	Покажите текущий каталог в CloudShell.	CloudShelldagi joriy directoryni ko‘rsating.
+figletコマンドの場所を確認する。	Узнайте путь к команде figlet.	figlet command joylashuvini tekshiring.
+figletのパッケージ情報を読む。	Прочитайте сведения о пакете figlet.	figlet package ma’lumotini o‘qing.
+figletをインストールする。	Установите figlet.	figletni o‘rnating.
+figletを一度実行する。	Запустите figlet один раз.	figletni bir marta ishga tushiring.
+GUIDE.txtの初期権限を表示する。	Покажите исходные права GUIDE.txt.	GUIDE.txtning boshlang‘ich permission qiymatini ko‘rsating.
+GUIDE.txtの所有者とグループを変更する。	Измените владельца и группу GUIDE.txt.	GUIDE.txt owner va group qiymatlarini o‘zgartiring.
+HTTPの応答ヘッダーと本文を表示する。	Покажите заголовки и тело HTTP-ответа.	HTTP response header va body qismlarini ko‘rsating.
+Linuxカーネルのリリース番号を表示する。	Покажите номер выпуска ядра Linux.	Linux kernel release raqamini ko‘rsating.
+OSの種類とバージョンを表示する。	Покажите тип и версию ОС.	OS turi va versiyasini ko‘rsating.
+P0の完成状態を採点する。	Проверьте готовность P0.	P0 bajarilganini baholang.
+P0の作業ディレクトリへ移動する。	Перейдите в рабочий каталог P0.	P0 ish directorysiga o‘ting.
+P0の作業ディレクトリを作る。	Создайте рабочий каталог P0.	P0 ish directorysini yarating.
+P1の完成状態を採点する。	Проверьте готовность P1.	P1 bajarilganini baholang.
+P1の作業ディレクトリへ移動する。	Перейдите в рабочий каталог P1.	P1 ish directorysiga o‘ting.
+P1の作業ディレクトリへ戻る。	Вернитесь в рабочий каталог P1.	P1 ish directorysiga qayting.
+P2の完成状態を採点する。	Проверьте готовность P2.	P2 bajarilganini baholang.
+P3のサービス一覧を表示する。	Покажите список служб P3.	P3 servicelar ro‘yxatini ko‘rsating.
+P3の完成状態を採点する。	Проверьте готовность P3.	P3 bajarilganini baholang.
+P4の完成状態を採点する。	Проверьте готовность P4.	P4 bajarilganini baholang.
+P5の完成状態を採点する。	Проверьте готовность P5.	P5 bajarilganini baholang.
+PID 1のプロセス名を表示する。	Покажите имя процесса с PID 1.	PID 1 process nomini ko‘rsating.
+process1が稼働中か確認する。	Проверьте, работает ли process1.	process1 ishlayotganini tekshiring.
+process1の状態を表示する。	Покажите состояние process1.	process1 holatini ko‘rsating.
+process2が停止中か確認する。	Проверьте, остановлен ли process2.	process2 to‘xtaganini tekshiring.
+process2のサービスを停止する。	Остановите службу process2.	process2 serviceni to‘xtating.
+process2の状態とMain PIDを表示する。	Покажите состояние process2 и Main PID.	process2 holati va Main PID qiymatini ko‘rsating.
+process3が稼働中か確認する。	Проверьте, работает ли process3.	process3 ishlayotganini tekshiring.
+process3の状態を表示する。	Покажите состояние process3.	process3 holatini ko‘rsating.
+scpでCloudShellからUbuntuへファイルを送る。	Отправьте файл из CloudShell в Ubuntu через scp.	scp yordamida fileni CloudShelldan Ubuntuga yuboring.
+scpでUbuntuからCloudShellへ結果ファイルを戻す。	Верните файл результата из Ubuntu в CloudShell через scp.	scp yordamida natija fileni Ubuntudan CloudShellga qaytaring.
+setgidのsと権限を確認する。	Проверьте символ s для setgid и права доступа.	setgid uchun s belgisi va permission qiymatini tekshiring.
+SSH経由でUbuntu上の結果ファイルを表示する。	Покажите файл результата в Ubuntu через SSH.	SSH orqali Ubuntudagi natija fileni ko‘rsating.
+SSH経由でUbuntu側のP6ディレクトリを作る。	Создайте каталог P6 в Ubuntu через SSH.	SSH orqali Ubuntu tomonidagi P6 directorysini yarating.
+UbuntuのSSH接続を終了し、CloudShellへ戻る。	Завершите SSH-сеанс Ubuntu и вернитесь в CloudShell.	Ubuntu SSH sessiyasini yakunlab, CloudShellga qayting.
+Ubuntu上で3つの実測値を結果ファイルへ保存する。	Сохраните три фактических значения Ubuntu в файл результата.	Ubuntudagi uchta haqiqiy qiymatni natija fileiga saqlang.
+Ubuntu上の転送元ファイルのSHA-256を表示する。	Покажите SHA-256 исходного файла в Ubuntu.	Ubuntudagi manba filening SHA-256 qiymatini ko‘rsating.
+Ubuntu上の転送後ファイルのSHA-256を表示する。	Покажите SHA-256 полученного файла в Ubuntu.	Ubuntuda qabul qilingan filening SHA-256 qiymatini ko‘rsating.
+Ubuntu側のP6ディレクトリへ移動する。	Перейдите в каталог P6 в Ubuntu.	Ubuntudagi P6 directorysiga o‘ting.
+Ubuntu側のP6を採点する。	Проверьте P6 со стороны Ubuntu.	Ubuntu tomonidagi P6ni baholang.
+Ubuntu側の現在地を表示する。	Покажите текущий каталог в Ubuntu.	Ubuntudagi joriy directoryni ko‘rsating.
+WARN行をwarnings.txtへ保存する。	Сохраните строки WARN в warnings.txt.	WARN satrlarini warnings.txt fileiga saqlang.
+Webサービスのユニット設定を表示する。	Покажите настройки юнита веб-службы.	Web service unit sozlamasini ko‘rsating.
+Webサービスを今すぐ起動する。	Запустите веб-службу сейчас.	Web serviceni hozir ishga tushiring.
+グループ継承を含む権限2775を設定する。	Установите права 2775 с наследованием группы.	Group merosini o‘z ichiga olgan 2775 permissionni o‘rnating.
+コピーしたファイルを表示する。	Покажите скопированный файл.	Nusxalangan fileni ko‘rsating.
+コピー先のログディレクトリへ移動する。	Перейдите в каталог назначения журнала.	Log nusxasi joylashgan directoryga o‘ting.
+コピー先の設定ディレクトリへ移動する。	Перейдите в каталог назначения настроек.	Config nusxasi joylashgan directoryga o‘ting.
+サーバーのホスト名を表示する。	Покажите имя хоста сервера.	Server hostname qiymatini ko‘rsating.
+サービスのユニット設定を表示する。	Покажите настройки юнита службы.	Service unit sozlamasini ko‘rsating.
+サービスの最近のログを表示する。	Покажите последние записи журнала службы.	Servicening so‘nggi journal yozuvlarini ko‘rsating.
+サービスの状態を表示し、Main PIDの数字を読む。	Покажите состояние службы и прочитайте число Main PID.	Service holatini ko‘rsating va Main PID raqamini o‘qing.
+サービスを今すぐ起動する。	Запустите службу сейчас.	Serviceni hozir ishga tushiring.
+サービス用ユーザーのログインシェルを表示する。	Покажите оболочку входа пользователя службы.	Service userning login shell qiymatini ko‘rsating.
+サービス用ユーザーの権限で一度だけファイルを読む。	Один раз прочитайте файл от имени пользователя службы.	Fileni service user huquqi bilan faqat shu buyruq uchun o‘qing.
+サービス用ユーザーの所属グループを表示する。	Покажите группы пользователя службы.	Service user tegishli grouplarni ko‘rsating.
+ダウンロードした内容を表示する。	Покажите содержимое скачанного файла.	Yuklab olingan file mazmunini ko‘rsating.
+ファイルまでの各ディレクトリの権限を表示する。	Покажите права каждого каталога на пути к файлу.	File yo‘lidagi har bir directory permissionini ko‘rsating.
+ホームディレクトリへ移動する。	Перейдите в домашний каталог.	Home directoryga o‘ting.
+ホームディレクトリへ戻る。	Вернитесь в домашний каталог.	Home directoryga qayting.
+メモしたPIDのプロセス情報を表示する。1234は自分の値に置き換える。	Покажите процесс с записанным PID; замените 1234 своим значением.	Yozib olgan PID processini ko‘rsating; 1234 o‘rniga o‘z qiymatingizni qo‘ying.
+ログのWARNを含む行を画面に表示する。	Покажите строки журнала с WARN на экране.	Logdagi WARN bor satrlarni ekranda ko‘rsating.
+ログの最後の4行を画面に表示する。	Покажите последние четыре строки журнала на экране.	Logning oxirgi to‘rt satrini ekranda ko‘rsating.
+ログ用ディレクトリを作る。	Создайте каталог для журнала.	Log uchun directory yarating.
+閲覧担当者としてGUIDE.txtを読む。	Прочитайте GUIDE.txt от имени пользователя просмотра.	GUIDE.txtni viewer user sifatida o‘qing.
+閲覧担当者のシェルに切り替える。	Переключитесь в оболочку пользователя просмотра.	Viewer user shelliga o‘ting.
+閲覧担当者のシェルを終了する。	Выйдите из оболочки пользователя просмотра.	Viewer user shellidan chiqing.
+閲覧担当者の所属グループを確認する。	Проверьте группы пользователя просмотра.	Viewer user tegishli grouplarni tekshiring.
+閲覧担当者の所属を確認する。	Проверьте членство пользователя просмотра в группах.	Viewer userning group a’zoligini tekshiring.
+閲覧担当者を共有グループから外す。	Удалите пользователя просмотра из общей группы.	Viewer userni umumiy groupdan chiqaring.
+稼働状態を確認する。	Проверьте, работает ли служба.	Service ishlayotganini tekshiring.
+確認済みの不要な一時ファイル2件を削除する。	Удалите два проверенных ненужных временных файла.	Tekshirilgan ikkita keraksiz vaqtinchalik fileni o‘chiring.
+完成させるディレクトリへ移動する。	Перейдите в каталог, который нужно завершить.	Yakunlash kerak bo‘lgan directoryga o‘ting.
+完成したディレクトリ構成を表示する。	Покажите готовую структуру каталогов.	Tayyor directory tuzilishini ko‘rsating.
+管理ユーザーに戻ったことを確認する。	Убедитесь, что вернулись к управляющему пользователю.	Boshqaruvchi userga qaytganingizni tekshiring.
+記録した6項目を表示する。	Покажите шесть записанных полей.	Yozib olingan oltita maydonni ko‘rsating.
+記録ファイルの存在と権限を確認する。	Проверьте наличие и права файла наблюдений.	Kuzatuv filei mavjudligi va permissionini tekshiring.
+記録ファイルを編集する。	Отредактируйте файл наблюдений.	Kuzatuv fileini tahrirlang.
+起動時の自動実行が有効か確認する。	Проверьте, включён ли автозапуск.	Boot paytidagi avtomatik ishga tushish yoqilganini tekshiring.
+起動時の自動実行を有効にする。	Включите автозапуск при загрузке.	Boot paytidagi avtomatik ishga tushishni yoqing.
+共有グループの登録内容を表示する。	Покажите запись общей группы.	Umumiy group yozuvini ko‘rsating.
+共有ディレクトリの所有者とグループを変更する。	Измените владельца и группу общего каталога.	Umumiy directory owner va group qiymatini o‘zgartiring.
+共有ディレクトリへ移動する。	Перейдите в общий каталог.	Umumiy directoryga o‘ting.
+共有ディレクトリ自身の初期権限を表示する。	Покажите исходные права самого общего каталога.	Umumiy directoryning boshlang‘ich permissionini ko‘rsating.
+結果ファイル用ディレクトリへ移動する。	Перейдите в каталог для файла результата.	Natija filei directorysiga o‘ting.
+結果ファイル用ディレクトリを作る。	Создайте каталог для файла результата.	Natija filei uchun directory yarating.
+元のログを現在のディレクトリへコピーする。	Скопируйте исходный журнал в текущий каталог.	Asl logni joriy directoryga nusxalang.
+元の設定ファイルを現在のディレクトリへコピーする。	Скопируйте исходный файл настроек в текущий каталог.	Asl config fileni joriy directoryga nusxalang.
+元ファイルと未完成の提出先を木構造で表示する。	Покажите исходные файлы и незавершённый результат деревом.	Asl filelar va tugallanmagan topshirish joyini daraxt shaklida ko‘rsating.
+現在のディレクトリを表示する。	Покажите текущий каталог.	Joriy directoryni ko‘rsating.
+現在のユーザーIDと所属グループを表示する。	Покажите ID текущего пользователя и его группы.	Joriy user ID va tegishli grouplarni ko‘rsating.
+現在のユーザー名を表示する。	Покажите имя текущего пользователя.	Joriy user nomini ko‘rsating.
+現在の稼働状態を確認する。	Проверьте текущее состояние службы.	Servicening joriy holatini tekshiring.
+現在稼働しているか確認する。	Проверьте, работает ли служба сейчас.	Service hozir ishlayotganini tekshiring.
+現在地を確認する。	Проверьте текущий каталог.	Joriy directoryni tekshiring.
+現在地を表示する。	Покажите текущий каталог.	Joriy directoryni ko‘rsating.
+現在地以下の.tmpファイルだけを検索する。	Найдите только файлы .tmp в текущем каталоге и ниже.	Joriy directory va uning ichidagi faqat .tmp filelarni qidiring.
+公開ファイルのディレクトリへ移動する。	Перейдите в каталог публикуемого файла.	Ochiq file joylashgan directoryga o‘ting.
+公開ファイルの所有者・グループ・権限を表示する。	Покажите владельца, группу и права публикуемого файла.	Ochiq filening owner, group va permission qiymatlarini ko‘rsating.
+最後の4行をrecent.txtへ保存する。	Сохраните последние четыре строки в recent.txt.	Oxirgi to‘rt satrni recent.txt fileiga saqlang.
+最終的なファイル権限を確認する。	Проверьте окончательные права файла.	Filening yakuniy permissionini tekshiring.
+採点するユーザー名を確認する。	Проверьте имя пользователя перед оценкой.	Baholashdan oldin user nomini tekshiring.
+採点に使うユーザー名を確認する。	Проверьте, под каким пользователем выполняется оценка.	Baholash qaysi user bilan bajarilishini tekshiring.
+作ったファイルの所有グループを確認する。	Проверьте группу-владельца созданного файла.	Yaratilgan filening owner groupini tekshiring.
+作成した構成を表示する。	Покажите созданную структуру.	Yaratilgan tuzilishni ko‘rsating.
+削除後の構成を確認する。	Проверьте структуру после удаления.	O‘chirishdan keyingi tuzilishni tekshiring.
+削除前のファイル構成を表示する。	Покажите структуру файлов до удаления.	O‘chirishdan oldingi file tuzilishini ko‘rsating.
+指定したパスへHTTPリクエストを送る。	Отправьте HTTP-запрос по указанному пути.	Ko‘rsatilgan pathga HTTP request yuboring.
+次の練習に備えてホームディレクトリへ戻る。	Вернитесь в домашний каталог перед следующим упражнением.	Keyingi mashqdan oldin home directoryga qayting.
+自動実行の設定を確認する。	Проверьте настройку автозапуска.	Avtomatik ishga tushish sozlamasini tekshiring.
+所有者とグループに読み書きを許可する。	Разрешите владельцу и группе чтение и запись.	Owner va groupga o‘qish hamda yozish huquqini bering.
+所有者とグループの変更を確認する。	Проверьте изменение владельца и группы.	Owner va group o‘zgarganini tekshiring.
+所有者とグループを確認する。	Проверьте владельца и группу.	Owner va groupni tekshiring.
+書き込みが拒否されることを確認する。	Убедитесь, что запись отклонена.	Yozish rad etilishini tekshiring.
+書き込み担当者としてファイルを作る。	Создайте файл от имени пользователя записи.	Writer user sifatida file yarating.
+書き込み担当者のシェルに切り替える。	Переключитесь в оболочку пользователя записи.	Writer user shelliga o‘ting.
+書き込み担当者のシェルを終了する。	Выйдите из оболочки пользователя записи.	Writer user shellidan chiqing.
+書き込み担当者の所属グループを確認する。	Проверьте группы пользователя записи.	Writer user tegishli grouplarni tekshiring.
+書き込み担当者の所属を確認する。	Проверьте членство пользователя записи в группах.	Writer userning group a’zoligini tekshiring.
+書き込み担当者を共有グループへ追加する。	Добавьте пользователя записи в общую группу.	Writer userni umumiy groupga qo‘shing.
+切り替え後のユーザー名を確認する。	Проверьте имя пользователя после переключения.	Almashgandan keyingi user nomini tekshiring.
+切り替え後の所属グループを確認する。	Проверьте группы после переключения.	Almashgandan keyingi grouplarni tekshiring.
+設定ファイル用ディレクトリを作る。	Создайте каталог для файла настроек.	Config file uchun directory yarating.
+待受のない18181番ポートへ接続を試す。	Попробуйте подключиться к порту 18181 без слушателя.	Listening socket yo‘q 18181-portga ulanishni sinang.
+転送したファイルと結果ファイルを確認する。	Проверьте переданный файл и файл результата.	Ko‘chirilgan file va natija fileni tekshiring.
+転送元ファイルの内容を表示する。	Покажите содержимое исходного файла.	Manba file mazmunini ko‘rsating.
+転送元ファイルへ指定の1行を書く。	Запишите указанную строку в исходный файл.	Manba filega ko‘rsatilgan bitta satrni yozing.
+転送前のSHA-256を表示する。	Покажите SHA-256 до передачи.	Ko‘chirishdan oldingi SHA-256 qiymatini ko‘rsating.
+変更後の共有グループを表示する。	Покажите общую группу после изменений.	O‘zgarishdan keyingi umumiy groupni ko‘rsating.
+保存結果を表示する。	Покажите сохранённый результат.	Saqlangan natijani ko‘rsating.
+利用可能なパッケージ一覧を更新する。	Обновите список доступных пакетов.	Mavjud packagelar ro‘yxatini yangilang.

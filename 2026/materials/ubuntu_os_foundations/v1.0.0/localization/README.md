@@ -35,8 +35,8 @@ v1.0.3では現行の学生向けMarkdownに言語切替リンクを追加した
 
 ## ウズベク語
 
-ウズベク語版はChatGPTで翻訳し、[`uzbek-style-guide.md`](./uzbek-style-guide.md)と[`terminology.csv`](./terminology.csv)に従う。技術用語は英語表記を保ち、意味をウズベク語で説明する。本文12章・巻末・練習・課題・参照資料・図21点の初稿は完成した。ただし、日本語の練習P1～P6に後から追加した問題文は未反映である。構造照合とPDF表示確認は実施するが、ウズベク語話者による校閲が終わるまでは`approved`にしない。
+ウズベク語版はChatGPTで翻訳し、[`uzbek-style-guide.md`](./uzbek-style-guide.md)と[`terminology.csv`](./terminology.csv)に従う。技術用語は英語表記を保ち、意味をウズベク語で説明する。本文12章・巻末・練習P0～P6・課題M1～M7・参照資料・図21点の初稿は現行日本語版に内容を同期した。構造照合とPDF表示確認を実施しても、ウズベク語話者による校閲が終わるまでは`approved`にしない。
 
 ## ロシア語
 
-ロシア語版はChatGPTで翻訳し、[`russian-style-guide.md`](./russian-style-guide.md)と[`terminology.csv`](./terminology.csv)に従う。ウズベク語版の「IT用語を英語のまま保つ」規則を流用せず、定着したロシア語の専門用語を使う。固有名詞、コマンド、パス、IDは原文のまま保つ。本文12章・巻末・練習・課題・参照資料・図21点の初稿を作成した。ただし、日本語の練習P1～P6に後から追加した問題文は未反映である。ロシア語話者の校閲まで`approved`にしない。
+ロシア語版はChatGPTで翻訳し、[`russian-style-guide.md`](./russian-style-guide.md)と[`terminology.csv`](./terminology.csv)に従う。ウズベク語版の「IT用語を英語のまま保つ」規則を流用せず、定着したロシア語の専門用語を使う。固有名詞、コマンド、パス、IDは原文のまま保つ。本文12章・巻末・練習P0～P6・課題M1～M7・参照資料・図21点の初稿は現行日本語版に内容を同期した。ロシア語話者の校閲まで`approved`にしない。

@@ -2,13 +2,13 @@
   "course": "ubuntu_os_foundations",
   "source_language": "ja",
   "source_status": "reviewed_current_source",
-  "ja_revision": "2026-10-02: SSH entry; P1 tree/find/rm; command-reading and find reference; P2 ls permission inspection and failure explanation; M0 moved to guided P0 with full observation steps",
+  "ja_revision": "2026-10-09: current P0-P6, M1-M7, textbook and reference synchronized to ru/uz",
   "version": "1.0.0",
   "languages": {
     "en": { "role": "future_source", "status": "planned" },
     "ja": { "role": "current_source", "status": "reviewed" },
-    "uz": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "outdated_after_ja_practice_revision", "missions_status": "outdated_after_ja_connection_and_m1_grading_revision", "reference_status": "outdated_after_ja_command_reading_revision", "afterword_status": "outdated_after_ja_reference_link_revision", "method": "ChatGPT", "figures": 21, "pdfs": 4 },
-    "ru": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "outdated_after_ja_practice_revision", "missions_status": "outdated_after_ja_connection_and_m1_grading_revision", "reference_status": "outdated_after_ja_command_reading_revision", "afterword_status": "outdated_after_ja_reference_link_revision", "method": "ChatGPT", "figures": 21, "pdfs": 4 }
+    "uz": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "synced_to_ja_pending_native_review", "missions_status": "synced_to_ja_pending_native_review", "reference_status": "synced_to_ja_pending_native_review", "afterword_status": "synced_to_ja_pending_native_review", "method": "ChatGPT", "figures": 21, "pdfs": 4 },
+    "ru": { "role": "translation", "status": "draft_complete_pending_native_review", "practice_status": "synced_to_ja_pending_native_review", "missions_status": "synced_to_ja_pending_native_review", "reference_status": "synced_to_ja_pending_native_review", "afterword_status": "synced_to_ja_pending_native_review", "method": "ChatGPT", "figures": 21, "pdfs": 4 }
   },
   "chapters": [
     { "id": "ch01", "file": "textbook/01-os-and-system.md" },

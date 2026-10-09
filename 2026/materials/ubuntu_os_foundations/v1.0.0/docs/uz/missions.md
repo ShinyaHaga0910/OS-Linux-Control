@@ -2,13 +2,29 @@
 
 [日本語](../ja/missions.md) · [Русский](../ru/missions.md) · [O‘zbekcha](../uz/missions.md)
 
-> Bu tarjimada amaldagi M1–M7 topshiriqlari hali aks etmagan: eski M0 endi P0 mashqidir. Lab tekshiradigan amaldagi talablar uchun OS-Linux-Control repositorysidagi yaponcha joriy nusxadan foydalaning.
+> ChatGPT tarjimasi joriy yaponcha manbaga moslashtirilgan. Ona tilida gapiruvchi mutaxassis hali tekshirmagan; baholash shartlari farq qilsa, yaponcha asl matnga tayaning.
 
-Qamrov: Mission 0–7. Muhit: Ubuntu Server 24.04 LTS. Har bir talaba Missionlarni o‘z sur’atida bajaradi; ular dars soatlariga birma-bir bog‘lanmagan.
+Qamrov: Mission 1–7. Muhit: Ubuntu Server 24.04 LTS. Har bir talaba Missionlarni o‘z sur’atida bajaradi; ular dars soatlariga birma-bir bog‘lanmagan.
 
-Bu hujjat `command`ni talaba o‘zi tanlaydigan M0–M7 topshiriqlaridir. To‘liq, qadamma-qadam ko‘rsatma kerak bo‘lsa, avval `practice.md`dagi P1–P6 mashqlarini bajaring.
+Bu hujjat `command`ni talaba o‘zi tanlaydigan M1–M7 topshiriqlaridir. To‘liq, qadamma-qadam ko‘rsatma kerak bo‘lsa, avval [P0–P6 mashqlarini](practice.md) bajaring.
 
-P va M alohida resurslardan foydalanadi. P tugagani tegishli M avtomatik `PASS` bo‘lishini anglatmaydi. Tavsiya etilgan tartib: `P1 → M1 → P2 → M2 → … → P6 → M6 → M7`. M0 va yakuniy M7 uchun alohida P yo‘q.
+P va M alohida resurslardan foydalanadi. P tugagani tegishli M avtomatik `PASS` bo‘lishini anglatmaydi. Tavsiya etilgan tartib: `P0 → P1 → M1 → P2 → M2 → … → P6 → M6 → M7`. Eski M0 qadamma-qadam P0 mashqiga ko‘chirildi. Yakuniy M7 uchun alohida P yo‘q.
+
+## Avval Ubuntuga ulaning
+
+AWS Academy Learner Lab dastlabki sozlamalari tugagach, AWS konsolida CloudShellni oching. O‘z Ubuntu mashq serveringizga quyidagicha ulaning:
+
+```bash
+ssh jdu-ubuntu
+```
+
+Ulangach, Ubuntuda `user` nomini tekshiring:
+
+```bash
+id -un
+```
+
+Natija `ssm-user` bo‘lishi kerak. Ushbu hujjatdagi Ubuntu amallarini ulangan serverda bajaring. CloudShell kerak bo‘ladigan topshiriqda `exit` bilan unga qayting.
 
 ## Umumiy amallar
 
@@ -70,25 +86,6 @@ jdu-reset M1
 
 `reset`dan darhol keyin barcha bandlar `FAIL` bo‘ladi. Bu kutilgan holat. LabCheck holatni o‘zi tuzatmaydi.
 
-## M0 Environment and OS
-
-Haqiqiy muhitda Ubuntu, Linux `kernel`, PID 1, hozirgi `user` va `hostname`ni aniqlang. Oltita qiymatni `~/jdu-lab/m0/observation.env`ga yozing:
-
-```text
-OS_ID=
-OS_VERSION_ID=
-KERNEL_RELEASE=
-PID1_COMM=
-USER_NAME=
-HOST_NAME=
-```
-
-Qiymatlarni ishlayotgan tizimdagi `command` natijasidan oling. Taxmin qilmang.
-
-```bash
-jdu-check M0
-```
-
 ## M1 Shell, path, file, and text
 
 ### Maqsad
@@ -114,19 +111,18 @@ Materiallar `~/jdu-lab/m1/inbox`da. `case01` hali tayyor emas; `staging`da ortiq
 3. `inbox/logs/incident.log`dan `case01/logs/incident.log`ga nusxa oling.
 4. Nusxa olingan ikkala `file` mazmunini o‘zgartirmang.
 5. `case01` ichidagi barcha `.tmp` `file`larni olib tashlang.
-6. `case01` ostidagi obyektlarning egasi Ubuntuga kirgan boshqaruv `user`i `ssm-user` bo‘lsin.
-7. `incident.log`dagi `ERROR` bor to‘liq satrlarnigina `notes/errors.txt`ga yozing. Satr raqami qo‘shmang.
-8. `incident.log`ning oxirgi besh satrini tartibini o‘zgartirmay `notes/recent.txt`ga yozing.
+6. `incident.log`dagi `ERROR` bor to‘liq satrlarnigina `notes/errors.txt`ga yozing. Satr raqami qo‘shmang.
+7. `incident.log`ning oxirgi besh satrini tartibini o‘zgartirmay `notes/recent.txt`ga yozing.
 
 ### Tekshiruv
 
-Oltita natija tekshiriladi: `directory`, manba `file`lar, `.tmp`, egasi, `errors.txt`, `recent.txt`.
+Beshta natija tekshiriladi: `directory`, manba `file`lar, `.tmp`, `errors.txt`, `recent.txt`.
 
 ```bash
 jdu-check M1
 ```
 
-Foydali `command`lar: `pwd`, `ls`, `tree`, `mkdir`, `cp`, `rm`, `find`, `grep`, `tail`, `stat`.
+Foydali `command`lar: `pwd`, `ls`, `tree`, `mkdir`, `cp`, `rm`, `find`, `grep`, `tail`.
 
 ## M2 User, group, permission, and sudo
 
@@ -169,7 +165,7 @@ Taqiqlanadi: `chmod 777`.
 
 ### Maqsad
 
-`service` va `process`ni bog‘lash; PID orqali `signal` yuborish; Ubuntu `package`ini tekshirib o‘rnatish.
+`service` va `process`ni bog‘lash, kerakli `service`ni to‘xtatish; Ubuntu `package`ini tekshirib o‘rnatish.
 
 ### Boshlang‘ich holat
 
@@ -182,19 +178,18 @@ systemctl status jdu-m3-process1.service jdu-m3-process2.service jdu-m3-process3
 
 ### Topshiriq A: faqat process2ni to‘xtatish
 
-1. `jdu-m3-process2.service` Main PIDini toping.
+1. `jdu-m3-process2.service` Main PIDini topib, o‘zingiz uchun yozib oling.
 2. Shu PIDdagi `process`ni `ps` bilan tekshiring.
-3. Faqat shu PIDga `TERM` yuboring.
+3. Tegishli `service`ni to‘xtating.
 4. `process2` to‘xtagan, `process1` va `process3` ishlayotganini tekshiring.
 
-Keng qamrovli `pkill`, `killall` yoki `KILL` `signal`ini ishlatmang.
+Yozib olgan PIDdagi `process`ni bevosita to‘xtatmang. `systemd` boshqaradigan `service`ni to‘xtating.
 
 ### Topshiriq B: cmatrixni o‘rnatish
 
 1. `package` ma’lumotini ko‘ring.
 2. `apt` bilan `cmatrix`ni o‘rnating.
 3. `command`ni ishga tushiring; `Ctrl+C` bilan chiqing.
-4. `package` versiyasini va `/usr/bin/cmatrix`ni qaysi `package` berganini tekshiring.
 
 ### Tekshiruv
 
@@ -204,13 +199,13 @@ Ikki natija: A topshirig‘i uchun bitta, B topshirig‘i uchun bitta. Topshiril
 jdu-check M3
 ```
 
-Foydali `command`lar: `systemctl status`, `systemctl show`, `ps`, `kill`, `apt show`, `apt install`, `dpkg-query`, `command -v`, `dpkg -S`.
+Foydali `command`lar: `systemctl status`, `systemctl stop`, `systemctl is-active`, `ps`, `apt show`, `apt install`, `command -v`.
 
 ## M4 systemd service
 
 ### Maqsad
 
-`unit file`, `service` va `process` munosabatini tekshirish; `active` va `enabled`ni farqlash.
+`unit file` sozlamalarini o‘qish; `active` va `enabled`ni farqlash.
 
 ### Boshlang‘ich holat
 
@@ -222,18 +217,16 @@ O‘qituvchi tayyorlagan `jdu-status.service` `loaded`, `inactive`, `disabled` h
 2. `unit file`ni o‘zgartirmay `service`ni `start` qiling.
 3. Tizim yoqilganda avtomatik `start` bo‘ladigan qilib `enable` qiling.
 4. `active` va `enabled` holatlarini alohida tekshiring.
-5. Main PIDni topib, haqiqiy `process` bilan solishtiring.
-6. `process`ning `user`i, `command line`i va ish `directory`si `unit`dagi qiymatlarga mosligini tekshiring.
 
 ### Tekshiruv
 
-Uchta natija: `active`, `enabled`, o‘zgarmagan `unit` bilan haqiqiy `process` mosligi. Topshiriladigan `file` yo‘q.
+Ikki natija: o‘zgarmagan `unit`ning ishlashi (`active`) va avtomatik ishga tushishi (`enabled`). Topshiriladigan `file` yo‘q.
 
 ```bash
 jdu-check M4
 ```
 
-Foydali: `systemctl cat`, `systemctl start`, `systemctl enable`, `systemctl is-active`, `systemctl is-enabled`, `systemctl show`, `ps`, `/proc/PID/cmdline`, `/proc/PID/cwd`.
+Foydali: `systemctl cat`, `systemctl start`, `systemctl enable`, `systemctl is-active`, `systemctl is-enabled`.
 
 ## M5 Port, socket, and log
 
@@ -249,28 +242,12 @@ O‘qituvchi tayyorlagan `jdu-web.service` `loaded`, `inactive`, `disabled` hola
 
 1. `unit file`dagi `User`, `ExecStart`, manzil, `port` va kontent `path`ini o‘qing.
 2. `unit file`ni o‘zgartirmay `jdu-web.service`ni `start` qiling.
-3. `127.0.0.1:8081`da aloqa kutayotgan `socket`ni tekshiring. Bu holat **`listener` (listening socket)** deyiladi.
-
-```bash
-sudo ss -lntp | grep ':8081'
-```
-
-4. `ss`ning `users:` qatoridagi PID bilan `service` Main PIDini solishtiring.
-
-```bash
-systemctl show --property MainPID --value jdu-web.service
-```
+3. `127.0.0.1:8081`da aloqa kutayotgan `socket`ni toping. Bu holat `listener` (kutayotgan `socket`) deyiladi.
+4. `socket`ga tegishli `process` PIDini `service` Main PIDi bilan solishtiring.
 
 5. `0.0.0.0:8081` yoki `[::]:8081`da kutmayotganini tekshiring.
 6. `http://127.0.0.1:8081/`ga `request` yuborib, HTTP `response`ni tekshiring.
-7. `service user` `jduweb` kontent `file`ini o‘qiy olishini tekshiring. `jduweb` login uchun emas; `su - jduweb` ishlatmang. Haqiqiy o‘qish huquqi quyidagicha tekshiriladi: `0` — mumkin, `1` — mumkin emas.
-
-```bash
-sudo -u jduweb -- test -r /srv/jdu-web/index.txt
-echo $?
-```
-
-`user` va `group`ni `getent passwd jduweb` hamda `id jduweb` bilan ko‘ring. `file` va yuqori `directory`larning `permission`ini `stat` va `namei -l /srv/jdu-web/index.txt` bilan tekshiring.
+7. `service user` `jduweb` kontent `file`ini o‘qiy olishini tekshiring. `file` va unga olib boruvchi yuqori `directory`larning `permission`ini ham ko‘ring.
 
 8. `http://127.0.0.1:8081/m5-check`ga `request` yuboring.
 9. Hozirgi `service` ishga tushgan davrga tegishli `journal`da `REQUEST path=/m5-check`ni toping.
@@ -283,8 +260,6 @@ To‘rtta natija: `listener` va PID; HTTP va `file permission`; talaba yuborgan 
 ```bash
 jdu-check M5
 ```
-
-Foydali: `systemctl cat`, `systemctl start`, `systemctl show`, `sudo ss -lntp`, `curl`, `sudo -u`, `sudo journalctl`.
 
 ## M6 SSH and remote operation
 

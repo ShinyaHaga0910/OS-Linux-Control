@@ -63,7 +63,7 @@ Japan Digital UniversityのOS・Linux基礎を学ぶ公開教材と実習環境�
 - [自力課題PDF](./2026/materials/ubuntu_os_foundations/v1.0.0/output/pdf/ubuntu_os_missions_ja.pdf)
 - [用語集・コマンド早見表PDF](./2026/materials/ubuntu_os_foundations/v1.0.0/output/pdf/ubuntu_os_reference_ja.pdf)
 
-PDFだけでなく、本文のMarkdown、図の生成元、生成プログラムも同じリポジトリに保存しています。日本語版が現在の内容の正本です。ウズベク語・ロシア語はChatGPTによる翻訳初稿とPDFがあります。旧M0の表記や、日本語の練習問題に後から追加した問題文は、両翻訳版にまだ反映されていません。現在の課題IDは日本語版と現行Labを確認してください。英語版は未作成です。
+PDFだけでなく、本文のMarkdown、図の生成元、生成プログラムも同じリポジトリに保存しています。日本語版が内容の正本です。ウズベク語・ロシア語のMarkdownとPDFは、現行のP0～P6・M1～M7に内容を合わせたChatGPT翻訳初稿です。母語話者による校閲と学生試読は未実施です。英語版は未作成です。
 
 ## 学生の基本手順
 

@@ -40,10 +40,10 @@ cmatrix
 
 ```bash
 dpkg-query -W -f='${Package} ${Version}\n' cmatrix
-dpkg -S /usr/bin/cmatrix
+dpkg -S /usr/bin/apt
 ```
 
-`dpkg-query` mahalliy `package` ma’lumotlar bazasidan o‘rnatilgan aniq versiyani oladi. `dpkg -S PATH` ko‘rsatilgan `file`ni qaysi `package` yetkazib berganini aniqlaydi. `command -v` “`shell` qaysi `path`dagi bajariladigan `file`ni ko‘ryapti?” degan savolga javob beradi. `dpkg -S` esa “bu `file` qaysi `package`ga tegishli?” degan boshqa savolga javob beradi.
+`dpkg-query` mahalliy `package` ma’lumotlar bazasidan o‘rnatilgan aniq versiyani oladi. `dpkg -S PATH` ko‘rsatilgan `file`ni qaysi `package` yetkazib berganini aniqlaydi. `command -v` “`shell` qaysi `path`dagi bajariladigan `file`ni ko‘ryapti?” degan savolga javob beradi. `dpkg -S` esa “bu `file` qaysi `package`ga tegishli?” degan boshqa savolga javob beradi. `/usr/bin/apt` — misol. Agar `command`ning e’lon qilingan `path`i `symbolic link` bo‘lsa, uning o‘zi `package`ga tegishli bo‘lmasligi mumkin. `readlink -f` bilan haqiqiy `path`ni topib, keyin shu `file`ni `dpkg -S` bilan tekshiring.
 
 ## 9.5 O‘chirish va tozalash
 
@@ -57,7 +57,7 @@ dpkg -S /usr/bin/cmatrix
 
 ### 2-savol
 
-`command -v cmatrix` va `dpkg -S /usr/bin/cmatrix` nimalarni tekshiradi?
+`command -v cmatrix` va `dpkg -S /usr/bin/apt` nimalarni tekshiradi?
 
 ### 3-savol
 
@@ -71,7 +71,7 @@ Package o‘rnatilgan, lekin unga tegishli process ishlamayotgan holatga misol k
 
 ### 2-savol
 
-**Javob:** `command -v cmatrix` `shell` bajaradigan `command`ning `path`ini topadi. `dpkg -S /usr/bin/cmatrix` esa shu `file`ni qaysi `package` yetkazib berganini aniqlaydi.
+**Javob:** `command -v cmatrix` `shell` bajaradigan `command`ning `path`ini topadi. `dpkg -S /usr/bin/apt` shu `file`ni yetkazib bergan `package`ni aniqlaydi. Agar e’lon qilingan `path` `symbolic link` bo‘lsa, avval haqiqiy `path`ni tekshiring.
 
 ### 3-savol
 

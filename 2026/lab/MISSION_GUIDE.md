@@ -2,7 +2,7 @@
 
 [日本語](https://github.com/ShinyaHaga0910/OS-Linux-Control/blob/main/2026/materials/ubuntu_os_foundations/v1.0.0/docs/ja/missions.md) · [Русский](https://github.com/ShinyaHaga0910/OS-Linux-Control/blob/main/2026/materials/ubuntu_os_foundations/v1.0.0/docs/ru/missions.md) · [O‘zbekcha](https://github.com/ShinyaHaga0910/OS-Linux-Control/blob/main/2026/materials/ubuntu_os_foundations/v1.0.0/docs/uz/missions.md)
 
-注: ロシア語版・ウズベク語版の課題は翻訳初稿で、現行のM1～M7の問題文をまだ反映していません。採点に使う現行要件は日本語版で確認してください。
+注: ロシア語版・ウズベク語版は現行のM1～M7と内容を同期した翻訳初稿です。母語話者による校閲は未実施です。採点条件の正本は日本語版です。
 
 対象: Mission 1～7
 環境: Ubuntu Server 24.04 LTS

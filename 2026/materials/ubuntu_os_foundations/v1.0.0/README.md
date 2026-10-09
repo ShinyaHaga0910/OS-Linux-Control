@@ -18,7 +18,7 @@ PDFは次の一覧から開けます。
 | ロシア語（翻訳初稿） | [PDF](./output/pdf/ubuntu_os_textbook_ru.pdf) | [PDF](./output/pdf/ubuntu_os_guided_practice_ru.pdf) | [PDF](./output/pdf/ubuntu_os_missions_ru.pdf) | [PDF](./output/pdf/ubuntu_os_reference_ru.pdf) |
 | ウズベク語（翻訳初稿） | [PDF](./output/pdf/ubuntu_os_textbook_uz.pdf) | [PDF](./output/pdf/ubuntu_os_guided_practice_uz.pdf) | [PDF](./output/pdf/ubuntu_os_missions_uz.pdf) | [PDF](./output/pdf/ubuntu_os_reference_uz.pdf) |
 
-ロシア語・ウズベク語の練習・課題には旧M0の表記と、日本語版に後から追加した問題文の未反映があります。現在のP0～P6・M1～M7の要件は、上の日本語版を使ってください。[翻訳の管理](./localization/README.md)で更新状況を確認できます。
+ロシア語・ウズベク語のMarkdownとPDFは現行日本語版に内容を同期した翻訳初稿です。採点条件の正本は日本語版です。母語話者による校閲と学生試読は未実施です。[翻訳の管理](./localization/README.md)で状態を確認できます。
 
 ## 教材と制作元
 
