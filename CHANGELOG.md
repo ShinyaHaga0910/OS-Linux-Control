@@ -4,6 +4,8 @@
 
 ## 未リリース
 
+- [Issue #39](https://github.com/ShinyaHaga0910/OS-Linux-Control/issues/39): 第6章のsuとsudoを6.4・6.5の独立した節へ分け、名前の意味・認証・ユーザー切替・組合せを説明しました。日本語・ロシア語・ウズベク語の本文と結合教科書PDF、日本語HTMLを同期しました。課題とAWS環境は変更していません。
+
 - [Issue #37](https://github.com/ShinyaHaga0910/OS-Linux-Control/issues/37): 現行教材を`2026/materials/ubuntu_os_foundations/`へ移し、保存先から版番号を外しました。教材・Lab・生成処理・テストの参照を更新しました。
 - 旧教材URLは移行先を案内するMarkdownと、現行PDF・HTML・画像の生成コピーで維持します。互換層232ファイルの整合を自動検査し、旧Labの`2026/v1.0.0/`は変更していません。
 - 3言語・各4冊のPDFを再生成し、表紙の古い「Lab v1.0.0」を年度・OSの情報に置き換えました。本文と演習・採点条件は変更していません。

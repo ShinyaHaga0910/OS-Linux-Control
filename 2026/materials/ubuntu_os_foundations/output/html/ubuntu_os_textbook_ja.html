@@ -393,25 +393,41 @@ sudo gpasswd -d jduviewer ops</code></pre>
 sudo su - jduops
 id</code></pre>
 <p>1行目の <code>id jduops</code> はシステムに登録されているアカウント情報を調べる。一方、<code>su -</code> で切り替えた後の <code>id</code> は、新たに起動したログインシェルが実際に保持している実行資格情報を表す。カーネルによるアクセス権の判定は、設定ファイルの静的な登録情報ではなく、操作を実行しているプロセス自身が保持するUID/GIDに基づいて行われる。</p>
-<h2>6.4 <code>su</code>と<code>sudo</code>は目的が違う</h2>
-<p><code>su</code>（substitute user）は、別のユーザー権限で動作するシェルセッションを開始する。<code>su - USER</code> のハイフン <code>-</code> は、実際にそのユーザーがログインした際と同様の環境へ切り替える指定であり、ホームディレクトリや環境変数を対象ユーザーの標準状態に初期化する。</p>
-<p><code>sudo</code>は、設定で許可されたユーザーが、管理者（root）や別のユーザーの権限でコマンドを実行する仕組みである。一般ユーザーなら誰でも<code>sudo</code>を使えるわけではない。管理者権限を与える対象と操作の範囲は、必要最小限にする。</p>
+<h2>6.4 <code>su</code>で別のユーザーのシェルを開く</h2>
+<p><code>su</code>は、別のユーザーの権限でコマンドを実行するためのコマンドである。ここでは、別ユーザーとして操作を続けるために、そのユーザーのシェルを開く使い方を学ぶ。</p>
+<pre><code>su - jduops
+id -un
+pwd
+exit
+id -un</code></pre>
+<p><code>su - jduops</code>は、<code>jduops</code>の権限でログインシェルを開始する。<code>-</code>は、対象ユーザーがログインしたときに近い環境を作る指定であり、ホームディレクトリへ移動し、ホームやシェルなどの環境変数を初期化する。切り替え後は<code>id -un</code>でユーザー名、<code>pwd</code>で作業ディレクトリを確認する。</p>
+<p>元のユーザーの登録情報を書き換える操作ではない。元のシェルの内側に別ユーザーのシェルを開くため、<code>exit</code>でそのシェルを終了すると一つ前のシェルへ戻る。最後の<code>id -un</code>で元のユーザーに戻ったことを確かめる。</p>
+<p>一般ユーザーが直接<code>su - USER</code>を使う場合、通常は対象ユーザーのパスワードを求められる。上の例は対象ユーザーのパスワード認証が可能な環境向けである。授業のUbuntuでは、次節で説明する<code>sudo su - USER</code>を用いて切り替える。パスワードが未設定のユーザーに対して、直接の<code>su</code>が成功するとは限らない。</p>
+<p><code>su</code>は<strong>substitute user</strong>と説明される。<strong>substitute</strong>は「代わりにする・置き換える」という意味であり、ここではコマンドを実行するユーザーを別のユーザーに置き換える、と理解するとよい。「ユーザーを切り替える」という意味の<strong>switch user</strong>は、動作を覚えるための言い換えである。</p>
+<h2>6.5 <code>sudo</code>で別のユーザーの権限を使ってコマンドを実行する</h2>
+<p><code>sudo</code>は、設定で許可されたユーザーが、管理者（<code>root</code>）や別のユーザーの権限でコマンドを実行する仕組みである。一般ユーザーなら誰でも使えるわけではない。誰が、誰の権限で、どのコマンドを実行できるかは、<code>sudoers</code>などの設定で決まる。管理者権限を与える対象と操作の範囲は、必要最小限にする。</p>
+<p>対象ユーザーを指定しない通常の設定では、<code>root</code>の権限で実行する。次の例では、<code>sudo</code>を付けた<code>id -un</code>だけが<code>root</code>として動作する。その後の<code>id -un</code>は元のシェルで動作するため、元のユーザー名を表示する。</p>
+<pre><code>sudo id -un
+id -un</code></pre>
+<p>パスワード認証が必要な通常の設定では、実行した本人のパスワードを求められる。対象ユーザーのパスワードを求める<code>su</code>との違いである。ただし認証方法は設定によって異なり、パスワードを求めない設定もある。</p>
+<p>1つのコマンドを別ユーザーの権限で試す場合は、<code>sudo -u USER -- COMMAND</code>と実行する。<code>-u USER</code>は対象ユーザーの指定、<code>--</code>は<code>sudo</code>のオプションの終わりを示す。この使い方では対話シェルを開かず、指定したコマンドが終了すると元のシェルで操作を続けられる。</p>
+<pre><code>sudo -u jduweb -- test -r /srv/jdu-web/index.txt
+echo $?</code></pre>
+<p>これは<code>jduweb</code>の実行資格情報で対象ファイルが読み取り可能かどうかを直接テストしている。<code>test -r</code>自体は成功しても何も表示しない。直後の<code>echo $?</code>が<code>0</code>なら読み取り可能、<code>1</code>なら読み取り不可である。間に別のコマンドを実行すると、そのコマンドの終了ステータスに変わる。<code>root</code>で読み取れたことは、サービス用ユーザーでも読み取れる証拠にはならない。</p>
+<p>別ユーザーとして複数の操作を続ける場合、授業では次の組合せを使う。</p>
 <pre><code>sudo su - jduops
 id
 pwd
 exit
 id -un</code></pre>
-<p>別のユーザーのシェルを開始すると、元のシェルの内側に新しいシェルが開く。<code>exit</code>は現在のシェルを終了して一つ前のシェルへ戻る。切り替え後は<code>id -un</code>でユーザー名、<code>pwd</code>で作業ディレクトリを確認できる。</p>
-<p>1つのコマンドだけを別ユーザーの権限で試す場合は、対話シェルを開かずに<code>sudo -u USER -- COMMAND</code>と実行する。<code>-u USER</code>は指定したユーザーの権限を使う指定であり、<code>--</code>は<code>sudo</code>のオプションがここで終わることを示す。ユーザーを切り替えたシェルへ入り続ける操作ではなく、指定したコマンドを1回実行した後は元のシェルに戻る。</p>
-<pre><code>sudo -u jduweb -- test -r /srv/jdu-web/index.txt
-echo $?</code></pre>
-<p>これは <code>jduweb</code> の実行資格情報で対象ファイルが読み取り可能かどうかを直接テストしている。<code>test -r</code>自体は成功しても何も表示しない。直後の<code>echo $?</code>が<code>0</code>なら読み取り可能、<code>1</code>なら読み取り不可である。間に別のコマンドを実行すると、そのコマンドの終了ステータスに変わる。管理者である root で読み取れたことをもって、一般のサービスユーザーでも読み取れる証拠と誤認してはならない。</p>
-<h2>6.5 サービス用ユーザーでプロセスの権限を分ける</h2>
+<p>これは一つのコマンド名ではなく、<code>sudo</code>で<code>su - jduops</code>を実行する組合せである。通常の設定では、<code>sudo</code>が許可を確認して<code>root</code>として<code>su</code>を実行し、<code>su</code>が<code>jduops</code>のログインシェルを開く。<code>exit</code>で戻り、<code>id -un</code>で元のユーザーを確認する。</p>
+<p><code>sudo</code>は<strong>superuser do</strong>、つまり「管理者として実行する」と説明される。<code>su</code>の<strong>substitute user</strong>と合わせて英語の意味を覚えると、使い方を整理しやすい。ただし現在の<code>sudo</code>は、<code>-u</code>で<code>root</code>以外のユーザーも指定できる。<strong>名前は似ているが、<code>su</code>と<code>sudo</code>は別のコマンドである。別ユーザーのシェルを開いて操作したいのか、許可されたコマンドを別ユーザーの権限で実行したいのかを区別して使い分ける。</strong></p>
+<h2>6.6 サービス用ユーザーでプロセスの権限を分ける</h2>
 <p>サービス用ユーザーは、サービスのプロセスに与える権限を、人の作業用アカウントや他のサービスから分離するために使う。たとえばWebサーバーのプロセスを<code>jduweb</code>として動かせば、アクセス権の判定には<code>jduweb</code>のUIDとGIDが使われる。サービスが必要とするファイルだけを読めるように設定できる。</p>
 <pre><code>getent passwd jduweb
 id jduweb</code></pre>
 <p><code>/usr/sbin/nologin</code>は、通常の対話ログインに使うシェルの代わりに起動し、ログインを断って終了するプログラムである。この設定でも、アカウント自体は存在する。systemdはサービスの設定で指定したユーザーの権限でプロセスを起動できる。人がそのアカウントで対話ログインできないことと、サービスのプロセスがそのUIDでファイルを扱えることは別である。</p>
-<h2>6.6 アカウント、認証、認可を区別する</h2>
+<h2>6.7 アカウント、認証、認可を区別する</h2>
 <p><strong>アカウント（account）</strong>は、システムに登録されたユーザーの情報である。ユーザー名とUID、主グループ、ホームディレクトリ、ログインシェルなどを結び付ける。「<code>ssm-user</code>というアカウントがある」とは、サーバーがその名前を識別できるという意味であり、接続してきた人が本当にその利用者かどうかまでは証明しない。</p>
 <p><strong>認証（authentication）</strong>は、接続してきた相手が、申告したアカウントを使用する正当な相手か確かめることである。パスワード認証なら秘密のパスワードを、SSHの公開鍵認証なら対応する秘密鍵を所持していることを確かめる。公開鍵認証では、接続先の対象ユーザーの<code>~/.ssh/authorized_keys</code>などに公開鍵を登録する。秘密鍵そのものをサーバーへ送って照合するわけではない。</p>
 <p><strong>認可（authorization）</strong>は、その主体が特定の操作をしてよいか判断することである。SSHでは、アカウントやサーバーの設定によって接続を許すかも判断する。接続後は、ファイルを読めるか、書けるか、コマンドを管理者権限で実行できるかを、それぞれの規則で判断する。ログインに成功しても、すべての操作が許されるわけではない。</p>
@@ -431,6 +447,7 @@ id jduweb</code></pre>
 <p><strong>答え:</strong> rootが読めても、<code>jduweb</code>のプロセスに読み取り権限があるとは限らないためである。<code>sudo -u jduweb</code>は<code>jduweb</code>の権限で読み取り可否を判定する。</p>
 <h2>参考資料</h2>
 <ul><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/how-to/security/user-management/">User management</a>（2026-09-24確認。rootと一般・システム用ユーザー、アカウント管理）</li><li>Ubuntu Server documentation, <a href="https://ubuntu.com/server/docs/how-to/security/openssh-server/">OpenSSH server</a>（2026-09-24確認。公開鍵認証と<code>authorized_keys</code>）</li><li>Ubuntu 24.04 man pages, <a href="https://manpages.ubuntu.com/manpages/noble/man8/adduser.8.html">adduser(8)</a>、<a href="https://manpages.ubuntu.com/manpages/noble/man5/systemd.exec.5.html">systemd.exec(5)</a>（2026-09-24確認。サービス用ユーザーとプロセスの実行ユーザー）</li><li>Linux man-pages, <a href="https://man7.org/linux/man-pages/man5/passwd.5.html">passwd(5)</a>、<a href="https://man7.org/linux/man-pages/man7/credentials.7.html">credentials(7)</a>（2026-09-24確認。UID/GID、ログインシェル、プロセスの資格情報）</li><li>Ubuntu 24.04実機の<code>man id</code>、<code>man getent</code>、<code>man usermod</code>、<code>man gpasswd</code>、<code>man su</code>、<code>man sudo</code>（制作時に確認）</li></ul>
+<ul><li>util-linux公式 <a href="https://github.com/util-linux/util-linux/blob/master/login-utils/su.1.adoc">su(1)</a>（2026-10-13確認。substitute user、ログインシェル、認証）</li><li>Ubuntu Server公式 <a href="https://ubuntu.com/server/docs/tutorial/welcome-to-the-terminal/">Welcome to the terminal</a>（2026-10-13確認。sudoをsuperuser doと説明）</li><li>Sudo公式 <a href="https://github.com/sudo-project/sudo/blob/main/docs/sudo.man.in">sudoマニュアル</a>（2026-10-13確認。許可、対象ユーザー、パスワードと設定）</li></ul>
 <h1>第7章 アクセス権と共有ディレクトリ</h1>
 <h2>7.1 アクセス権は誰に何を許すかを表す</h2>
 <p>基本的なLinuxの<strong>アクセス権（パーミッション）</strong>は、所有ユーザー（u: owner user）、所有グループ（g: owner group）、その他（o: others）という3つの<strong>クラス（区分）</strong>に対して、読み取り（r: read）、書き込み（w: write）、実行（x: execute）の各権限を設定する。</p>

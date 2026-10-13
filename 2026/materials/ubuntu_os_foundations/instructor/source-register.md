@@ -82,3 +82,11 @@ GNU/Linuxの年表やUbuntuのDebianとの関係について、出典に年号�
 - GNU Findutils公式マニュアル：https://www.gnu.org/software/findutils/manual/html_mono/find.html 。検索開始位置・式の構造を公式検索結果で確認。詳細指定はローカルGNU find --helpと、使った検索の動作で確認。
 - GNU Coreutilsのid/tail説明：https://www.gnu.org/software/coreutils/manual/html_node/id-invocation.html 、 https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html 。ページ取得はタイムアウトのため、今回のオプション説明はローカルGNU id --help、tail --helpで確認。Ubuntu実機での今回の教材操作は未検証。
 - cd/pwdはBash help、grepの指定はgrep --helpでも照合。英語欄は学習用の意味対応とし、未確認の歴史的略語由来を断定しない。
+
+## 2026-10-13 suとsudoの独立した説明
+
+- util-linux公式su(1): https://github.com/util-linux/util-linux/blob/master/login-utils/su.1.adoc 。substitute user、対象ユーザーでの実行、ログインシェル、PAM認証を確認。
+- Ubuntu Server公式Welcome to the terminal: https://ubuntu.com/server/docs/tutorial/welcome-to-the-terminal/ 。sudoのsuperuser doという説明を確認。
+- Sudo公式manual: https://github.com/sudo-project/sudo/blob/main/docs/sudo.man.in 。対象ユーザー、ポリシーによる許可、パスワード認証、-uを確認。
+- Sudo公式紹介: https://www.sudo.ws/about/intro/ 。Web取得ツールはrobots制限、Pythonで公式本文を取得してsu “do”という表記を確認。名前の由来が完全に無関係とは断定しない。教科書ではUbuntu公式のsuperuser doを覚え方として採用し、root以外も指定できることを補足。
+- substituteは「代わりにする・置き換える」と説明し、switch userは動作を覚えるための言い換えとする。今回の変更は説明と節分けだけ。Ubuntu実機操作の再試験は未実施。
