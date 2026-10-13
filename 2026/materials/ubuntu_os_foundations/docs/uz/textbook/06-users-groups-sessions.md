@@ -60,11 +60,49 @@ id
 
 Birinchi qatordagi `id jduops` tizimda ro‘yxatdan o‘tgan hisobni tekshiradi. `su -`dan keyingi `id` esa yangi login `shell` `process`i haqiqatda olgan huquqlarni ko‘rsatadi. `kernel` `permission`ni statik ro‘yxat yozuviga emas, amalni bajarayotgan `process`ning UID/GID qiymatlariga qarab tekshiradi.
 
-## 6.4 Su va sudo turli maqsadga xizmat qiladi
+## 6.4 `su` bilan boshqa userning shellini ochish
 
-`su` (`substitute user`) boshqa `user` huquqi bilan ishlaydigan `shell session`ni boshlaydi. `su - USER`dagi `-` o‘sha `user` odatdagidek login qilgandagi muhitga o‘tishni bildiradi: `home directory` va muhit o‘zgaruvchilari uning standart holatiga o‘rnatiladi.
+`su` boshqa `user` huquqi bilan `command` bajarishga imkon beradi. Bu yerda boshqa `user` sifatida ishlashni davom ettirish uchun uning `shell`ini ochishni o‘rganamiz.
 
-`sudo` sozlamada ruxsat olgan `user`ga `command`ni administrator (`root`) yoki boshqa `user` huquqi bilan bajarishga imkon beradi. Hamma oddiy `user` `sudo`dan foydalana olmaydi. Boshqaruv huquqi va ruxsat etilgan amallar doirasi zarur minimum bilan cheklanishi kerak.
+```bash
+su - jduops
+id -un
+pwd
+exit
+id -un
+```
+
+`su - jduops` `jduops` huquqi bilan `login shell`ni boshlaydi. `-` belgisi shu `user` odatdagidek login qilgandagi muhitga yaqin muhitni yaratadi: uning `home directory`siga o‘tadi va `home directory`, `shell` kabi muhit o‘zgaruvchilarini boshlang‘ich holatga keltiradi. Almashgandan keyin `id -un` bilan `user` nomini, `pwd` bilan ish `directory`sini tekshiring.
+
+Asl `user`ning ro‘yxatdagi ma’lumotlari o‘zgarmaydi. Asl `shell` ichida boshqa `user`ning yangi `shell`i ochiladi. `exit` uni tugatib, oldingi `shell`ga qaytaradi. Oxirgi `id -un` asl `user`ga qaytganingizni tasdiqlaydi.
+
+Oddiy `user` bevosita `su - USER`ni ishlatsa, odatda maqsadli `user`ning paroli so‘raladi. Yuqoridagi misol shu parol orqali `authentication` qilish mumkin bo‘lgan muhit uchun berilgan. Darsdagi Ubuntuda keyingi bo‘limda tushuntiriladigan `sudo su - USER`dan foydalanamiz. Paroli sozlanmagan `user`ga bevosita `su` bilan o‘tish muvaffaqiyatli bo‘lishi shart emas.
+
+`su` **substitute user** deb tushuntiriladi. Inglizcha **substitute** «o‘rniga qo‘yish, almashtirish» degani. Bu yerda `command` bajaradigan `user` boshqa `user` bilan almashtiriladi. **Switch user**, ya’ni «userni almashtirish», amalni eslab qolishga yordam beradigan ifodadir.
+
+## 6.5 `sudo` bilan commandni boshqa user huquqi orqali bajarish
+
+`sudo` sozlamada ruxsat olgan `user`ga `command`ni administrator (`root`) yoki boshqa `user` huquqi bilan bajarishga imkon beradi. Oddiy `account` mavjudligining o‘zi `sudo` huquqini bermaydi. `sudoers` kabi sozlamalar kim, qaysi `user` huquqi bilan, qaysi `command`larni bajara olishini belgilaydi. Boshqaruv huquqi zarur amallar bilan cheklanishi kerak.
+
+Odatdagi sozlamada maqsadli `user` ko‘rsatilmasa, `command` `root` huquqi bilan bajariladi. Misolda faqat `sudo` qo‘shilgan `id -un` `root` sifatida ishlaydi. Keyingi `id -un` asl `shell`da bajarilib, asl `user` nomini ko‘rsatadi.
+
+```bash
+sudo id -un
+id -un
+```
+
+Odatdagi sozlamada parol talab qilinsa, `sudo` uni ishga tushirgan `user`ning o‘z parolini so‘raydi. Bu maqsadli `user` parolini so‘raydigan `su`dan farq qiladi. `Authentication` usuli sozlamaga bog‘liq, parol so‘ramaydigan sozlama ham bo‘lishi mumkin.
+
+Bitta `command`ni boshqa `user` huquqi bilan bajarish uchun `sudo -u USER -- COMMAND` ishlatiladi. `-u USER` maqsadli `user`ni bildiradi, `--` esa `sudo` optionlari tugaganini ko‘rsatadi. Bunda interaktiv `shell` ochilmaydi. `Command` tugagach, asl `shell`da ishlashni davom ettirasiz.
+
+```bash
+sudo -u jduweb -- test -r /srv/jdu-web/index.txt
+echo $?
+```
+
+Bu `jduweb` huquqi bilan `file`ni o‘qish mumkinligini tekshiradi. `test -r` muvaffaqiyatli bo‘lsa ham hech narsa ko‘rsatmaydi. Darhol keyingi `echo $?` o‘qish mumkin bo‘lsa `0`, mumkin bo‘lmasa `1` ko‘rsatadi. Orada boshqa `command` bajarilsa, tekshirilayotgan `exit status` o‘zgaradi. `root` `file`ni o‘qiy olishi `service user` ham o‘qiy olishini isbotlamaydi.
+
+Darsda boshqa `user`ning `shell`ida bir necha amalni davom ettirish uchun quyidagi birikma ishlatiladi.
 
 ```bash
 sudo su - jduops
@@ -74,18 +112,11 @@ exit
 id -un
 ```
 
-Boshqa `user`ning `shell`i boshlanganda, asl `shell` ichida yangi `shell` ochiladi. `exit` hozirgisini tugatib, oldingi `shell`ga qaytaradi. Almashgandan keyin `id -un` bilan `user` nomini, `pwd` bilan ish `directory`sini tekshiring.
+Bu bitta `command` nomi emas: `sudo` `su - jduops`ni ishga tushiradi. Odatdagi sozlamada `sudo` ruxsatni tekshirib, `su`ni `root` sifatida bajaradi. Keyin `su` `jduops`ning `login shell`ini ochadi. `exit` bilan qayting va `id -un` orqali asl `user`ni tekshiring.
 
-Faqat bitta `command`ni boshqa `user` huquqi bilan sinamoqchi bo‘lsangiz, interaktiv `shell` ochmasdan bajarishingiz mumkin.
+`sudo` **superuser do**, ya’ni «administrator sifatida bajarish» deb tushuntiriladi. Uni `su`ning **substitute user** ifodasi bilan birga eslab qolish amallarni ajratishga yordam beradi. Hozirgi `sudo`da `-u` orqali `root`dan boshqa `user` ham ko‘rsatilishi mumkin. **Nomlari o‘xshash bo‘lsa ham, `su` va `sudo` alohida commandlardir. Boshqa userning shellini ochib ishlash va ruxsat berilgan commandni boshqa user huquqi bilan bajarishni ajratib qo‘llang.**
 
-```bash
-sudo -u jduweb -- test -r /srv/jdu-web/index.txt
-echo $?
-```
-
-Bu `jduweb`ning amaldagi huquqlari bilan `file`ni o‘qish mumkinligini to‘g‘ridan-to‘g‘ri tekshiradi. `root` uni o‘qiy olishi oddiy `service user` ham o‘qiy olishini isbotlamaydi.
-
-## 6.5 Service user orqali process huquqlarini ajratish
+## 6.6 Service user orqali process huquqlarini ajratish
 
 `service` uchun alohida `user` uning `process` huquqlarini odam ishlatadigan hisoblar va boshqa `service`lardan ajratadi. Masalan, veb-`server` `process`i `jduweb` sifatida ishlasa, `permission` `jduweb`ning UID va GID qiymatlariga qarab tekshiriladi. Shunda faqat `service`ga kerakli `file`larni o‘qish huquqini berish mumkin.
 
@@ -96,7 +127,7 @@ id jduweb
 
 `/usr/sbin/nologin` odatdagi login `shell`i o‘rnida ishga tushadigan, interaktiv loginni rad etib tugaydigan `program`dir. Shunday sozlama bo‘lsa ham hisob mavjud. `systemd` `service` sozlamasida ko‘rsatilgan `user` huquqi bilan `process` boshlay oladi. Odam shu hisob orqali interaktiv login qila olmasligi bilan `service process`ining shu UID nomidan `file`larga murojaat qilishi boshqa-boshqa masaladir.
 
-## 6.6 Account, authentication va authorization
+## 6.7 Account, authentication va authorization
 
 **`account`** tizimda ro‘yxatdan o‘tgan `user` haqidagi ma’lumotdir. U `user` nomini UID, `primary group`, `home directory` va login `shell`i bilan bog‘laydi. “`ssm-user` `account`i bor” degani `server` shu nomni taniydi, xolos. Ulangan odam haqiqatda shu hisobdan foydalanishga haqli ekanini hali isbotlamaydi.
 
@@ -141,3 +172,7 @@ Bu tushunchaviy ajratishdir; SSH `program`ining ichki amallari aniq vaqt tartibi
 - Ubuntu 24.04 man pages, [adduser(8)](https://manpages.ubuntu.com/manpages/noble/man8/adduser.8.html), [systemd.exec(5)](https://manpages.ubuntu.com/manpages/noble/man5/systemd.exec.5.html) (2026-09-24 kuni tekshirilgan; `service user` va `process`ni ishga tushirish)
 - Linux man-pages, [passwd(5)](https://man7.org/linux/man-pages/man5/passwd.5.html), [credentials(7)](https://man7.org/linux/man-pages/man7/credentials.7.html) (2026-09-24 kuni tekshirilgan; UID/GID, login `shell`i va `process` huquqlari)
 - Ubuntu 24.04 amaliy muhitidagi `man id`, `man getent`, `man usermod`, `man gpasswd`, `man su`, `man sudo` (nashrdan oldin tekshiriladi)
+
+- util-linux: [su(1)](https://github.com/util-linux/util-linux/blob/master/login-utils/su.1.adoc) (2026-10-13 tekshirilgan: substitute user, login shell va authentication)
+- Ubuntu Server: [Welcome to the terminal](https://ubuntu.com/server/docs/tutorial/welcome-to-the-terminal/) (2026-10-13 tekshirilgan: superuser do)
+- Sudo: [sudo manual](https://github.com/sudo-project/sudo/blob/main/docs/sudo.man.in) (2026-10-13 tekshirilgan: ruxsat, maqsadli user va authentication)

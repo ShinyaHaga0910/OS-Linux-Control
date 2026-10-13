@@ -2,7 +2,7 @@
   "course": "ubuntu_os_foundations",
   "source_language": "ja",
   "source_status": "reviewed_current_source",
-  "ja_revision": "2026-10-09: current P0-P6, M1-M7, textbook and reference synchronized to ru/uz",
+  "ja_revision": "2026-10-13: chapter 6 su/sudo sections separated and synchronized to ru/uz; P0-P6 and M1-M7 unchanged",
   "edition": "2026",
   "languages": {
     "en": { "role": "future_source", "status": "planned" },
