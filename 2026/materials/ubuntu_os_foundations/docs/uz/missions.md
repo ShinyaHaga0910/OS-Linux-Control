@@ -149,7 +149,18 @@ Foydali `command`lar: `pwd`, `ls`, `tree`, `mkdir`, `cp`, `rm`, `find`, `grep`, 
 
 ### Tekshiruv
 
-Oltita natija tekshiriladi: `group` a’zoligi, `directory` egasi/`group`i, `directory mode`, namunaviy `file`, `group` merosi va `viewer` huquqi.
+Oltita natija tekshiriladi. O‘zingiz yaratgan `file` nomi yoki mazmuni topshiriladigan javob emas. Baholashda `jdu-check` `jduops` nomidan vaqtinchalik `file` yaratib, yaratish huquqi va `ops` `group`i meros bo‘lishini tekshiradi. Oxirgi viewer tekshiruvi faqat shu yaratish tekshiruvi muvaffaqiyatli bo‘lganda `PASS` bo‘ladi. Oxirgi ikki band `FAIL` bo‘lsa, avval yaratish tekshiruvini ko‘ring.
+
+| Tekshiruv ID | Talab qilinadigan yakuniy holat |
+| --- | --- |
+| `M2-ID-01` | `jduops` `ops` a’zosi, `jduviewer` esa a’zo emas. |
+| `M2-PERM-01` | Umumiy `directory` egasi va `group`i `root:ops`. |
+| `M2-PERM-02` | Umumiy `directory` `mode`i `2775`, shu jumladan `setgid`. |
+| `M2-PERM-03` | `README.txt` egasi, `group`i va `mode`i `root:ops`, `664`. |
+| `M2-PERM-04` | `jduops` yangi `file` yarata oladi; uning `group`i `ops`. |
+| `M2-PERM-05` | Yuqoridagi yaratish tekshiruvi muvaffaqiyatli; `jduviewer` `README.txt`ni o‘qiy oladi, ammo yangi `file` yarata olmaydi. |
+
+`M2-ID-01` `FAIL` bo‘lsa, ikkala `user`ning joriy `group` a’zoligini tekshiring. Sozlamalar to‘g‘ri bo‘lsa ham `FAIL` qolsa, `reset` qilmang; `FAIL` bo‘lgan tekshiruv IDlarini o‘qituvchiga ayting. `jdu-check M2`ni `ssm-user` sifatida bajaring.
 
 ```bash
 jdu-check M2

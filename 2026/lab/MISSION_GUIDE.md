@@ -151,7 +151,18 @@ User、primary group、supplementary groupを区別する。共有directoryへgr
 
 ### 判定
 
-6課題を判定する。Group membership、directory owner/group、directory mode、sample file、group継承、viewer accessが対応する。
+6項目を判定する。新しく作ったファイルの名前や内容は提出物ではない。採点時に`jdu-check`が`jduops`として一時ファイルを作り、作成権限と`ops`グループの継承を確認する。最後の閲覧担当者の判定は、この作成テストが成功した場合だけPASSになる。したがって最後の2項目がFAILなら、先に作成テストを確認する。
+
+| チェックID | 確認する完成状態 |
+| --- | --- |
+| `M2-ID-01` | `jduops`は`ops`に所属し、`jduviewer`は所属しない。 |
+| `M2-PERM-01` | 共有ディレクトリの所有者とグループは`root:ops`。 |
+| `M2-PERM-02` | 共有ディレクトリの権限はsetgidを含む`2775`。 |
+| `M2-PERM-03` | `README.txt`の所有者・グループ・権限は`root:ops`、`664`。 |
+| `M2-PERM-04` | `jduops`が新規ファイルを作れ、そのグループは`ops`。 |
+| `M2-PERM-05` | 上の作成テストが成功し、`jduviewer`は`README.txt`を読めるが、新規ファイルを作れない。 |
+
+`M2-ID-01`がFAILなら、両ユーザーの現在の所属グループを確認する。設定が正しいのにFAILが続く場合は、リセットせず、FAILのチェックIDを教員に伝える。`jdu-check M2`は`ssm-user`で実行する。
 
 ```bash
 jdu-check M2
