@@ -227,6 +227,17 @@ jdu-check P1</code></pre>
 <p>共有ディレクトリ<code>/srv/jdu-practice-share</code>を、書き込み担当者と閲覧担当者で使い分ける。初期状態では、<code>jdupracticeviewer</code>が補助グループ<code>practiceops</code>に入っており、書き込み担当の<code>jdupracticewriter</code>は入っていない。ディレクトリと<code>GUIDE.txt</code>の所有者・グループ・権限も未完成である。</p>
 <ol><li><code>jdupracticewriter</code>を補助グループ<code>practiceops</code>に追加し、<code>jdupracticeviewer</code>をそのグループから削除する。</li><li><code>/srv/jdu-practice-share</code>の所有者とグループを<code>root:practiceops</code>、権限を<code>2775</code>にする。新しいファイルが共有グループを引き継ぐようにする。</li><li><code>GUIDE.txt</code>の所有者とグループを<code>root:practiceops</code>、権限を<code>664</code>にする。</li><li><code>ssm-user</code>から<code>jdupracticewriter</code>へ切り替えて、共有ディレクトリに<code>writer-created.txt</code>を作る。新しいファイルのグループが<code>practiceops</code>であることを確認する。</li><li><code>ssm-user</code>に戻り、<code>jdupracticeviewer</code>へ切り替える。<code>GUIDE.txt</code>は読めるが、共有ディレクトリに新しいファイルは作れないことを確認する。</li></ol>
 <p>異なるユーザーでの操作を終えたら<code>ssm-user</code>へ戻り、<code>jdu-check P2</code>を実行する。グループ所属、ディレクトリ、ファイル、作成時のグループ継承、閲覧担当者のアクセスを計6項目で判定する。</p>
+<p>採点は完成状態を確認する。手順4で作る<code>writer-created.txt</code>は学習用の観察結果であり、そのファイル名を提出物として照合しない。採点時には、<code>jdu-check</code>が書き込み担当者として一時ファイルを作り、そのグループが<code>practiceops</code>になるか確かめる。閲覧担当者の判定は、この作成テストが成功した後に行う。このため、作成テストが失敗すると、閲覧担当者の権限が正しくても最後の2項目がともにFAILになる。</p>
+<table>
+<tr><th>チェックID</th><th>確認する完成状態</th></tr>
+<tr><td><code>P2-ID-01</code></td><td><code>jdupracticewriter</code>は<code>practiceops</code>に所属し、<code>jdupracticeviewer</code>は所属しない。</td></tr>
+<tr><td><code>P2-PERM-01</code></td><td>共有ディレクトリの所有者とグループは<code>root:practiceops</code>。</td></tr>
+<tr><td><code>P2-PERM-02</code></td><td>共有ディレクトリの権限はsetgidを含む<code>2775</code>。</td></tr>
+<tr><td><code>P2-PERM-03</code></td><td><code>GUIDE.txt</code>の所有者・グループ・権限は<code>root:practiceops</code>、<code>664</code>。</td></tr>
+<tr><td><code>P2-PERM-04</code></td><td>書き込み担当者が新規ファイルを作れ、そのグループは<code>practiceops</code>。</td></tr>
+<tr><td><code>P2-PERM-05</code></td><td>上の作成テストが成功し、閲覧担当者は<code>GUIDE.txt</code>を読めるが、新規ファイルを作れない。</td></tr>
+</table>
+<p>最初の項目がFAILなら、手順3の後に実行する<code>id jdupracticewriter</code>と<code>id jdupracticeviewer</code>を見直す。最後の2項目がFAILなら、まず<code>P2-PERM-04</code>の原因を確認する。<code>jdu-check</code>は必ず<code>ssm-user</code>で実行する。設定が正しいのにFAILが続く場合は、リセットせず、FAILのチェックIDを教員に伝える。</p>
 <h3>解答例（操作手順）</h3>
 <h4>手順1: 管理userを確認する</h4>
 <pre><code># ホームディレクトリへ移動する。

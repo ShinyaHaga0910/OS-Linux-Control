@@ -81,7 +81,17 @@ id -un</code></pre>
 <ol><li><code>jduops</code>をsupplementary group <code>ops</code>へ追加する。</li><li><code>jduviewer</code>をsupplementary group <code>ops</code>から削除する。</li><li><code>/srv/jdu-share</code>を<code>root:ops</code>にする。</li><li><code>/srv/jdu-share</code>をmode <code>2775</code>にする。setgidを使う。world-writableにしない。</li><li><code>/srv/jdu-share/README.txt</code>を<code>root:ops</code>、mode <code>664</code>にする。</li><li><code>ssm-user</code>から<code>sudo su - jduops</code>で切り替える。共有directoryにfileを作る。新しいfileのgroupが<code>ops</code>になることも確認する。</li><li><code>jduviewer</code>が<code>README.txt</code>を読めることを確認する。</li><li><code>jduviewer</code>が共有directoryにfileを作れないことを確認する。</li></ol>
 <p><code>jduops</code>での確認後は<code>exit</code>で<code>ssm-user</code>へ戻る。次に<code>sudo su - jduviewer</code>で切り替える。<code>jduviewer</code>での確認後も<code>exit</code>で戻る。最後に<code>id -un</code>が<code>ssm-user</code>であることを確認してから<code>jdu-check M2</code>を実行する。</p>
 <h3>判定</h3>
-<p>6課題を判定する。Group membership、directory owner/group、directory mode、sample file、group継承、viewer accessが対応する。</p>
+<p>6項目を判定する。新しく作ったファイルの名前や内容は提出物ではない。採点時に<code>jdu-check</code>が<code>jduops</code>として一時ファイルを作り、作成権限と<code>ops</code>グループの継承を確認する。最後の閲覧担当者の判定は、この作成テストが成功した場合だけPASSになる。したがって最後の2項目がFAILなら、先に作成テストを確認する。</p>
+<table>
+<tr><th>チェックID</th><th>確認する完成状態</th></tr>
+<tr><td><code>M2-ID-01</code></td><td><code>jduops</code>は<code>ops</code>に所属し、<code>jduviewer</code>は所属しない。</td></tr>
+<tr><td><code>M2-PERM-01</code></td><td>共有ディレクトリの所有者とグループは<code>root:ops</code>。</td></tr>
+<tr><td><code>M2-PERM-02</code></td><td>共有ディレクトリの権限はsetgidを含む<code>2775</code>。</td></tr>
+<tr><td><code>M2-PERM-03</code></td><td><code>README.txt</code>の所有者・グループ・権限は<code>root:ops</code>、<code>664</code>。</td></tr>
+<tr><td><code>M2-PERM-04</code></td><td><code>jduops</code>が新規ファイルを作れ、そのグループは<code>ops</code>。</td></tr>
+<tr><td><code>M2-PERM-05</code></td><td>上の作成テストが成功し、<code>jduviewer</code>は<code>README.txt</code>を読めるが、新規ファイルを作れない。</td></tr>
+</table>
+<p><code>M2-ID-01</code>がFAILなら、両ユーザーの現在の所属グループを確認する。設定が正しいのにFAILが続く場合は、リセットせず、FAILのチェックIDを教員に伝える。<code>jdu-check M2</code>は<code>ssm-user</code>で実行する。</p>
 <pre><code>jdu-check M2</code></pre>
 <p>確認候補: <code>id</code>, <code>groups</code>, <code>getent passwd</code>, <code>getent group</code>, <code>stat</code>, <code>namei</code>, <code>chown</code>, <code>chmod</code>, <code>usermod</code>, <code>sudo -u</code></p>
 <p>禁止: <code>chmod 777</code></p>

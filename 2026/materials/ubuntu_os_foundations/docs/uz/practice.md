@@ -384,6 +384,19 @@ Barcha 6 band `PASS` bo‘lsa, M1ga o‘ting.
 
 Boshqa `user` bilan amallar tugagach, `ssm-user`ga qayting va `jdu-check P2`ni bajaring. Oltita baho `group` a’zoligi, `directory`, `file`, `group` merosi va o‘quvchi huquqiga tegishli.
 
+Baholash yakuniy holatni tekshiradi. 4-bandda yaratilgan `writer-created.txt` kuzatish uchun kerak; uning nomi topshiriladigan javob sifatida tekshirilmaydi. `jdu-check` baholash vaqtida writer nomidan vaqtinchalik `file` yaratib, uning `group`i `practiceops` ekanini tekshiradi. Viewer huquqi faqat shu yaratish tekshiruvi muvaffaqiyatli bo‘lgandan keyin `PASS` bo‘ladi. Shu sabab yaratish tekshiruvi muvaffaqiyatsiz bo‘lsa, viewer huquqi to‘g‘ri bo‘lsa ham oxirgi ikkita band `FAIL` bo‘ladi.
+
+| Tekshiruv ID | Talab qilinadigan yakuniy holat |
+| --- | --- |
+| `P2-ID-01` | `jdupracticewriter` `practiceops` a’zosi, `jdupracticeviewer` esa a’zo emas. |
+| `P2-PERM-01` | Umumiy `directory` egasi va `group`i `root:practiceops`. |
+| `P2-PERM-02` | Umumiy `directory` `mode`i `2775`, shu jumladan `setgid`. |
+| `P2-PERM-03` | `GUIDE.txt` egasi, `group`i va `mode`i `root:practiceops`, `664`. |
+| `P2-PERM-04` | Writer yangi `file` yarata oladi; uning `group`i `practiceops`. |
+| `P2-PERM-05` | Yuqoridagi yaratish tekshiruvi muvaffaqiyatli; viewer `GUIDE.txt`ni o‘qiy oladi, ammo yangi `file` yarata olmaydi. |
+
+Birinchi band `FAIL` bo‘lsa, 3-bosqichdan keyingi `id jdupracticewriter` va `id jdupracticeviewer` natijalarini tekshiring. Oxirgi ikki band `FAIL` bo‘lsa, avval `P2-PERM-04` sababini aniqlang. `jdu-check`ni albatta `ssm-user` sifatida bajaring. Sozlamalar to‘g‘ri bo‘lsa ham `FAIL` qolsa, `reset` qilmang; `FAIL` bo‘lgan tekshiruv IDlarini o‘qituvchiga ayting.
+
 ### Yechim namunasi (qadamma-qadam)
 
 #### 1-bosqich: Boshqaruv userini tekshirish
